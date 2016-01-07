@@ -1,0 +1,11 @@
+{
+  "applications": {
+    "IndieWise": {
+      "applicationId": "KkQqsTBaxOWqkoWjrPjz1CyL1iKmPRikVVG1Hwem",
+      "masterKey": "vZi7KGAiTlAznqBCs2cTz7oOLlt06dqd0EV5q79q"
+    },
+    "_default": {
+      "link": "IndieWise"
+    }
+  }
+}

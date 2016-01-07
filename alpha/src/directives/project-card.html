@@ -1,0 +1,66 @@
+<md-card style="position:relative;">
+    <img ng-src="{{::video.attributes.thumbnail_url}}" class="md-card-image image-link"
+         alt="{{::video.attributes.name}}" ui-sref="video({id: video.id})">
+    <md-card-title style="padding: 16px">
+        <md-card-title-text>
+            <span class="card-title truncate" ui-sref="video({id: video.id})">{{::video.attributes.name}}</span>
+                    <span class="md-caption">
+                        by
+                    <a class="action-link" ui-sref="user({id: video.attributes.owner.id})">
+                        {{::video.attributes.owner.attributes.first_name+' '+video.attributes.owner.attributes.last_name}}
+                    </a>
+            </span>
+            <md-divider></md-divider>
+            <span class="md-caption grey-text lighten-2" layout="row" layout-align="space-around center" style="padding-top: 10px">
+                <span flex>
+                    <md-icon md-svg-icon="grade" style="color: lightgrey;width: 16px;height: 16px;"></md-icon> {{(video.attributes.iwRating|number:1)||'N/A'}}
+                </span>
+                &middot;
+                <span flex>
+                    <md-icon md-svg-icon="trophy" style="color: lightgrey;width: 16px;height: 16px;"></md-icon> {{::(video.attributes.awardCount|number:1)||0}}
+                </span>
+                &middot;
+                <span flex>
+                    <md-icon md-svg-icon="emotion" style="color: lightgrey;width: 16px;height: 16px;"></md-icon> {{::(video.attributes.reactionCount|number:1)||0}}
+                </span>
+            </span>
+        </md-card-title-text>
+    </md-card-title>
+    <md-fab-speed-dial md-open="isOpenFab" md-direction="up" class="md-scale md-fab-bottom-right" style="right: -5px;bottom: 18px" ng-cloak>
+        <md-fab-trigger>
+            <md-button aria-label="menu" class="md-fab md-mini white">
+                <md-icon md-svg-icon="more_vert"></md-icon>
+            </md-button>
+        </md-fab-trigger>
+        <md-fab-actions>
+            <md-button aria-label="Share" class="md-fab md-raised md-mini" ng-if="!$state.is('profile')"
+                       ng-click="share(video)">
+                <md-tooltip md-direction="left" md-visible="tooltipVisible">Share</md-tooltip>
+                <md-icon md-svg-icon="share" aria-label="Share"></md-icon>
+            </md-button>
+            <md-button aria-label="Favorite" class="md-fab md-raised md-mini" ng-if="!$state.is('profile')"
+                       ng-click="toFavorites(video)">
+                <md-tooltip ng-if="faved==='blue-text'" md-direction="left" md-visible="tooltipVisible">Add to Favorites</md-tooltip>
+                <md-tooltip ng-if="faved==='red-text'" md-direction="left" md-visible="tooltipVisible">Remove from Favorites</md-tooltip>
+                <md-icon md-svg-icon="favorite" aria-label="Share" ng-class="faved"></md-icon>
+            </md-button>
+            <md-button aria-label="Watch Later" class="md-fab md-raised md-mini" ng-if="!$state.is('profile')"
+                       ng-click="toWatchLater(video)">
+                <md-tooltip ng-if="wled==='blue-text'" md-direction="left" md-visible="tooltipVisible">Watch Later</md-tooltip>
+                <md-tooltip ng-if="wled==='red-text'" md-direction="left" md-visible="tooltipVisible">Don't Watch Later</md-tooltip>
+                <md-icon md-svg-icon="watch_later" aria-label="Watch Later" ng-class="wled"></md-icon>
+            </md-button>
+            <md-button aria-label="Delete Project" class="md-fab md-raised md-mini" ng-if="$state.is('profile')"
+                       ng-click="deleteProject(video.id)">
+                <md-tooltip md-direction="left" md-visible="tooltipVisible">Delete Project</md-tooltip>
+                <md-icon md-svg-icon="close" aria-label="Delete Project"></md-icon>
+            </md-button>
+            <md-button aria-label="Edit" class="md-fab md-raised md-mini"
+                       ng-if="isLoggedIn.id === video.attributes.owner.id"
+                       ui-sref="video-edit({id: video.id})">
+                <md-tooltip md-direction="left" md-visible="tooltipVisible">Edit</md-tooltip>
+                <md-icon md-svg-icon="settings" aria-label="Edit"></md-icon>
+            </md-button>
+        </md-fab-actions>
+    </md-fab-speed-dial>
+</md-card>

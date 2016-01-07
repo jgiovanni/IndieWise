@@ -1,0 +1,101 @@
+<md-list-item ng-repeat="n in notifications.list"
+              ng-click="Body.markAsRead(n);" aria-label="Notification"
+              ng-class="{'': !n.is_seen, 'indigo lighten-4': !n.is_read}"
+              class="md-2-line">
+    <md-icon md-svg-icon="{{::n.icon}}"></md-icon>
+    <div class="md-list-item-text">
+        <p ng-show="!(Body.checkContains(['react','comment','reply','like','unlike'], n.verb))">
+            <a ng-repeat="a in n.actors" ui-sref="user({id: a.id})">
+                {{::a.name}}<span ng-if="!$last">, </span>
+            </a>
+            <span ng-switch="::n.verb">
+                <span ng-switch-when="react">reacted</span>
+                <span ng-switch-when="watch">watched</span>
+                <span ng-switch-when="judge">judged</span>
+                <span ng-switch-when="comment">commented on</span>
+                <span ng-switch-when="reply">replied to a comment on</span>
+                <span ng-switch-when="upload">uploaded</span>
+                <span ng-switch-when="message">messaged</span>
+            </span>
+           <span ng-repeat-start="obj in n.actiList">
+                <span ng-if="!$first && !$last">, </span>
+                <span ng-if="$last && n.actiList.length == 2"> and </span>
+                <span ng-if="$last && n.actiList.length > 2">, and </span>
+            </span>
+            <a ui-sref="video({id: obj.url.args.id})" ng-repeat-end ng-bind="::obj.name"></a>
+        </p>
+        <p ng-show="n.verb==='react'">
+            <span ng-repeat-start="obj in n.actiList">
+                <span ng-if="!$first && !$last">, </span>
+                <span ng-if="$last && n.actiList.length == 2"> and </span>
+                <span ng-if="$last && n.actiList.length > 2">, and </span>
+            </span>
+            <a ui-sref="video({id: obj.data.targets.film.id})" ng-repeat-end ng-bind="::obj.data.targets.film.name"></a>
+            made
+            <a ng-repeat="a in n.actors" ui-sref="user({id: a.id})">
+                {{::a.name}}<span ng-if="!$last">, </span>
+            </a>
+            feel {{::n.actiList[0].data.body}}.
+        </p>
+        <p ng-show="n.verb==='comment'">
+            <a ng-repeat="a in n.actors" ui-sref="user({id: a.id})">
+                {{::a.name}}
+                <span ng-if="!$last && n.actors.length > 2">, </span>
+                <span ng-if="$last && n.actors.length > 2">, and </span>
+                <span ng-if="$last && n.actors.length == 2"> and </span>
+            </a>
+            <span>commented on</span>
+            <span ng-bind-html="::n.summary.names"></span>
+
+            <a ui-sref="video({id: obj.data.targets.film.id})" ng-repeat-end ng-bind="::obj.data.targets.film.name"></a>
+        </p>
+        <p ng-show="n.verb==='reply'">
+            <a ng-repeat="a in n.actors" ui-sref="user({id: a.id})">
+                {{::a.name}}
+                <span ng-if="!$last && n.actors.length > 2">, </span>
+                <span ng-if="$last-1 && n.actors.length > 2">, and </span>
+                <span ng-if="!$last && n.actors.length == 2"> and </span>
+            </a>
+            <span>replied to a comment on</span>
+            <span ng-bind-html="::n.summary.names"></span>
+        </p>
+        <p ng-show="n.verb==='like'">
+            <a ng-repeat="a in n.actors" ui-sref="user({id: a.id})">
+                {{::a.name}}
+                <span ng-if="!$last && n.actors.length > 2">, </span>
+                <span ng-if="$last-1 && n.actors.length > 2">, and </span>
+                <span ng-if="!$last && n.actors.length == 2"> and </span>
+            </a>
+            <span>gave</span>
+           <span ng-repeat-start="obj in n.actiList">
+                <span ng-if="!$first && !$last">, </span>
+                <span ng-if="$last && n.actiList.length == 2"> and </span>
+                <span ng-if="$last && n.actiList.length > 2">, and </span>
+            </span>
+            <a ui-sref="video({id: obj.data.targets.film.id})" ng-repeat-end ng-bind="::obj.data.targets.film.name"></a>
+            <span>"Two Thumbs Up"</span>
+        </p>
+        <p ng-show="n.verb==='unlike'">
+            <a ng-repeat="a in n.actors" ui-sref="user({id: a.id})">
+                {{::a.name}}
+                <span ng-if="!$last && n.actors.length > 2">, </span>
+                <span ng-if="$last-1 && n.actors.length > 2">, and </span>
+                <span ng-if="!$last && n.actors.length == 2"> and </span>
+            </a>
+            <span>gave</span>
+           <span ng-repeat-start="obj in n.actiList">
+                <span ng-if="!$first && !$last">, </span>
+                <span ng-if="$last && n.actiList.length == 2"> and </span>
+                <span ng-if="$last && n.actiList.length > 2">, and </span>
+            </span>
+            <a ui-sref="video({id: obj.data.targets.film.id})" ng-repeat-end ng-bind="::obj.data.targets.film.name"></a>
+            <span>"Two Thumbs Down"</span>
+        </p>
+
+        <p>
+            <small am-time-ago="::n.created_at+'Z'"></small>
+        </p>
+    </div>
+    <md-divider ng-if="!$last"></md-divider>
+
+</md-list-item>

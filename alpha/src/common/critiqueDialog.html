@@ -1,0 +1,138 @@
+<md-dialog aria-label="Critique">
+    <form ng-submit="postCritique()">
+        <md-toolbar class=" md-accent md-hue-2">
+            <div class="md-toolbar-tools">
+                <h2>What's your judgement?</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" type="button" ng-click="closeDialog()" aria-label="Close">
+                    <md-icon md-svg-icon="close"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content style="min-width:400px;max-width:800px;max-height:810px; ">
+            <div layout layout-padding></div>
+            <div layout layout-padding></div>
+            <div layout>
+                <div flex layout layout-align="center center">
+                    <span class="md-body-1">Originality</span>
+                </div>
+                <md-slider flex class="md-accent" md-discrete ng-model="critique.originality" step="1" min="0" max="10"
+                           aria-label="Originality/Creativity">
+                </md-slider>
+            </div>
+            <div layout>
+                <div flex layout layout-align="center center">
+                    <span class="md-body-1">Direction</span>
+                </div>
+                <md-slider flex class="md-accent" md-discrete ng-model="critique.direction" step="1" min="0" max="10"
+                           aria-label="Direction">
+                </md-slider>
+            </div>
+            <div layout>
+                <div flex layout layout-align="center center">
+                    <span class="md-body-1">Writing</span>
+                </div>
+                <md-slider flex class="md-accent" md-discrete ng-model="critique.writing" step="1" min="0" max="10"
+                           aria-label="Writing">
+                </md-slider>
+            </div>
+            <div layout>
+                <div flex layout layout-align="center center">
+                    <span class="md-body-1">Cinematography</span>
+                </div>
+                <md-slider flex class="md-accent" md-discrete ng-model="critique.cinematography" step="1" min="0"
+                           max="10" aria-label="Cinematography">
+                </md-slider>
+            </div>
+            <div layout>
+                <div flex layout layout-align="center center">
+                    <span class="md-body-1">Acting</span>
+                </div>
+                <md-slider flex class="md-accent" md-discrete ng-model="critique.performances" step="1" min="0" max="10"
+                           aria-label="Performances">
+                </md-slider>
+            </div>
+            <div layout>
+                <div flex layout layout-align="center center">
+                    <span class="md-body-1">Production Value</span>
+                </div>
+                <md-slider flex class="md-accent" md-discrete ng-model="critique.production" step="1" min="0" max="10"
+                           aria-label="Production Value">
+                </md-slider>
+            </div>
+            <div layout>
+                <div flex layout layout-align="center center">
+                    <span class="md-body-1">Pacing</span>
+                </div>
+                <md-slider flex class="md-accent" md-discrete ng-model="critique.pacing" step="1" min="0" max="10"
+                           aria-label="Pacing">
+                </md-slider>
+            </div>
+            <div layout>
+                <div flex layout layout-align="center center">
+                    <span class="md-body-1">Editing</span>
+                </div>
+                <md-slider flex class="md-accent" md-discrete ng-model="critique.structure" step="1" min="0" max="10"
+                           aria-label="Editing">
+                </md-slider>
+            </div>
+            <div layout>
+                <div flex layout layout-align="center center">
+                    <span class="md-body-1">Sound Quality</span>
+                </div>
+                <md-slider flex class="md-accent" md-discrete ng-model="critique.audio" step="1" min="0" max="10"
+                           aria-label="Sound Quality">
+                </md-slider>
+            </div>
+            <div layout>
+                <div flex layout layout-align="center center">
+                    <span class="md-body-1">Music</span>
+                </div>
+                <md-slider flex class="md-accent" md-discrete ng-model="critique.music" step="1" min="0" max="10"
+                           aria-label="Music">
+                </md-slider>
+            </div>
+            <hr>
+            <div layout class="md-accent md-hue-2">
+                <div flex layout layout-align="center center">
+                    <span class="md-body-1">Overall Rating</span>
+                </div>
+                <div flex layout layout-align="center center">
+                    <span class="md-body-2">{{critique.overall|number:1}}/10</span>
+                </div>
+            </div>
+            <hr>
+            <div layout="column" layout-padding>
+                <div layout layout-sm="column">
+                    <md-input-container flex>
+                        <label>Care to elaborate?</label>
+                        <textarea ng-model="critique.body" columns="1" md-maxlength="5000"></textarea>
+                    </md-input-container>
+                </div>
+                <md-switch ng-model="critique.private" aria-label="Private">
+                    Make private?
+                </md-switch>
+                <i class="md-caption">By choosing this "Make private" Option, individual rating categories, such as "Production Value", "Originality", etc. will not be publicly visible to users other than you and the project author. However, the overall rating generated from these individual results will always be publicly visible. </i>
+
+                <div layout="column">
+                    <md-select placeholder="Is this award worthy? Nominate it!" ng-model="dialogModel.awardId"
+                               md-on-open="getAwards()" required style="min-width: 200px;">
+                        <md-option ng-click="dialogModel.awardId=null">None</md-option>
+                        <md-option ng-value="a.id" ng-repeat="a in awardsList|orderBy:'attributes.name'"
+                                   class="md-accent" ng-bind="::a.attributes.name"></md-option>
+                    </md-select>
+                </div>
+            </div>
+
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button type="button" ng-click="closeDialog()">
+                Cancel
+            </md-button>
+            <md-button class="md-raised md-accent md-hue-2" type="submit" style="margin-right:20px;">
+                Done!
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

@@ -1,0 +1,131 @@
+<style>
+    body {
+        background-color: #eee !important;
+        /*background-image: url("../../media/img.jpg");*/
+        /*background-size: cover;*/
+        /*background-position: center center;*/
+    }
+    md-input-container {
+        margin: 0;
+    }
+</style>
+<div class="">
+    <div class="">
+        <div class="container transparent" layout="row" layout-lt-md="column" layout-align="center center">
+            <div flex>
+                <hgroup>
+                    <!--<img src="./assets/img/Logo_alt2_web_87x45.png" alt="IndieWise"/>-->
+                    <h1 class="md-display-2">Register</h1>
+                </hgroup>
+            </div>
+
+            <md-whiteframe flex class="md-whiteframe-z5">
+                <md-content layout-padding align="center" style="padding: 40px">
+                    <md-button class="indigo md-fab" ng-click="RC.doLoginFacebook()" aria-label="Register with Facebook">
+                        <md-tooltip md-direction="top">Register with Facebook</md-tooltip>
+                        <md-icon md-svg-icon="facebook" class="white-text"></md-icon>
+                    </md-button>
+                    <md-button class="blue lighten-2 md-fab" ng-click="RC.authenticate('twitter')" aria-label="Register with Twitter">
+                        <md-tooltip md-direction="top">Register with Twitter</md-tooltip>
+                        <md-icon md-svg-icon="twitter" class="white-text"></md-icon>
+                    </md-button>
+                    <md-button class="orange darken-2 md-fab" ng-click="RC.authenticate('google')" aria-label="Register with Google Plus">
+                        <md-tooltip md-direction="top">Register with Google</md-tooltip>
+                        <md-icon md-svg-icon="google-plus" class="white-text"></md-icon>
+                    </md-button>
+                    <md-button class="brown darken-2 md-fab" ng-click="RC.authenticate('instagram')" aria-label="Register with Instagram">
+                        <md-tooltip md-direction="top">Register with Instagram</md-tooltip>
+                        <md-icon md-svg-icon="instagram" class="white-text"></md-icon>
+                    </md-button>
+
+                    <!--<md-divider></md-divider>-->
+                    <h4>or create an account</h4>
+
+                    <form ng-submit="RC.doRegister()">
+                        <div layout="row">
+                            <md-input-container flex>
+                                <label>Email</label>
+                                <input ng-model="RC.user.email" type="email" required>
+                            </md-input-container>
+                            <md-input-container flex>
+                                <label>Password</label>
+                                <input ng-model="RC.user.password" type="password" required autocomplete="off">
+                            </md-input-container>
+                        </div>
+                        <div layout="row">
+                            <md-input-container flex>
+                                <label>First Name</label>
+                                <input type="text" ng-model="RC.user.first_name" required>
+                            </md-input-container>
+                            <md-input-container flex>
+                                <label>Last Name</label>
+                                <input type="text" ng-model="RC.user.last_name" required>
+                            </md-input-container>
+                        </div>
+                        <div layout="row">
+                            <md-input-container flex>
+                                <label>Date of Birth</label>
+                                <input type="date" ng-model="RC.user.dob" max="today" required />
+                            </md-input-container>
+                        </div>
+                        <div layout="row">
+                            <md-radio-group flex ng-model="RC.user.gender" layout="row" required>
+                                <md-radio-button flex value="male" class="md-primary">Male</md-radio-button>
+                                <md-radio-button flex value="female" class="md-primary">Female</md-radio-button>
+                            </md-radio-group>
+                        </div>
+                        <div layout="row">
+                            <md-select flex placeholder="Country" ng-model="RC.user.country" required
+                                       md-on-open="RC.getCountries()" style="min-width: 200px;">
+                                <md-option ng-value="c" ng-repeat="c in countryList|orderBy:'attributes.name.common'"
+                                           class="md-accent">
+                                    {{::c.attributes.name.common}}
+                                </md-option>
+                            </md-select>
+                        </div>
+                        <div layout="row">
+                            <md-select flex placeholder="Your Favorite Genres" multiple ng-model="RC.user.selected_genres"
+                                       md-on-open="RC.getGenres()" style="min-width: 200px;">
+                                <md-option ng-value="::g.attributes.slug" ng-repeat="g in genresList|orderBy:'attributes.name'"
+                                           class="md-accent">
+                                    {{::g.attributes.name}}
+                                </md-option>
+                            </md-select>
+                            <md-select flex placeholder="Your Favorite Types" ng-model="RC.user.selected_types" multiple
+                                       md-on-open="RC.getTypes()" style="min-width: 200px;">
+                                <md-option ng-value="t.attributes.slug" ng-repeat="t in typesList|orderBy:'attributes.slug'" class="md-accent">
+                                    {{::t.attributes.name}}
+                                </md-option>
+                            </md-select>
+
+                        </div>
+                        <!--<pre flex="100">{{RC.user}}</pre>-->
+
+                        <p class="flow-text text-center red-text" ng-if="RC.error">
+                            <span ng-show="RC.error.code !== 101">{{RC.error}}</span>
+                            <span ng-show="RC.error.code === 101">Please check your credentials and try again.</span>
+                        </p>
+                        <div layout="row" layout-wrap>
+                            <small flex="100" class="md-caption">By clicking Done, you agree to our <a ui-sref="tos">Terms</a> and that you have read our <a ui-sref="privacy">Privacy Policy</a>/</small>
+                            <md-button type="submit" class="md-raised md-primary md-hue-2" flex="100">Done!</md-button>
+                        </div>
+                    </form>
+
+                    <div layout="row">
+                        <md-button flex class="md-primary" ui-sref="sign_in">Already have an account ?</md-button>
+                    </div>
+
+                </md-content>
+
+            </md-whiteframe>
+        </div>
+        <!--<video autoplay loop class="fillWidth">
+            <source src="./assets/video/A-Director-View/Mp4/A-Director-View.mp4" type="video/mp4" />Your browser does not support the video tag. I suggest you upgrade your browser.
+            <source src="./assets/video/A-Director-View/Webm/A-Director-View.webm" type="video/webm" />Your browser does not support the video tag. I suggest you upgrade your browser.
+            <source src="./assets/video/A-Director-View/Ogv/A-Director-View.ogv" type="video/ogg" />Your browser does not support the video tag. I suggest you upgrade your browser.
+        </video>
+        <div class="poster hidden">
+            <img src="./assets/video/A-Director-View/Snapshot/A-Director-View.jpg" alt="">
+        </div>-->
+    </div>
+</div>

@@ -1,0 +1,76 @@
+<md-card style="position:relative;">
+    <img ng-src="{{::video.attributes.film.attributes.thumbnail_url}}" class="md-card-image image-link"
+         alt="{{::video.attributes.film.attributes.name}}" ui-sref="video({id: video.attributes.film.id})">
+    <md-card-title style="padding: 16px">
+        <md-card-title-text>
+            <span class="md-subhead" ui-sref="video({id: video.attributes.film.id})">{{::video.attributes.film.attributes.name}}</span>
+            <span class="md-caption">
+                by
+                <a class="action-link" ui-sref="user({id: video.attributes.film.attributes.owner.id})">
+                    {{::video.attributes.film.attributes.owner.attributes.first_name+' '+video.attributes.film.attributes.owner.attributes.last_name}}
+                </a>
+            </span>
+        </md-card-title-text>
+    </md-card-title>
+    <!--<md-card-actions layout="row" layout-align="start center">
+    <md-card-icon-actions>
+
+        <md-menu style="padding: inherit;">
+            <md-button aria-label="Actions Menu" class="md-icon-button"
+                       ng-click="Home.openMenu($mdOpenMenu, $event)">
+                <md-icon md-menu-origin md-svg-icon="md-toggle-arrow"></md-icon>
+            </md-button>
+            <md-menu-content width="4">
+                <md-menu-item>
+                    <md-button ng-click="Body.toFavorites(video.attributes.film)">
+                        <md-icon md-svg-icon="favorite" md-menu-align-target></md-icon>
+                        Add to Favorites
+                    </md-button>
+                </md-menu-item>
+                <md-menu-item>
+                    <md-button ng-click="Body.toWatchLater(video.attributes.film)">
+                        <md-icon md-svg-icon="access_time"></md-icon>
+                        Watch Later
+                    </md-button>
+                </md-menu-item>
+                <md-menu-item ng-if="isLoggedIn.id === video.attributes.film.attributes.owner.id">
+                    <md-button ng-click="" ui-sref="video-edit({id: video.attributes.film.id})">
+                        <md-icon md-svg-icon="settings"></md-icon>
+                        Edit
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
+    </md-card-icon-actions>
+</md-card-actions>-->
+    <md-fab-speed-dial md-open="isOpenFab" md-direction="left" class="md-fling md-fab-bottom-right" style="bottom: 50px;" ng-cloak>
+        <md-fab-trigger>
+            <md-button aria-label="menu" class="md-fab md-primary">
+                <md-icon md-svg-icon="menu"></md-icon>
+            </md-button>
+        </md-fab-trigger>
+        <md-fab-actions>
+            <md-button aria-label="Favorite" class="md-fab md-raised md-mini" ng-if="!$state.is('profile')"
+                       ng-click="Body.toFavorites(video.attributes.film)">
+                <md-tooltip md-direction="top" md-visible="tooltipVisible">Add to Favorites</md-tooltip>
+                <md-icon md-svg-icon="favorite" aria-label="Favorite"></md-icon>
+            </md-button>
+            <md-button aria-label="Watch Later" class="md-fab md-raised md-mini" ng-if="!$state.is('profile')"
+                       ng-click="Body.toWatchLater(video.attributes.film)">
+                <md-tooltip md-direction="top" md-visible="tooltipVisible">Watch Later</md-tooltip>
+                <md-icon md-svg-icon="access_time" aria-label="Watch Later"></md-icon>
+            </md-button>
+            <md-button aria-label="Edit" class="md-fab md-raised md-mini"
+                       ng-if="isLoggedIn.id === video.attributes.film.attributes.owner.id"
+                       ui-sref="video-edit({id: video.attributes.film.id})">
+                <md-tooltip md-direction="top" md-visible="tooltipVisible">Edit</md-tooltip>
+                <md-icon md-svg-icon="settings" aria-label="Edit"></md-icon>
+            </md-button>
+            <md-button aria-label="Delete Project" class="md-fab md-raised md-mini" ng-if="$state.is('profile')"
+                       ng-click="Profile.deleteProject(video.id)">
+                <md-tooltip md-direction="top" md-visible="tooltipVisible">Delete Project</md-tooltip>
+                <md-icon md-svg-icon="close" aria-label="Delete Project"></md-icon>
+            </md-button>
+        </md-fab-actions>
+    </md-fab-speed-dial>
+</md-card>

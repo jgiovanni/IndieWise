@@ -1,0 +1,39 @@
+<md-content flex id="content">
+    <md-list>
+        <!--<md-list-item ng-click="Msg.toggleCommentInput()">
+            <md-icon aria-label="msg" md-svg-icon="msg"></md-icon>
+            <p>Post msg</p>
+        </md-list-item>
+        <form ng-if="!!Msg.showCommentInput" ng-submit="Msg.postComment()" layout="row" layout-sm="column" class="md-padding">
+            <md-input-container flex>
+                <label>msg</label>
+                <textarea ng-model="Msg.myComment" columns="1" md-maxlength="500" required></textarea>
+            </md-input-container>
+            <md-button flex="5" flex-sm type="submit" class="md-primary" style="text-align: center;">Send</md-button>
+        </form>-->
+        <md-list-item class="md-3-line" ng-repeat="msg in Msg.messages">
+            <img ng-src="{{::msg.attributes.from.attributes.avatar || './assets/img/avatar-1.png'}}" class="md-avatar">
+            <div class="md-list-item-text">
+                <h3>
+                    {{::msg.attributes.from.attributes.first_name+' '+msg.attributes.from.attributes.last_name}}
+                    <small am-time-ago="::msg.createdAt" class="md-caption"></small>
+                </h3>
+                <p ng-bind="::msg.attributes.body"></p>
+                <p>
+                    <a ng-if="msg.attributes.from.id === isLoggedIn.id" ng-click="Msg.editMsg(msg)" class="md-warn md-caption action-link">Edit</a>
+                    <span ng-if="msg.attributes.from.id === isLoggedIn.id">&nbsp;&middot;&nbsp;</span>
+                    <a ng-if="msg.attributes.from.id === isLoggedIn.id" ng-click="Msg.deleteMsg(msg)" class="md-warn md-caption action-link">Delete</a>
+                    <span ng-if="msg.attributes.from.id === isLoggedIn.id">&nbsp;&middot;&nbsp;</span>
+                    <a ng-click="Msg.toggleReplyInput(msg)" class="md-warn md-caption action-link">Reply</a>
+                </p>
+            </div>
+        </md-list-item>
+        <form ng-submit="Msg.postReply()" layout="row" layout-sm="column" class="md-padding">
+            <md-input-container flex>
+                <label>Reply</label>
+                <input type="text" ng-model="Msg.myReply" columns="1" md-maxlength="500" required/>
+            </md-input-container>
+            <md-button flex="5" flex-sm type="submit" class="md-primary" style="text-align: center;">Send</md-button>
+        </form>
+    </md-list>
+</md-content>

@@ -1,0 +1,22 @@
+{
+  "name": "IndieWise",
+  "description": "A starter project for AngularJS Material",
+  "version": "0.0.1",
+  "homepage": "https://github.com/angular/material-start",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "angular": "^1.4.x",
+    "angular-animate": "^1.4.x",
+    "angular-aria": "^1.4.x",
+    "angular-material": "^1.0.0-rc3-master-818652d",
+    "ngAnimate-animate.css": "~0.1.1",
+    "angular-moment": "*",
+    "getstream": "*",
+    "angular-localforage": "*",
+    "underscore": "*",
+    "ng-videosharing-embed": "*",
+    "angularjs-socialshare": "~0.1.19"
+  },
+  "devDependencies": {}
+}

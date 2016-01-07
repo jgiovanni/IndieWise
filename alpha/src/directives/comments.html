@@ -1,0 +1,50 @@
+<md-content class="md-padding" ng-if="!disable">
+    <md-list>
+    <md-list-item ng-click="toggleCommentInput()">
+        <md-icon aria-label="Comment" md-svg-icon="comment"></md-icon>
+        <p>Post Comment</p>
+    </md-list-item>
+    <form ng-show="!!showCommentInput" ng-submit="postComment()" layout="row" layout-sm="column" class="md-padding">
+        <md-input-container flex>
+            <label>Comment</label>
+            <input autocomplete="off" linkify type="text" ng-model="model.myComment" ng-minlength="1"/>
+        </md-input-container>
+        <md-button flex="5" flex-sm type="submit" class="md-primary" style="text-align: center;">Send</md-button>
+    </form>
+    <md-list-item class="md-3-line" ng-repeat-start="comment in comments|orderBy:'-createdAt'"
+                  ng-init="comment.replies=[];">
+        <img ng-src="{{::comment.attributes.author.attributes.avatar || './assets/img/avatar-1.png'}}" class="md-avatar">
+
+        <div class="md-list-item-text">
+            <h3>
+                <a ui-sref="user({id: comment.attributes.author.id})">
+                    {{::comment.attributes.author.attributes.first_name+' '+comment.attributes.author.attributes.last_name}}
+                </a>
+                <abbr title="{{::comment.createdAt|date:'medium'}}"
+                      am-time-ago="::comment.createdAt" class="md-caption"></abbr>
+            </h3>
+
+            <p ng-bind="::comment.attributes.body"></p>
+
+            <p>
+                <!--<a ng-if="comment.attributes.author.id === isLoggedIn.id"
+                   ng-click="editComment(comment)"
+                   class="md-warn md-caption action-link">Edit</a>-->
+                <span ng-if="comment.attributes.author.id === isLoggedIn.id">&nbsp;&middot;&nbsp;</span>
+                <a ng-if="comment.attributes.author.id === isLoggedIn.id"
+                   ng-click="deleteComment(comment)"
+                   class="md-warn md-caption action-link">Delete</a>
+                <span ng-if="comment.attributes.author.id === isLoggedIn.id">&nbsp;&middot;&nbsp;</span>
+                <a ng-click="toggleReplyInput(comment)"
+                   class="md-warn md-caption action-link">Reply</a>
+            </p>
+        </div>
+    </md-list-item>
+    <reply-block target-comment="targetComment" parent="commentsParent"
+                 ng-if="!!showReplyInput && targetComment == comment"></reply-block>
+    <replies-block ng-repeat-end></replies-block>
+</md-list>
+</md-content>
+<md-content class="md-padding" ng-if="disable">
+    <h3 class="md-subhead">Comments are disabled by Uploader</h3>
+</md-content>

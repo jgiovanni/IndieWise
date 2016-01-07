@@ -1,0 +1,38 @@
+<md-list ng-if="comment.attributes.replyCount" layout="row" layout-align="end start" layout-wrap>
+    <md-list-item flex="95" ng-if="!comment.repliesLoaded"
+                  ng-click="loadReplies(comment)"
+                  style="height: 40px;">
+        <md-icon md-svg-icon="add_circle"></md-icon>
+        <p>{{comment.attributes.replyCount}} replies</p>
+    </md-list-item>
+    <md-list-item flex="95" ng-if="comment.repliesLoaded" class="md-3-line"
+                  ng-repeat-start="reply in comment.replies|orderBy:'createdAt'">
+        <img ng-src="{{::reply.attributes.author.attributes.avatar || './assets/img/avatar-1.png'}}" class="md-avatar">
+
+        <div class="md-list-item-text">
+            <h3>
+                <a ui-sref="user({id: reply.attributes.author.id})">
+                    {{::reply.attributes.author.attributes.first_name+' '+reply.attributes.author.attributes.last_name}}
+                </a>
+                <abbr title="{{::reply.createdAt|date:'medium'}}" am-time-ago="::reply.createdAt"
+                      class="md-caption"></abbr>
+            </h3>
+
+            <p ng-bind="::reply.attributes.body"></p>
+
+            <p>
+                <!--<a ng-if="reply.attributes.author.id === isLoggedIn.id"
+                   ng-click="editComment(reply)"
+                   class="md-warn md-caption action-link">Edit</a>-->
+                <span ng-if="reply.attributes.author.id === isLoggedIn.id">&nbsp;&middot;&nbsp;</span>
+                <a ng-if="reply.attributes.author.id === isLoggedIn.id"
+                   ng-click="deleteComment(reply)"
+                   class="md-warn md-caption action-link">Delete</a>
+                <span ng-if="reply.attributes.author.id === isLoggedIn.id">&nbsp;&middot;&nbsp;</span>
+                <a ng-click="toggleReplyInput(reply)"
+                   class="md-warn md-caption action-link">Reply</a>
+            </p>
+        </div>
+    </md-list-item>
+    <reply-block flex="95" ng-repeat-end target-comment="targetComment" parent="commentsParent" ng-if="!!showReplyInput && targetComment == reply"></reply-block>
+</md-list>

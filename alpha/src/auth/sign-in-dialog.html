@@ -1,0 +1,61 @@
+<md-dialog aria-label="Authentication" ng-cloak>
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Authentication</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="SIC.cancelModal()">
+                    <md-icon md-svg-icon="close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div class="md-dialog-content" layout="column" layout-align="center center">
+
+                <md-content layout-padding align="center" style="padding: 40px">
+                    <md-button class="indigo md-fab" ng-click="SIC.doLoginFacebook()" aria-label="Login with Facebook">
+                        <md-icon md-svg-icon="facebook" class="white-text"></md-icon>
+                        <md-tooltip md-direction="top">Login with Facebook</md-tooltip>
+                    </md-button>
+                    <md-button class="blue lighten-2 md-fab" ng-click="SIC.authenticate('twitter')" aria-label="Login with Twitter">
+                        <md-tooltip md-direction="top">Login with Twitter</md-tooltip>
+                        <md-icon md-svg-icon="twitter" class="white-text"></md-icon>
+                    </md-button>
+                    <md-button class="orange darken-2 md-fab" ng-click="SIC.authenticate('google')" aria-label="Login with Google Plus">
+                        <md-tooltip md-direction="top">Login with Google</md-tooltip>
+                        <md-icon md-svg-icon="google-plus" class="white-text"></md-icon>
+                    </md-button>
+                    <md-button class="brown darken-2 md-fab" ng-click="SIC.authenticate('instagram')" aria-label="Login with Instagram">
+                        <md-tooltip md-direction="top">Login with Instagram</md-tooltip>
+                        <md-icon md-svg-icon="instagram" class="white-text"></md-icon>
+                    </md-button>
+                    <h4>or with an account</h4>
+                    <form>
+                        <div layout="column">
+                            <md-input-container>
+                                <md-icon md-svg-icon="email"></md-icon>
+                                <input ng-model="SIC.user.email" type="email" placeholder="Email" ng-required="true">
+                            </md-input-container>
+                            <md-input-container>
+                                <md-icon md-svg-icon="security"></md-icon>
+                                <input ng-model="SIC.user.password" type="password" placeholder="Password"
+                                       ng-required="true">
+                            </md-input-container>
+                        </div>
+                        <h3 ng-if="SIC.error" style="color: #ff0000;">
+                            <span ng-show="SIC.error.code === 101">Please check your credentials and try again.</span>
+                        </h3>
+
+                            <div layout="row">
+                            <md-button type="submit" class="md-raised md-accent md-hue-2" flex ng-click="SIC.doLogin(false)">Sign In</md-button>
+                        </div>
+                    </form>
+                </md-content>
+
+                <md-button class="md-primary" ui-sref="register" ng-click="SIC.cancelModal()">Create Account</md-button>
+                <md-button class="md-primary" ui-sref="reset_password" ng-click="SIC.cancelModal()">Forgot Password?</md-button>
+            </div>
+        </md-dialog-content>
+        <!--<md-dialog-actions layout="row"></md-dialog-actions>-->
+    </form>
+</md-dialog>

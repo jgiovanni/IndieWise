@@ -1,0 +1,107 @@
+<md-content id="content" class="md-padding">
+
+    <form name="UserForm" ng-submit="Edit.updateUser()">
+        <h2 class="md-display-1">Update Profile</h2>
+        <md-divider></md-divider>
+        <div layout layout-sm="row">
+            <div flex="20">
+                <md-card flow-init flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
+                         flow-files-submitted="$flow.upload()" flow-complete="Edit.updateAvatar($flow)">
+                    <img ng-hide="$flow.files.length" ng-src="{{Edit.user.avatar||'./assets/img/avatar-1.png'}}" class="md-card-image" alt="Avatar"/>
+                    <img ng-show="$flow.files.length" flow-img="$flow.files[0]" class="md-card-image" />
+                    <md-card-actions layout="row" layout-align="end center">
+                        <md-button class="" ng-hide="$flow.files.length" flow-btn flow-attrs="{accept:'image/*'}">Select image</md-button>
+                        <md-button class="" ng-show="$flow.files.length" flow-btn flow-attrs="{accept:'image/*'}">Change</md-button>
+                        <md-button class="" ng-show="$flow.files.length" ng-click="$flow.cancel()">
+                    </md-card-actions>
+                </md-card>
+            </div>
+
+            <div flex="80" layout="row" layout-wrap layout-align="space-around start">
+                <md-input-container flex="50">
+                    <label>Email</label>
+                    <input type="email" ng-model="Edit.user.email" ng-required="true">
+                </md-input-container>
+                <md-input-container flex="50">
+                    <label>Username</label>
+                    <input type="text" ng-model="Edit.user.usertag">
+                </md-input-container>
+
+                <md-input-container flex="50">
+                    <label>First Name</label>
+                    <input type="text" ng-model="Edit.user.first_name" ng-required="true">
+                </md-input-container>
+                <md-input-container flex="50">
+                    <label>Last Name</label>
+                    <input type="text" ng-model="Edit.user.last_name" ng-required="true">
+                </md-input-container>
+                <!--<md-input-container flex="100">
+                    <label>Last Name</label>
+                    <input type="text" ng-model="Edit.user.avatar" ng-required="true">
+                </md-input-container>-->
+
+                <md-input-container flex="100">
+                    <label>Description</label>
+                    <textarea ng-model="Edit.user.bio" columns="1" md-maxlength="1000"></textarea>
+                </md-input-container>
+            </div>
+        </div>
+        <!--<fieldset>
+            <legend>Update Password</legend>
+            <div layout layout-sm="column">
+                <md-input-container flex>
+                    <label>New Password</label>
+                    <input type="text" ng-model="Edit.newPassword">
+                </md-input-container>
+                <md-input-container flex>
+                    <label>Confirm Password</label>
+                    <input type="text" ng-model="Edit.newPasswordConfirm" ng-required="Edit.newPassword.length">
+                </md-input-container>
+            </div>
+        </fieldset>-->
+
+        <!--<div layout="column">
+            <md-select placeholder="Genres" multiple ng-model="Edit.user.attributes.selected_genres" md-on-open="Edit.getGenres()"
+                       ng-required="true" style="min-width: 200px;">
+                <md-option ng-value="g.attributes.slug" ng-repeat="g in genresList|orderBy:'attributes.name'" class="md-accent">
+                    {{g.attributes.name}}
+                </md-option>
+            </md-select>
+        </div>-->
+
+
+        <!--<legend>Social Accounts</legend>-->
+        <legend>Link Facebook Account</legend>
+        <div layout="column">
+            <md-button type="button" ng-if="!Edit.socials.facebook" class="indigo" ng-click="Edit.doLink('facebook')">Link Facebook</md-button>
+            <md-button type="button" ng-if="Edit.socials.facebook" class="indigo" ng-click="Edit.doUnlink('facebook')">Unlink Facebook</md-button>
+        </div>
+        <!--<div layout="column">
+            <md-button type="button" ng-if="!Edit.socials.google" class="md-raised orange darken-2" ng-click="Edit.doLink('google')">Link Google</md-button>
+            <md-button type="button" ng-if="Edit.socials.google" class="md-raised orange darken-2" ng-click="Edit.doUnlink('google')">Unlink Google</md-button>
+            <md-input-container flex>
+                <label>New Password</label>
+                <input type="text" ng-model="Edit.user.googleID">
+            </md-input-container>
+        </div>
+        <div layout="column">
+            <md-button type="button" ng-if="!Edit.socials.twitter" class="md-raised blue lighten-2" ng-click="Edit.doLink('twitter')">Link Twitter</md-button>
+            <md-button type="button" ng-if="Edit.socials.twitter" class="md-raised blue lighten-2" ng-click="Edit.doUnlink('twitter')">Unlink Twitter</md-button>
+        </div>
+        <div layout="column">
+            <md-button type="button" ng-if="!Edit.socials.instagram" class="md-raised brown darken-2" ng-click="Edit.doLink('instagram')">Link Instagram</md-button>
+            <md-button type="button" ng-if="Edit.socials.instagram" class="md-raised brown darken-2" ng-click="Edit.doUnlink('instagram')">Unlink Instagram</md-button>
+        </div>-->
+        <hr>
+        <div class="md-actions" layout="row" layout-align="right center">
+            <span flex></span>
+            <md-button type="button" ui-sref="profile" class="md-accent">
+                Return to Profile
+            </md-button>
+            <md-button type="submit" class="md-primary">
+                Update Profile
+            </md-button>
+        </div>
+
+    </form>
+</md-content>

@@ -1,0 +1,242 @@
+<md-content layout="row" layout-sm="column" layout-wrap layout-padding layout-align="start top" id="content">
+        <div flex="100">
+            <h3 class="md-title">Info & Settings - {{VEC.project.attributes.name}}</h3>
+            <hr>
+        </div>
+        <div flex-gt-sm="33">
+            <table class="highlight">
+                <thead>
+                <tr>
+                    <th colspan="2">Project Information</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr>
+                    <td>Name</td>
+                    <td>{{VEC.project.attributes.name}}</td>
+                </tr>
+                <tr>
+                    <td>Date Added</td>
+                    <td>{{::VEC.project.createdAt|date:'medium'}}</td>
+                </tr>
+                <tr>
+                    <td>URL</td>
+                    <td style="word-break: break-word;"><a
+                            href="http://getindiewise.com/alpha/screen/{{::VEC.project.id}}">http://getindiewise.com/alpha/screen/{{::VEC.project.id}}</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div flex-gt-sm="66" layout-padding>
+            <form ng-submit="VEC.updateProject()" name="EditProjectForm">
+                <div class="md-actions" layout="row" layout-align="right center">
+                    <span flex></span>
+                    <md-button type="button" class="md-warn" ui-sref="video({id: VEC.project.id})">Cancel</md-button>
+                    <md-button type="submit" class="md-raised green md-hue-2" ng-disabled="">
+                        Update
+                    </md-button>
+                    <md-button type="button" class="md-raised md-warn md-hue-2" ng-click="VEC.deleteProject($event)">
+                        Delete
+                    </md-button>
+                </div>
+                <hr>
+                <div layout layout-sm="column">
+                    <md-input-container flex>
+                        <label>Project Title</label>
+                        <input type="text" ng-model="VEC.project.attributes.name" ng-required="true">
+                    </md-input-container>
+                    <!--<md-datepicker flex md-placeholder="Date Completion" ng-model="VEC.project.completionDate"
+                                   md-max-date="VEC.maxDate"></md-datepicker>-->
+                    <md-input-container flex>
+                        <label>Date of Completion (Month, Year)</label>
+                        <input type="month" ng-model="VEC.dateOfCompl" max="VEC.maxDate" required/>
+                    </md-input-container>
+                </div>
+                <div layout layout-sm="column">
+                    <md-input-container flex>
+                        <label>Description</label>
+                        <textarea ng-model="VEC.project.attributes.description" columns="1"
+                                  md-maxlength="1000"></textarea>
+                    </md-input-container>
+
+                </div>
+                <div layout="column">
+                    <md-select placeholder="Genres" multiple ng-model="VEC.projectGenres" md-on-open="VEC.getGenres()"
+                               ng-required="true" style="min-width: 200px;">
+                        <md-option ng-value="g.id" ng-repeat="g in genresList|orderBy:'attributes.name'"
+                                   class="md-accent">
+                            {{g.attributes.name}}
+                        </md-option>
+                    </md-select>
+                </div>
+                <div layout layout-sm="column">
+                    <md-select flex placeholder="Type" ng-model="VEC.project.attributes.type.id"
+                               md-on-open="VEC.getTypes()"
+                               style="min-width: 200px;" ng-required="true" required>
+                        <md-option ng-value="t.id" ng-repeat="t in typesList|orderBy:'attributes.slug'"
+                                   class="md-accent">
+                            {{t.attributes.name}}
+                        </md-option>
+                    </md-select>
+                    <md-select flex placeholder="Language" ng-model="VEC.project.attributes.language.id"
+                               md-on-open="VEC.getLanguages()"
+                               style="min-width: 200px;" ng-required="true" required>
+                        <md-option value="knCq0SDd4Q" class="md-accent" tabindex="0" role="option" aria-hidden="false">
+                            <div class="md-text ng-binding">English</div>
+                            <div class="md-ripple-container"></div>
+                        </md-option>
+                        <md-divider></md-divider>
+                        <md-option ng-value="l.id" ng-repeat="l in languageList|orderBy:'attributes.English'"
+                                   class="md-accent">
+                            {{l.attributes.English}}
+                        </md-option>
+                    </md-select>
+
+                    <md-select flex placeholder="Country of Filming" ng-model="VEC.project.attributes.filmingCountry.id"
+                               md-on-open="VEC.getCountries()" style="min-width: 200px;" ng-required="true" required>
+                        <md-option ng-value="c.id" ng-repeat="c in countryList|orderBy:'attributes.name.common'"
+                                   class="md-accent">
+                            {{c.attributes.name.common}}
+                        </md-option>
+                    </md-select>
+                </div>
+                <div layout layout-sm="column">
+                    <md-input-container flex>
+                        <label>Director</label>
+                        <input type="text" ng-model="VEC.project.attributes.director" ng-required="true">
+                    </md-input-container>
+                    <md-input-container flex>
+                        <label>Writer</label>
+                        <input type="text" ng-model="VEC.project.attributes.writer" ng-required="true">
+                    </md-input-container>
+                    <md-input-container flex>
+                        <label>Producers</label>
+                        <input type="text" ng-model="VEC.project.attributes.producers" ng-required="true">
+                    </md-input-container>
+                </div>
+                <br>
+                <fieldset>
+                    <legend>Video Duration</legend>
+                    <div layout layout-sm="column">
+                        <md-input-container flex>
+                            <label>Hours</label>
+                            <input type="number" ng-model="VEC.runtime.hours" pattern="^\d+$" min="0"
+                                   ng-change="VEC.runtimeToSeconds()">
+                        </md-input-container>
+                        <md-input-container flex>
+                            <label>Minutes</label>
+                            <input type="number" ng-model="VEC.runtime.mins" pattern="^\d+$" min="0" max="60"
+                                   ng-change="VEC.runtimeToSeconds()">
+                        </md-input-container>
+                        <md-input-container flex>
+                            <label>Seconds</label>
+                            <input type="number" ng-model="VEC.runtime.secs" pattern="^\d+$" min="0" max="60"
+                                   ng-change="VEC.runtimeToSeconds()">
+                        </md-input-container>
+                    </div>
+                </fieldset>
+                <br>
+                <fieldset>
+                    <legend>Video Upload/URL</legend>
+                    <div layout layout-sm="column">
+                        <md-radio-group ng-model="VEC.uploadType">
+                            <md-radio-button value="1" disabled>Upload Video (coming soon)</md-radio-button>
+                            <md-radio-button value="2">Video Link (YouTube, Vimeo, DailyMotion, Youku, Vine)
+                            </md-radio-button>
+                        </md-radio-group>
+                    </div>
+                    <div layout="column" ng-if="VEC.uploadType == 2">
+                        <div flex layout="column">
+                            <md-input-container flex>
+                                <label>Video URL</label>
+                                <input type="url" ng-model="VEC.project.attributes.video_url"
+                                       ng-required="VEC.uploadType == 2"
+                                       ng-change="VEC.getThumbnailUrl(VEC.project.attributes.video_url)">
+                            </md-input-container>
+                            <div flex>
+                                <embed-video ng-if="VEC.project.attributes.video_url != ''"
+                                             ng-href="{{VEC.project.attributes.video_url}}"
+                                             width="100%" height="200"></embed-video>
+                            </div>
+                        </div>
+                        <div flex layout="column" layout-align="center top">
+                            <md-input-container flex>
+                                <label>Poster Artwork/Video Thumbnail URL</label>
+                                <input type="url" ng-model="VEC.project.attributes.thumbnail_url">
+                            </md-input-container>
+                            <div flex>
+                                <img ng-if="VEC.project.attributes.thumbnail_url != ''"
+                                     ng-src="{{VEC.project.attributes.thumbnail_url}}"
+                                     alt="Video Thumbnail URL">
+                            </div>
+
+                        </div>
+                    </div>
+                </fieldset>
+                <br>
+                <fieldset>
+                    <legend>Optional Details</legend>
+                    <!--<div layout layout-sm="column">
+                        <md-select flex placeholder="Country of Origin" ng-model="VEC.project.originCountry"
+                                   md-on-open="VEC.getCountries()" style="min-width: 200px;">
+                            <md-option ng-value="c.id" ng-repeat="c in countryList|orderBy:'attributes.name.common'"
+                                       class="md-accent">
+                                {{c.attributes.name.common}}
+                            </md-option>
+                        </md-select>
+                    </div>-->
+                    <div layout layout-sm="column">
+                        <md-input-container flex>
+                            <label>Synopsis</label>
+                            <textarea ng-model="VEC.project.attributes.synopsis" columns="1"
+                                      md-maxlength="1000"></textarea>
+                        </md-input-container>
+
+                    </div>
+                    <div layout layout-sm="column">
+                        <md-input-container flex>
+                            <label>Key Cast</label>
+                            <textarea ng-model="VEC.project.attributes.keyCast" columns="1"
+                                      md-maxlength="1000"></textarea>
+                        </md-input-container>
+
+                    </div>
+                    <div layout layout-sm="column">
+                        <md-input-container flex>
+                            <label>Past Festivals/Awards</label>
+                            <input type="text" ng-model="VEC.project.attributes.pastAwards">
+                        </md-input-container>
+                    </div>
+                    <div layout layout-sm="column">
+                        <md-checkbox flex ng-model="VEC.project.attributes.disableComments"
+                                     aria-label="Disable Comments">
+                            Disable Comments
+                        </md-checkbox>
+                        <md-checkbox flex ng-model="VEC.project.attributes.disableCritique"
+                                     aria-label="Disable Critiques">
+                            Disable Critiques
+                        </md-checkbox>
+                        <md-checkbox flex ng-model="VEC.project.attributes.unlist"
+                                     aria-label="Un-list Video">
+                            Un-list Video
+                        </md-checkbox>
+                    </div>
+                </fieldset>
+
+                <div class="md-actions" layout="row" layout-align="right center">
+                    <span flex></span>
+                    <md-button type="button" class="md-warn" ui-sref="video({id: VEC.project.id})">Cancel</md-button>
+                    <md-button type="submit" class="md-raised green md-hue-2" ng-disabled="">
+                        Update
+                    </md-button>
+                    <md-button type="button" class="md-raised md-warn md-hue-2" ng-click="VEC.deleteProject($event)">
+                        Delete
+                    </md-button>
+                </div>
+
+            </form>
+
+        </div>
+    </md-content>

@@ -1,0 +1,183 @@
+<section layout="column" layout-align="center center">
+    <md-content layout-padding>
+        <form ng-submit="UC.submitNewVideo()" name="NewVideoForm">
+            <div layout layout-sm="column">
+                <md-input-container flex>
+                    <label>Project Title</label>
+                    <input type="text" ng-model="UC.newVideo.name" ng-required="true">
+                </md-input-container>
+                <md-input-container flex>
+                    <label>Date of Completion</label>
+                    <input type="month" ng-model="UC.dateOfCompl" max="UC.maxDate" required />
+                </md-input-container>
+            </div>
+            <div layout layout-sm="column">
+                <md-input-container flex>
+                    <label>Description</label>
+                    <textarea ng-model="UC.newVideo.description" columns="1" md-maxlength="1000"></textarea>
+                </md-input-container>
+
+            </div>
+            <div layout="column">
+                <md-select placeholder="Genres" multiple ng-model="UC.newVideo.genres" md-on-open="UC.getGenres()"
+                           required style="min-width: 200px;">
+                    <md-option ng-value="g.id" ng-repeat="g in genresList|orderBy:'attributes.name'" class="md-accent">
+                        {{g.attributes.name}}
+                    </md-option>
+                </md-select>
+            </div>
+            <div layout layout-sm="column">
+                <md-select flex placeholder="Type" ng-model="UC.newVideo.type" md-on-open="UC.getTypes()" required
+                           style="min-width: 200px;">
+                    <md-option ng-value="t.id" ng-repeat="t in typesList|orderBy:'attributes.slug'" class="md-accent">
+                        {{t.attributes.name}}
+                    </md-option>
+                </md-select>
+                <md-select flex placeholder="Language" ng-model="UC.newVideo.language" md-on-open="UC.getLanguages()"
+                           style="min-width: 200px;" required>
+                    <md-option value="knCq0SDd4Q" class="md-accent" tabindex="0" role="option" aria-hidden="false">
+                        <div class="md-text ng-binding">English</div>
+                        <div class="md-ripple-container"></div>
+                    </md-option>
+                    <md-divider></md-divider>
+                    <md-option ng-value="l.id" ng-repeat="l in languageList|orderBy:'attributes.English'" class="md-accent">
+                        {{l.attributes.English}}
+                    </md-option>
+                </md-select>
+
+                <md-select flex placeholder="Country of Filming" ng-model="UC.newVideo.filmingCountry" required
+                           md-on-open="UC.getCountries()" style="min-width: 200px;">
+                    <md-option ng-value="c.id" ng-repeat="c in countryList|orderBy:'attributes.name.common'"
+                               class="md-accent">
+                        {{c.attributes.name.common}}
+                    </md-option>
+                </md-select>
+            </div>
+            <div layout layout-sm="column">
+                <md-input-container flex>
+                    <label>Director</label>
+                    <input type="text" ng-model="UC.newVideo.director" ng-required="true">
+                </md-input-container>
+                <md-input-container flex>
+                    <label>Writer</label>
+                    <input type="text" ng-model="UC.newVideo.writer" ng-required="true">
+                </md-input-container>
+                <md-input-container flex>
+                    <label>Producers</label>
+                    <input type="text" ng-model="UC.newVideo.producers" ng-required="true">
+                </md-input-container>
+            </div>
+            <br>
+            <fieldset>
+                <legend>Video Duration</legend>
+                <div layout layout-sm="column">
+                    <md-input-container flex>
+                        <label>Hours</label>
+                        <input type="number" ng-model="UC.runtime.hours" pattern="^\d+$" min="0"
+                               ng-change="UC.runtimeToSeconds()">
+                    </md-input-container>
+                    <md-input-container flex>
+                        <label>Minutes</label>
+                        <input type="number" ng-model="UC.runtime.mins" pattern="^\d+$" min="0" max="60"
+                               ng-change="UC.runtimeToSeconds()">
+                    </md-input-container>
+                    <md-input-container flex>
+                        <label>Seconds</label>
+                        <input type="number" ng-model="UC.runtime.secs" pattern="^\d+$" min="0" max="60"
+                               ng-change="UC.runtimeToSeconds()">
+                    </md-input-container>
+                </div>
+            </fieldset>
+            <br>
+            <fieldset>
+                <legend>Video Upload/URL</legend>
+                <div layout layout-sm="column">
+                    <md-radio-group ng-model="UC.uploadType">
+                        <md-radio-button value="1" disabled>Upload Video (coming soon)</md-radio-button>
+                        <md-radio-button value="2">Video Link (YouTube, Vimeo, DailyMotion, Youku, Vine)
+                        </md-radio-button>
+                    </md-radio-group>
+                </div>
+                <div layout="column" ng-if="UC.uploadType == 2">
+                    <div flex layout="column">
+                        <md-input-container flex>
+                            <label>Video URL</label>
+                            <input type="url" ng-model="UC.newVideo.video_url" ng-required="UC.uploadType == 2"
+                                   ng-change="UC.getThumbnailUrl(UC.newVideo.video_url)">
+                        </md-input-container>
+                        <div flex>
+                            <hr>
+                            <embed-video ng-if="UC.newVideo.video_url != ''" ng-href="{{UC.newVideo.video_url}}"
+                                         width="100%" height="200"></embed-video>
+                        </div>
+                    </div>
+                    <div flex layout="column" layout-align="center top">
+                        <md-input-container flex>
+                            <label>Poster Artwork/Video Thumbnail URL</label>
+                            <input type="url" ng-model="UC.newVideo.thumbnailUrl">
+                        </md-input-container>
+                        <div flex>
+                            <hr>
+                            <img ng-if="UC.newVideo.thumbnailUrl != ''" ng-src="{{UC.newVideo.thumbnailUrl}}"
+                                 alt="Video Thumbnail URL">
+                        </div>
+
+                    </div>
+                </div>
+            </fieldset>
+            <br>
+            <fieldset>
+                <legend>Optional Details</legend>
+                <!--<div layout layout-sm="column">
+                    <md-select flex placeholder="Country of Origin" ng-model="UC.newVideo.originCountry"
+                               md-on-open="UC.getCountries()" style="min-width: 200px;">
+                        <md-option ng-value="c.id" ng-repeat="c in countryList|orderBy:'attributes.name.common'"
+                                   class="md-accent">
+                            {{c.attributes.name.common}}
+                        </md-option>
+                    </md-select>
+                </div>-->
+                <div layout layout-sm="column">
+                    <md-input-container flex>
+                        <label>Synopsis</label>
+                        <textarea ng-model="UC.newVideo.synopsis" columns="1" md-maxlength="1000"></textarea>
+                    </md-input-container>
+
+                </div>
+                <div layout layout-sm="column">
+                    <md-input-container flex>
+                        <label>Key Cast</label>
+                        <textarea ng-model="UC.newVideo.keyCast" columns="1" md-maxlength="1000"></textarea>
+                    </md-input-container>
+
+                </div>
+                <div layout layout-sm="column">
+                    <md-input-container flex>
+                        <label>Past Festivals/Awards</label>
+                        <input type="text" ng-model="UC.newVideo.pastAwards">
+                    </md-input-container>
+                </div>
+                <div layout layout-sm="column">
+                    <md-checkbox flex ng-model="UC.newVideo.disableComments" aria-label="Disable Comments">
+                        Disable Comments
+                    </md-checkbox>
+                    <md-checkbox flex ng-model="UC.newVideo.disableCritique" aria-label="Disable Critiques">
+                        Disable Critiques
+                    </md-checkbox>
+                </div>
+            </fieldset>
+
+            <div class="md-actions" layout="row" layout-align="right center">
+                <md-button class="md-warn" ui-sref="home">Cancel</md-button>
+                <span flex></span>
+                <md-button type="submit" class="md-raised md-accent md-hue-2" ng-disabled="">
+                    Submit
+                </md-button>
+            </div>
+
+        </form>
+
+    </md-content>
+</section>
+
+

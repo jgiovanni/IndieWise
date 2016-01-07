@@ -1,0 +1,308 @@
+<md-content flex id="content" class="md-padding" xmlns:>
+    <md-icon ng-if="!AppData.User.attributes.avatar" md-svg-icon="avatar1" class="avatar"></md-icon>
+    <img ng-src="{{AppData.User.attributes.avatar || './assets/img/avatar-1.png'}}" class="avatar" alt="{{AppData.User.attributes.first_name}} {{AppData.User.attributes.last_name}}">
+    <h2 class="md-display-1">{{AppData.User.attributes.first_name}} {{AppData.User.attributes.last_name}}</h2>
+    <h4 class="md-title">About</h4>
+    <p class="md-body-1">{{AppData.User.attributes.bio}}</p>
+
+    <md-button class="edit" ui-sref="profile_edit" aria-label="Edit Profile">
+        <md-tooltip>Edit Profile</md-tooltip>
+        <md-icon md-svg-icon="mode_edit"></md-icon>
+    </md-button>
+    <md-button class="contact" ng-click="" aria-label="Contact User">
+        <md-tooltip>Contact {{AppData.User.attributes.first_name}} {{AppData.User.attributes.last_name}}</md-tooltip>
+        <md-icon md-svg-icon="email"></md-icon>
+    </md-button>
+
+    <md-tabs md-dynamic-height md-border-bottom>
+        <md-tab label="Projects &middot; {{::Profile.projects.length}}">
+            <md-content class="md-padding">
+                <section layout="row" layout-sm="column" layout-wrap layout-align="space-around start">
+                    <project-card flex-sm="100" flex-md="40" flex-lg="30" flex-gt-lg="20" ng-repeat="video in Profile.projects" video="video.attributes.film"></project-card>
+                </section>
+            </md-content>
+        </md-tab>
+        <md-tab label="Favorites &middot; {{::Profile.favorites.length}}">
+            <md-content class="md-padding">
+                <section layout="row" layout-sm="column" layout-wrap layout-align="center start">
+                    <project-card flex-sm="100" flex-md="40" flex-lg="30" flex-gt-lg="20" ng-repeat="video in Profile.favorites" video="video.attributes.project"></project-card>
+                </section>
+            </md-content>
+        </md-tab>
+        <md-tab label="Watch Later &middot; {{::Profile.watchlaters.length}}">
+            <md-content class="md-padding">
+                <section layout="row" layout-sm="column" layout-wrap layout-align="center start">
+                    <project-card flex-sm="100" flex-md="40" flex-lg="30" flex-gt-lg="20" ng-repeat="video in Profile.watchlaters" video="video.attributes.project"></project-card>
+                </section>
+            </md-content>
+        </md-tab>
+        <md-tab label="Critiques &middot; {{Profile.myCritiques.length + Profile.myCritiqued.length}}">
+            <md-content class="md-padding">
+                <md-tabs md-dynamic-height md-border-bottom class="md-padding">
+                    <md-tab label="Given &middot; {{::Profile.myCritiques.length}}">
+                        <md-card ng-repeat="c in Profile.myCritiques|orderBy:'createdAt'">
+                            <md-card-content>
+                                <section layout="row" class="md-padding">
+                                    <div flex="60">
+                                        <h6>
+                                            <a ui-sref="video({id: c.attributes.parent.id})" ng-bind="::c.attributes.parent.attributes.name"></a>
+                                        </h6>
+                                        <abbr title="{{::c.createdAt|date:'medium'}}" class="md-caption" ng-bind="::c.createdAt|date:'short'"></abbr>
+                                        <p class="md-body-1" ng-bind="::c.attributes.body"></p>
+
+                                    </div>
+                                    <div flex="40">
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Originality</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.originality}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Direction</span>
+                                            </div>
+
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.direction}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Writing</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.writing}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Cinematography</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.cinematography}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Acting</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.performances}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Production Value</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.production}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Pacing</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.pacing}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Editing</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.structure}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Sound Quality</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.audio}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Music</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.music}}</span>
+                                        </div>
+                                        <hr>
+                                        <div layout class="md-accent md-hue-2">
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">IndieWise Rating</span>
+                                            </div>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-2">{{c.attributes.overall|number:1}}</span>
+                                            </div>
+                                        </div>
+                                        <hr>
+
+                                    </div>
+                                </section>
+                            </md-card-content>
+                            <div class="md-actions" layout="row" layout-align="end center">
+                                <md-button class="md-accent md-hue-2" ng-click="Body.toPage('profile_critique', {profile_id:AppData.User.id, id:c.id})">Reply</md-button>
+                                <md-button class="md-primary md-hue-2" ui-sref="profile_critique({profile_id:AppData.User.id, id:c.id})">
+                                    View
+                                </md-button>
+                            </div>
+
+                        </md-card>
+                    </md-tab>
+                    <md-tab label="Received &middot; {{::Profile.myCritiqued.length}}">
+                        <md-card ng-repeat="c in Profile.myCritiqued|orderBy:'createdAt'">
+                            <md-card-content>
+                                <section layout="row" class="md-padding">
+                                    <div flex>
+                                        <h6>
+                                            <a ui-sref="video({id: c.attributes.parent.id})" ng-bind="::c.attributes.parent.attributes.name"></a>
+                                            critique by {{::c.attributes.author.attributes.first_name}}
+                                            {{::c.attributes.author.attributes.last_name}}</h6>
+
+                                        <abbr title="{{::c.createdAt|date:'medium'}}" class="md-caption" ng-bind="::c.createdAt|date:'short'"></abbr>
+                                        <p class="md-body-1" ng-bind="::c.attributes.body"></p>
+
+                                    </div>
+                                    <div flex>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Originality</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.originality}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Direction</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.direction}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Writing</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.writing}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Cinematography</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.cinematography}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Acting</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.performances}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Production Value</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.production}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Pacing</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.pacing}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Editing</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.structure}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Sound Quality</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.audio}}</span>
+                                        </div>
+                                        <div layout>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">Music</span>
+                                            </div>
+                                            <span flex class="md-body-1 text-center">{{::c.attributes.music}}</span>
+                                        </div>
+                                        <hr>
+                                        <div layout class="md-accent md-hue-2">
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-1">IndieWise Rating</span>
+                                            </div>
+                                            <div flex layout layout-align="center center">
+                                                <span class="md-body-2">{{c.attributes.overall|number:1}}</span>
+                                            </div>
+                                        </div>
+                                        <hr>
+
+                                    </div>
+                                </section>
+                            </md-card-content>
+                            <div class="md-actions" layout="row" layout-align="end center">
+                                <md-button class="md-accent md-hue-2" ng-click="Body.toPage('profile_critique', {profile_id:AppData.User.id, id:c.id})">Reply</md-button>
+                                <md-button class="md-primary md-hue-2" ui-sref="profile_critique({profile_id:AppData.User.id, id:c.id})">
+                                    View
+                                </md-button>
+                            </div>
+                        </md-card>
+                    </md-tab>
+                </md-tabs>
+            </md-content>
+        </md-tab>
+        <md-tab label="Reactions &middot; {{Profile.myReactions.length + Profile.myReacted.length}}">
+            <md-content class="md-padding">
+                <md-tabs md-dynamic-height md-border-bottom class="md-padding">
+                    <md-tab label="Given &middot; {{Profile.myReactions.length}}">
+                        <md-list>
+                            <md-list-item class="md-2-line" ng-repeat="c in Profile.myReactions|orderBy:'createdAt'" ui-sref="video({id: c.attributes.parent.id})">
+                                <md-icon aria-label="{{::Profile.getEmoticonByEmotion(c.attributes.emotion).name}}" md-svg-icon="{{::Profile.getEmoticonByEmotion(c.attributes.emotion).icon}}"></md-icon>
+                                <div class="md-list-item-text" ng-class="{'md-offset': $index == 2 }">
+                                    <h3> {{::c.attributes.parent.attributes.name}} <abbr title="{{::c.createdAt|date:'medium'}}" class="md-caption" ng-bind="::c.createdAt|date:'short'"></abbr></h3>
+                                    <p> Made you feel {{::c.attributes.emotion}}.</p>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                    </md-tab>
+                    <md-tab label="Received &middot; {{::Profile.myReacted.length}}">
+                        <md-list>
+                            <md-list-item class="md-2-line" ng-repeat="c in Profile.myReacted|orderBy:'createdAt'" ui-sref="video({id: c.attributes.parent.id})">
+                                <md-icon aria-label="{{::Profile.getEmoticonByEmotion(c.attributes.emotion).name}}" md-svg-icon="{{::Profile.getEmoticonByEmotion(c.attributes.emotion).icon}}"></md-icon>
+                                <div class="md-list-item-text">
+                                    <h3> {{::c.attributes.parent.attributes.name}} <abbr title="{{::c.createdAt|date:'medium'}}" class="md-caption" ng-bind="::c.createdAt|date:'short'"></abbr></h3>
+                                    <p> Made
+                                        {{::c.attributes.user.attributes.first_name}} {{::c.attributes.user.attributes.last_name}}
+                                        feel {{::c.attributes.emotion}}.</p>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                        </md-card>
+                    </md-tab>
+                </md-tabs>
+            </md-content>
+        </md-tab>
+        <md-tab label="Awards">
+            <md-content class="md-padding">
+                <md-tabs md-dynamic-height md-border-bottom class="md-padding">
+                    <md-tab label="Nominations &middot; {{::Profile.film.attributes.nominationCount}}">
+                        <md-content class="md-padding">
+                            <md-list>
+                                <md-list-item class="md-2-line" ng-repeat="nom in Profile.nominations">
+                                    <!--<img ng-src="{{::nom.attributes.author.attributes.avatar}}" class="md-avatar" ng-if="::nom.attributes.author.attributes.avatar">-->
+                                    <md-icon class="md-avatar" md-svg-icon="stars"></md-icon>
+                                    <div class="md-list-item-text">
+                                        <h3>
+                                            Nominated for {{::nom.attributes.awardPntr.attributes.name}} by
+                                            {{::nom.attributes.nominator.attributes.first_name+' '+nom.attributes.nominator.attributes.last_name}}
+                                        </h3>
+                                        <!--<p ng-bind="::nom.attributes.body"></p>-->
+                                        <small ng-bind="::nom.createdAt|date:'mediumDate'"></small>
+                                    </div>
+                                </md-list-item>
+                            </md-list>
+                        </md-content>
+                    </md-tab>
+                    <md-tab label="Wins &middot; {{::Profile.wins.length}}">
+                        <md-content class="md-padding">
+                            <md-list>
+                                <md-list-item class="" ng-repeat="win in Profile.wins">
+                                    <!--<img ng-src="{{::nom.attributes.author.attributes.avatar}}" class="md-avatar" ng-if="::nom.attributes.author.attributes.avatar">-->
+                                    <md-icon class="md-avatar" md-svg-icon="stars"></md-icon>
+                                    <p ng-bind="::win.attributes.name"></p>
+                                </md-list-item>
+                            </md-list>
+
+                        </md-content>
+                    </md-tab>
+                </md-tabs>
+            </md-content>
+        </md-tab>
+
+    </md-tabs>
+</md-content>
