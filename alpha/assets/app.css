@@ -248,10 +248,22 @@ md-backdrop.md-menu-backdrop {
 
 }
 
+body.modal-is-open {
+    overflow-y: hidden;
+}
+
 .hero-module {
     border-right: none;
     border-left: none;
     position: relative;
+}
+
+.no-shadow md-card  {
+    box-shadow: none;
+}
+
+.no-shadow md-card md-card-title {
+    padding: 16px 0 !important;
 }
 .no-video .video-container video,
 .touch .video-container video {

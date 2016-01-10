@@ -1,4 +1,4 @@
-(function () {
+//(function () {
     angular
         .module('IndieWise.controllers', [])
         // Auth Controllers
@@ -10,12 +10,13 @@
         .controller('UserCtrl', ['$rootScope', 'ParseService', '$state', UserCtrl])
         .controller('EditProfileCtrl', ['$rootScope', '$scope', 'AuthService', 'ParseService', '$state', EditProfileCtrl])
         .controller('MessagesCtrl', ['$rootScope', '$mdSidenav', 'UserActions', 'UtilsService', MessagesCtrl])
+        .controller('NotificationsCtrl', ['$rootScope', 'UserActions', 'UtilsService', NotificationsCtrl])
         // App Controllers
         .controller('BodyCtrl', ['$rootScope', '$localForage', '$mdSidenav', '$mdBottomSheet', '$log', '$q', '$state', 'AuthService', '$mdToast', 'UserActions', '$sce', BodyCtrl])
         .controller('HomeCtrl', ['$rootScope', '$scope', '$localForage', '$mdDialog', '$timeout', '$interval', HomeCtrl])
         .controller('BrowseCtrl', ['$scope', '$rootScope', '$state', '$localForage', '$q', '$timeout', '$mdSidenav', '$mdDialog', BrowseCtrl])
         .controller('ResultsCtrl', ['$scope', '$rootScope', '$state', '$localForage', '$q', '$timeout', '$mdSidenav', '$mdDialog', ResultsCtrl])
-        .controller('VideoCtrl', ['$rootScope', '$scope', '$localForage', '$mdDialog', 'UserActions', 'UtilsService', VideoCtrl])
+        .controller('VideoCtrl', ['$rootScope', '$scope', 'Project', '$mdDialog', 'UserActions', 'UtilsService', VideoCtrl])
         .controller('VideoEditCtrl', ['$rootScope', '$state', '$mdDialog', 'UserActions', 'Project', 'ParseService', VideoEditCtrl])
         .controller('VideoCritiqueCtrl', ['$rootScope', '$scope', '$mdDialog', 'UserActions', 'UtilsService', VideoCritiqueCtrl])
         .controller('GenreCtrl', ['$scope', '$rootScope', '$state', '$localForage', GenreCtrl])
@@ -292,27 +293,60 @@
                 {name: 'Stupid', emotion: 'stupid', icon: 'confused'},
                 {name: 'Sexy', emotion: 'sexy', icon: 'sexy'},
                 {name: 'Relaxed', emotion: 'relaxed', icon: 'happy'},
-                {name: 'Confident', emotion: 'confident', icon: 'happy'},
+                /*37) Empowered
+            38) Cool
+            39) Pumped
+            40) Turned On
+            41) Proud
+            42) Disgusted
+            43) Sympathetic
+            44) Overwhelmed
+            45) Passionate
+            46) Thrilled
+            47) Loved
+            48) Thankful
+            49) Appreciated
+            50) Romantic
+            51) Chill
+            52) Pissed Off
+            53) Accomplished
+            54) Honored
+            55) Relaxed
+            56) Young
+            56) Wild
+            56) Old
+            56) Free
+            56) Epic
+            56) Engaged
+            56) Fired Up
+            56) Detached
+            56) Disconnected
+            56) Connected
+            56) Distant
+            56) Beautiful
+
+            */
+            {name: 'Confident', emotion: 'confident', icon: 'happy'},
                 {name: 'Positive', emotion: 'positive', icon: 'happy'},
                 {name: 'Negative', emotion: 'negative', icon: 'annoyed'},
                 {name: 'Heartbroken', emotion: 'heartbroken', icon: 'emotional'},
-                {name: 'Crazy / Silly', emotion: 'crazy / Silly', icon: 'hehe'},
+                {name: 'Silly', emotion: 'Silly', icon: 'hehe'},
                 {name: 'Disappointed', emotion: 'disappointed', icon: 'sad'},
-                {name: 'Stressed', emotion: 'stressed', icon: 'happy'},
+                {name: 'Stressed', emotion: 'stressed', icon: 'annoyed'},
                 {name: 'Fantastic', emotion: 'fantastic', icon: 'big-smile'},
-                {name: 'Hungry', emotion: 'hungry', icon: 'happy'},
+                {name: 'Hungry', emotion: 'hungry', icon: 'annoyed'},
                 {name: 'Shocked', emotion: 'shocked', icon: 'shocked'},
                 {name: 'Frustrated', emotion: 'frustrated', icon: 'annoyed'},
                 {name: 'Engrossed', emotion: 'engrossed', icon: 'interested'},
                 {name: 'Peaceful', emotion: 'peaceful', icon: 'happy'},
                 {name: 'Surprised', emotion: 'surprised', icon: 'woah'},
                 {name: 'Satisfied', emotion: 'satisfied', icon: 'happy'},
-                {name: 'Incomplete', emotion: 'incomplete', icon: 'happy'},
+                {name: 'Incomplete', emotion: 'incomplete', icon: 'sad'},
                 {name: 'Complete', emotion: 'complete', icon: 'happy'},
                 {name: 'Entertained', emotion: 'entertained', icon: 'hehe'},
                 {name: 'Enlightened', emotion: 'enlightened', icon: 'interested'},
                 {name: 'Relieved', emotion: 'relieved', icon: 'happy'},
-                {name: 'Concerned', emotion: 'concerned', icon: 'happy'},
+                {name: 'Concerned', emotion: 'concerned', icon: 'sympathetic'},
                 {name: 'Strong', emotion: 'strong', icon: 'happy'},
                 {name: 'Optimistic', emotion: 'optimistic', icon: 'happy'},
                 {name: 'Discouraged', emotion: 'discouraged', icon: 'happy'},
@@ -320,14 +354,14 @@
                 {name: 'Scared', emotion: 'scared', icon: 'happy'},
                 {name: 'Brave', emotion: 'brave', icon: 'happy'},
                 {name: 'Naughty', emotion: 'naughty', icon: 'sexy'},
-                {name: 'Attentive', emotion: 'attentive', icon: 'happy'},
+                {name: 'Alert', emotion: 'alert', icon: 'happy'},
                 {name: 'Alive', emotion: 'alive', icon: 'happy'},
                 {name: 'Perfect', emotion: 'perfect', icon: 'happy'},
                 {name: 'Nervous', emotion: 'nervous', icon: 'happy'},
                 {name: 'Tense', emotion: 'tense', icon: 'annoyed'},
                 {name: 'Eager', emotion: 'eager', icon: 'happy'},
                 {name: 'Impatient', emotion: 'impatient', icon: 'annoyed'},
-                {name: 'Philosophical / Analytical', emotion: 'philosophical-analytical', icon: 'interested'},
+                {name: 'Philosophical', emotion: 'philosophical', icon: 'interested'},
                 {name: 'Empty', emotion: 'empty', icon: 'happy'},
                 {name: 'Informed', emotion: 'informed', icon: 'nerdy'},
                 {name: 'Playful', emotion: 'playful', icon: 'happy'},
@@ -404,9 +438,11 @@
         };
 
         self.notiURL = function (n) {
-            switch (n.verb) {
-
+            if (!n.is_read) {
+                self.markAsRead(n);
             }
+            self.toPage(n.main_url.state, n.main_url.args);
+            $mdSidenav('right').close();
         };
 
         self.markAllAsSeen = function () {
@@ -414,10 +450,23 @@
                 var feed = window.StreamClient.feed('notification', $rootScope.AppData.User.id, token);
                 feed.get({limit: 5, mark_seen: true}, function (a) {
                     console.log(a);
-                    _.each($rootScope.notifications.list, function (n) {
+                    _.each($rootScope.AppData.Notifications.list, function (n) {
                         n.is_seen = true;
                     });
-                    $rootScope.notifications.unseen = 0;
+                    $rootScope.AppData.Notifications.unseen = 0;
+                })
+            });
+        };
+
+        self.markAllAsRead = function () {
+            $rootScope.getNewToken('notification', $rootScope.AppData.User.id).then(function (token) {
+                var feed = window.StreamClient.feed('notification', $rootScope.AppData.User.id, token);
+                feed.get({limit: 5, mark_seen: true}, function (a) {
+                    console.log(a);
+                    _.each($rootScope.AppData.Notifications.list, function (n) {
+                        n.is_seen = true;
+                    });
+                    $rootScope.AppData.Notifications.unseen = 0;
                 })
             });
         };
@@ -427,8 +476,8 @@
                 var feed = window.StreamClient.feed('notification', $rootScope.AppData.User.id, token);
                 feed.get({limit: 5, mark_read: [n.id]}, function (a) {
                     n.is_read = true;
-                    --$rootScope.notifications.unseen;
-                    --$rootScope.notifications.unread;
+                    --$rootScope.AppData.Notifications.unseen;
+                    --$rootScope.AppData.Notifications.unread;
                     return n;
                 })
             });
@@ -441,7 +490,10 @@
         };
 
         self.openNotificationsMenu = function () {
-            $mdSidenav('right').toggle();
+            $mdSidenav('right').toggle()
+                .then(function () {
+
+                });
             self.markAllAsSeen();
         };
 
@@ -933,7 +985,7 @@
 
         GC.refresh();
     }
-    function VideoCtrl($rootScope, $scope, $localForage, $mdDialog, UserActions, UtilsService) {
+    function VideoCtrl($rootScope, $scope, Project, $mdDialog, UserActions, UtilsService) {
         "use strict";
         var self = this;
         self.loaded = false;
@@ -985,13 +1037,8 @@
             parent: self.film
         };
 
-        // Load video and components
-        var filmQuery = new Parse.Query("Film");
-        filmQuery.equalTo('objectId', $rootScope.$stateParams.id);
-        filmQuery.include(["owner", "type"]);
-        //filmQuery.notEqualTo("disableProject", true);
-        filmQuery.notEqualTo("unlist", true);
-        filmQuery.get($rootScope.$stateParams.id).then(function (result) {
+        self.film = Project;
+        function init(result) {
             $rootScope.currentTitle = result.attributes.name;
             self.film = result;
             $scope.commentsParent = self.critique.parent = self.film;
@@ -1004,7 +1051,7 @@
                 url: window.location.href
             };
             //$scope.$broadcast('scroll.refreshComplete');
-        }).then(function () {
+
             // Fetch Genres
             var filmGenreQuery = new Parse.Query("Film_Genre");
             filmGenreQuery.equalTo('film', self.film);
@@ -1072,7 +1119,7 @@
             self.test = function () {
                 console.log('Clicked');
             }
-        });
+        }
 
         self.checkUserActions = function () {
             UserActions.canReact(self.film.id).then(function (res) {
@@ -1436,6 +1483,9 @@
                 }
             })
         }
+
+        //Lets begin
+        init(self.film);
     }
     function VideoEditCtrl($rootScope, $state, $mdDialog, UserActions, Project, ParseService) {
 
@@ -1704,7 +1754,8 @@
             runTime: 0,
             thumbnailUrl: '',
             video_file: undefined,
-            video_url: ''
+            video_url: '',
+            tags: []
         };
 
         self.runtime = {
@@ -1818,6 +1869,7 @@
                 film.set('runTime', self.newVideo.runTime);
                 film.set('video_url', self.newVideo.video_url);
                 film.set('thumbnail_url', self.newVideo.thumbnailUrl);
+                film.set('tags', self.newVideo.tags||[]);
                 film.set('disableComments', self.newVideo.disableComments || false);
                 film.set('disableCritique', self.newVideo.disableCritique || false);
                 //film.set('disableProject', false);
@@ -2018,7 +2070,7 @@
 
             // Fetch My Reactions
             var reactionQuery = new Parse.Query("Reaction");
-            reactionQuery.equalTo('user', Parse.User.current());
+            reactionQuery.equalTo('user', self.user);
             reactionQuery.include(['parent', 'user']);
             reactionQuery.find().then(function (result) {
                 self.myReactions = result;
@@ -2026,7 +2078,7 @@
 
             // Fetch My Reacted
             var reactedQuery = new Parse.Query("Reaction");
-            reactedQuery.notEqualTo('user', Parse.User.current());
+            reactedQuery.notEqualTo('user', self.user);
             reactedQuery.include(['parent', 'user']);
             reactedQuery.matchesQuery("parent", innerQuery);
             reactedQuery.find().then(function (result) {
@@ -2185,4 +2237,8 @@
             })
         };
     }
-})();
+    function NotificationsCtrl($rootScope, UserActions, UtilsService) {
+        "use strict";
+
+    }
+//})();

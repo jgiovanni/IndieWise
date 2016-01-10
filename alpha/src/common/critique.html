@@ -27,7 +27,7 @@
                         <p ng-bind="::VCC.critique.attributes.body"></p>
                     </div>
                     <div flex="40" ng-if="VCC.critique">
-                        <div flex ng-if="::VCC.critique.attributes.private">
+                        <div flex ng-if="::VCC.critique.attributes.private&&AppData.User.id != VCC.critique.attributes.author.id">
                             <h3 class="text-center">Private</h3>
 
                             <div layout class="md-accent md-hue-2">
@@ -39,7 +39,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div flex ng-if="::!VCC.critique.attributes.private">
+                        <div flex ng-if="::!VCC.critique.attributes.private||AppData.User.id == VCC.critique.attributes.author.id">
                             <div layout>
                                 <div flex layout layout-align="center center">
                                     <span class="md-body-1">Originality</span>
@@ -109,7 +109,7 @@
                                                     <span flex
                                                           class="md-body-1 text-center">{{::VCC.critique.attributes.music}}</span>
                             </div>
-                            <hr>
+                            <md-divider></md-divider>
                             <div layout class="md-accent md-hue-2">
                                 <div flex layout layout-align="center center">
                                     <span class="md-body-1">IndieWise Rating</span>
@@ -118,7 +118,7 @@
                                     <span class="md-body-2 indigo-text">{{::VCC.critique.attributes.overall|number:1}}</span>
                                 </div>
                             </div>
-                            <hr>
+                            <md-divider></md-divider>
 
                         </div>
 

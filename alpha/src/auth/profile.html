@@ -17,21 +17,21 @@
     <md-tabs md-dynamic-height md-border-bottom>
         <md-tab label="Projects &middot; {{::Profile.projects.length}}">
             <md-content class="md-padding">
-                <section layout="row" layout-sm="column" layout-wrap layout-align="space-around start">
+                <section layout="row" layout-lt-md="column" layout-wrap layout-align="space-around start">
                     <project-card flex-sm="100" flex-md="40" flex-lg="30" flex-gt-lg="20" ng-repeat="video in Profile.projects" video="video.attributes.film"></project-card>
                 </section>
             </md-content>
         </md-tab>
         <md-tab label="Favorites &middot; {{::Profile.favorites.length}}">
             <md-content class="md-padding">
-                <section layout="row" layout-sm="column" layout-wrap layout-align="center start">
+                <section layout="row" layout-lt-md="column" layout-wrap layout-align="center start">
                     <project-card flex-sm="100" flex-md="40" flex-lg="30" flex-gt-lg="20" ng-repeat="video in Profile.favorites" video="video.attributes.project"></project-card>
                 </section>
             </md-content>
         </md-tab>
         <md-tab label="Watch Later &middot; {{::Profile.watchlaters.length}}">
             <md-content class="md-padding">
-                <section layout="row" layout-sm="column" layout-wrap layout-align="center start">
+                <section layout="row" layout-lt-md="column" layout-wrap layout-align="center start">
                     <project-card flex-sm="100" flex-md="40" flex-lg="30" flex-gt-lg="20" ng-repeat="video in Profile.watchlaters" video="video.attributes.project"></project-card>
                 </section>
             </md-content>

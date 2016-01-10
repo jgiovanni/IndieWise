@@ -51,6 +51,7 @@ angular.module('IndieWise.utilities', [])
                         verb = verb || 'comment';
                         objectOwner = object.attributes.author;
                         if ( angular.isDefined(object.attributes.parentComment)) { // if reply, notify original comment author
+                            verb = 'reply';
                             action.addUnique('to', 'notification:' + object.attributes.parentComment.attributes.author.id);
                             action.addUnique('to', 'aggregated:' + object.attributes.parentComment.attributes.author.id);
                             objData.targets.comment = {
@@ -92,6 +93,10 @@ angular.module('IndieWise.utilities', [])
                         objectOwner = object.attributes.owner;
                         objData.id = object.id;
                         objData.name = object.attributes.name;
+                        objData.watcher = {
+                            id: me.id,
+                            name: me.attributes.first_name+' '+me.attributes.last_name
+                        };
                         if (verb === 'watch')
                             action.addUnique('to', 'watched:all');
 
@@ -213,12 +218,16 @@ angular.module('IndieWise.utilities', [])
                     };
                     var actorIds = [];
                     _.each(n.activities, function (a, i) {
-                        var actor = {id: a.actor_parse.id||null, name: a.actor_parse.attributes.first_name+' '+a.actor_parse.attributes.last_name}
-                        if(!_.contains(actorIds, actor.id)) {
-                            n.actors.push(actor);
-                            actorIds.push(actor.id);
+                        if(angular.isDefined(a.actor_parse)) {
+                            var actor = {
+                                id: a.actor_parse.id || null,
+                                name: a.actor_parse.attributes.first_name + ' ' + a.actor_parse.attributes.last_name
+                            };
+                            if (!_.contains(actorIds, actor.id)) {
+                                n.actors.push(actor);
+                                actorIds.push(actor.id);
+                            }
                         }
-
                         if (angular.isDefined(a.object_parse)) {
                             var obj = {id: a.object_parse.id, name: a.object_parse.attributes.name, class: a.object_parse.className};
 
@@ -274,6 +283,85 @@ angular.module('IndieWise.utilities', [])
                     }
                     n.summary.names = $sce.trustAsHtml(n.summary.names);
                     n.actiList = _.uniq(n.actiList, 'id');
+                });
+
+                return {
+                    data: data,
+                    unseen: unseen,
+                    unread: unread
+                };
+            },
+            enrichRawNotifications: function (data) {
+                var unseen = 0,unread = 0;
+                _.each(data, function (n) {
+                    n.test = _.pluck(n.activities, 'object_data');
+                    n.actors = [], n.objects = [], n.summary = {
+                        names: ''
+                    };
+                    var actorIds = [];
+                    _.each(n.activities, function (a, i) {
+                        if (angular.isDefined(a.object_data)) {
+                            n.icon = 'notifications';
+                            var obj = {};
+
+                            switch (n.verb) {
+                                case 'like':
+                                    n.icon = 'thumb_up';
+                                    obj.url = {state: 'video', args: {id: a.object_data.targets.film.id}};
+                                    break;
+                                case 'unlike':
+                                    n.icon = 'thumb_down';
+                                    obj.url = {state: 'video', args: {id: a.object_data.targets.film.id}};
+                                    break;
+                                case 'watch':
+                                    n.icon = 'video_library';
+                                    obj.url = {state: 'video', args: {id: a.object_data.id}};
+                                    break;
+                                case 'react':
+                                    n.icon = 'emotion';
+                                    obj.url = {state: 'video', args: {id: a.object_data.targets.film.id}};
+                                    break;
+                                case 'judge':
+                                    n.icon = 'grade';
+                                    obj.url = {state: 'video_critique', args: {video_id: a.object_data.targets.film.id ,id: a.object_data.id}};
+                                    obj.name = a.object_data.targets.film.name;
+                                    break;
+                                case 'comment':
+                                    n.icon = 'comment';
+                                    if (angular.isDefined(a.object_data.targets.comment)) {
+                                        n.verb = 'reply';
+                                    }
+                                    if (angular.isDefined(a.object_data.targets.film)) {
+                                        obj.url = {state: 'video', args: {id: a.object_data.targets.film.id}};
+                                        obj.name = a.object_data.targets.film.name;
+                                    }
+                                    if (angular.isDefined(a.object_data.targets.critique)) {
+                                        obj.url = {state: 'video_critique', args: {id: a.object_data.targets.critique.id}};
+                                        obj.name = a.object_data.owner.name.endsWith('s') ? a.object_data.owner.name + '\' critique.' : a.object_data.owner.name + '\'s critique.';
+                                    }
+                                    break;
+                                case 'message':
+                                    n.icon = 'comment';
+                                    //obj.url = {state: 'messages', args: {id: a.object_data.targets.parent.id}};
+                                    break;
+                            }
+                            obj.timestamp = a.time;
+                            obj.data = a.object_data;
+                            n.objects.push(obj);
+                        } else {
+                            //var obj = {id: a.object.split(':')[2].id, name: '', class: a.object.split(':')[1].className};
+                        }
+
+                    });
+                    if (!n.is_seen) {
+                        unseen++;
+                    }
+                    if (!n.is_read) {
+                        unread++;
+                    }
+                    n.main_url = n.objects[0].url;
+                    //n.summary.names = $sce.trustAsHtml(n.summary.names);
+                    //n.objects = _.uniq(n.objects, 'id');
                 });
 
                 return {

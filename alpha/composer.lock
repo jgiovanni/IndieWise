@@ -780,12 +780,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "24f98d6d95ad0ff6a81ff462058f2faa2ca9a607"
+                "reference": "39ae2f143da2a7bcb6e24db6d96b52bca86f14fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/24f98d6d95ad0ff6a81ff462058f2faa2ca9a607",
-                "reference": "24f98d6d95ad0ff6a81ff462058f2faa2ca9a607",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/39ae2f143da2a7bcb6e24db6d96b52bca86f14fd",
+                "reference": "39ae2f143da2a7bcb6e24db6d96b52bca86f14fd",
                 "shasum": ""
             },
             "require": {
@@ -826,7 +826,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "https://symfony.com",
-            "time": "2016-01-06 09:59:23"
+            "time": "2016-01-07 13:38:40"
         },
         {
             "name": "symfony/polyfill-php54",

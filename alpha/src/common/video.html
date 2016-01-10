@@ -28,10 +28,10 @@
                 </md-button>
             </md-card-actions>
             <md-card-content ng-if="!!VC.showMessageInput">
-                <form layout="row" layout-sm="column" class="md-padding" ng-submit="VC.postMessage()">
+                <form layout="row" layout-lt-md="column" class="md-padding" ng-submit="VC.postMessage()">
                     <md-input-container flex>
                         <label>Message Author</label>
-                        <textarea ng-model="VC.myMessage" focus-on="!!VC.showMessageInput" columns="1" md-maxlength="500" required></textarea>
+                        <textarea ng-model="VC.myMessage" focus-on="!!VC.showMessageInput" columns="1" md-maxlength="3000" required></textarea>
                     </md-input-container>
                     <md-button flex="5" flex-sm type="submit" class="md-primary" style="text-align: center;">
                         Send
@@ -140,7 +140,7 @@
         <div layout="column" layout-gt-sm="row">
             <div flex-gt-sm="70" flex-gt-sm="60" flex-order="2" flex-order-gt-sm="1">
                 <md-card>
-                    <md-tabs md-dynamic-height md-border-bottom class="md-padding">
+                    <md-tabs md-dynamic-height="true" md-border-bottom class="md-padding" md-stretch-tabs="always">
                         <md-tab label="Comments &middot; {{VC.film.attributes.commentCount||0}}">
                             <comments-block comments="VC.comments" disable="VC.film.attributes.disableComments" parent="commentsParent"></comments-block>
                         </md-tab>
@@ -160,6 +160,19 @@
                                                 <p class="md-body-1" ng-bind="::c.attributes.body"></p>
                                             </div>
                                             <div flex="40">
+                                                <div flex ng-if="::c.attributes.private && AppData.User.id != c.attributes.author.id">
+                                                    <h3 class="text-center">Private</h3>
+
+                                                    <div layout class="md-accent md-hue-2">
+                                                        <div flex layout layout-align="center center">
+                                                            <span class="md-body-1">IndieWise Rating</span>
+                                                        </div>
+                                                        <div flex layout layout-align="center center">
+                                                            <span class="md-body-2">{{::c.attributes.overall|number:1}}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div flex ng-if="::!c.attributes.private||AppData.User.id == c.attributes.author.id">
                                                 <div layout>
                                                     <div flex layout layout-align="center center">
                                                         <span class="md-body-1">Originality</span>
@@ -226,16 +239,17 @@
                                                 <span flex
                                                       class="md-body-1 text-center">{{::c.attributes.music}}</span>
                                                 </div>
-                                                <hr>
+                                                <md-divider></md-divider>
                                                 <div layout class="md-accent md-hue-2">
                                                     <div flex layout layout-align="center center">
                                                         <span class="md-body-1">IndieWise Rating</span>
                                                     </div>
                                                     <div flex layout layout-align="center center">
-                                                        <span class="md-body-2">{{c.attributes.overall|number:1}}</span>
+                                                        <span class="md-body-2">{{::c.attributes.overall|number:1}}</span>
                                                     </div>
                                                 </div>
-                                                <hr>
+                                                    <md-divider></md-divider>
+                                                    </div>
 
                                             </div>
                                         </section>
@@ -261,40 +275,47 @@
 
                         </md-tab>
                         <md-tab label="Awards">
-                            <md-content class="md-padding">
-                                <md-tabs md-dynamic-height md-border-bottom class="md-padding">
-                                    <md-tab label="Nominations &middot; {{VC.film.attributes.nominationCount||0}}">
-                                        <md-content class="md-padding">
-                                            <md-list>
-                                                <md-list-item class="md-2-line" ng-repeat="nom in VC.nominations">
-                                                    <!--<img ng-src="{{::nom.attributes.author.attributes.avatar}}" class="md-avatar" ng-if="::nom.attributes.author.attributes.avatar">-->
-                                                    <md-icon class="md-avatar" md-svg-icon="stars"></md-icon>
-                                                    <div class="md-list-item-text">
-                                                        <h3>
-                                                            Nominated for <a ui-sref="browse({awards: nom.attributes.awardPntr.attributes.slug})" ng-bind="::nom.attributes.awardPntr.attributes.name"></a> by
-                                                            <a ui-sref="user({id: c.attributes.author.id})" ng-bind="::nom.attributes.nominator.attributes.first_name+' '+nom.attributes.nominator.attributes.last_name"></a>
-                                                        </h3>
-                                                        <!--<p ng-bind="::nom.attributes.body"></p>-->
-                                                        <time ng-bind="::nom.createdAt|date:'short'"></time>
-                                                    </div>
-                                                </md-list-item>
-                                            </md-list>
-                                        </md-content>
-                                    </md-tab>
-                                    <md-tab label="Wins &middot; {{VC.wins.length||0}}">
-                                        <md-content class="md-padding">
-                                            <md-list>
-                                                <md-list-item class="" ng-repeat="win in VC.wins">
-                                                    <!--<img ng-src="{{::nom.attributes.author.attributes.avatar}}" class="md-avatar" ng-if="::nom.attributes.author.attributes.avatar">-->
-                                                    <md-icon class="md-avatar" md-svg-icon="stars"></md-icon>
-                                                    <p ng-bind="::win.attributes.name"></p>
-                                                </md-list-item>
-                                            </md-list>
+                            <md-tab-label>
+                                Awards
+                                <!--<help-info text="'Toward the right, Click \'Judge It\'. On this page, near the bottom you may \'Nominate\' a Project for an Award. If a Project receives at least 3 Nominations for the same Award, this results in a Win for that Project.'"></help-info>-->
+                            </md-tab-label>
+                            <md-tab-body>
+                                <md-content class="md-padding">
+                                    <md-tabs md-dynamic-height md-border-bottom class="md-padding">
+                                        <md-tab label="Nominations &middot; {{VC.film.attributes.nominationCount||0}}">
+                                            <md-content class="md-padding">
+                                                <md-list>
+                                                    <md-list-item class="md-2-line" ng-repeat="nom in VC.nominations">
+                                                        <!--<img ng-src="{{::nom.attributes.author.attributes.avatar}}" class="md-avatar" ng-if="::nom.attributes.author.attributes.avatar">-->
+                                                        <md-icon class="md-avatar" md-svg-icon="stars"></md-icon>
+                                                        <div class="md-list-item-text">
+                                                            <h3>
+                                                                Nominated for <a ui-sref="browse({awards: nom.attributes.awardPntr.attributes.slug})" ng-bind="::nom.attributes.awardPntr.attributes.name"></a> by
+                                                                <a ui-sref="user({id: c.attributes.author.id})" ng-bind="::nom.attributes.nominator.attributes.first_name+' '+nom.attributes.nominator.attributes.last_name"></a>
+                                                            </h3>
+                                                            <!--<p ng-bind="::nom.attributes.body"></p>-->
+                                                            <time ng-bind="::nom.createdAt|date:'short'"></time>
+                                                        </div>
+                                                    </md-list-item>
+                                                </md-list>
+                                            </md-content>
+                                        </md-tab>
+                                        <md-tab label="Wins &middot; {{VC.wins.length||0}}">
+                                            <md-content class="md-padding">
+                                                <md-list>
+                                                    <md-list-item class="" ng-repeat="win in VC.wins">
+                                                        <!--<img ng-src="{{::nom.attributes.author.attributes.avatar}}" class="md-avatar" ng-if="::nom.attributes.author.attributes.avatar">-->
+                                                        <md-icon class="md-avatar" md-svg-icon="stars"></md-icon>
+                                                        <p ng-bind="::win.attributes.name"></p>
+                                                    </md-list-item>
+                                                </md-list>
 
-                                        </md-content>
-                                    </md-tab>
-                                </md-tabs>
-                            </md-content>
+                                            </md-content>
+                                        </md-tab>
+                                    </md-tabs>
+                                </md-content>
+
+                            </md-tab-body>
                         </md-tab>
                     </md-tabs>
                 </md-card>
@@ -337,7 +358,7 @@
                             <p class="md-subhead">
                                 IndieWise Avg.
                                 <help-info text="'This is the Average of all Ratings you\'ve received on this Video.'"></help-info>
-                                <span ng-if="VC.critiqueAverage" class="badge indigo white-text">{{VC.critiqueAverage}}</span>
+                                <span ng-if="VC.critiqueAverage" class="badge indigo white-text">{{VC.critiqueAverage|number:1}}</span>
                                 <span ng-if="!VC.critiqueAverage" class="badge indigo white-text">N/A</span>
                             </p>
                         </md-list-item>
@@ -358,7 +379,7 @@
                             <md-progress-linear md-mode="determinate" value="{{(count/VC.reactions.length)*100}}"></md-progress-linear>
                             <md-tooltip md-direction="top">{{count}} {{::VC.getEmoticonByEmotion(key).name}}</md-tooltip>
                         </md-list-item>
-                        <!--<form layout="row" layout-sm="column" class="md-padding" ng-submit="VC.postMessage()"
+                        <!--<form layout="row" layout-lt-md="column" class="md-padding" ng-submit="VC.postMessage()"
                               ng-if="!!VC.showMessageInput">
                             <md-input-container flex>
                                 <label>Message Author</label>

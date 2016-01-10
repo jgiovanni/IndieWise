@@ -1,7 +1,7 @@
-<form ng-submit="postReply()" layout="row" layout-sm="column" class="md-padding" layout-align="center center">
+<form ng-submit="postReply()" layout="row" layout-lt-md="column" class="md-padding" layout-align="center center">
     <md-input-container flex>
         <label for="myReply">Reply to {{targetComment.attributes.author.attributes.first_name}}</label>
-        <input id="myReply" autocomplete="off" linkify type="text" ng-model="myReply" ng-minlength="1" focus-on="!!showReplyInput"/>
+        <textarea id="myReply" linkify ng-model="myReply" ng-minlength="1" focus-on="!!showReplyInput"></textarea>
     </md-input-container>
     <md-button flex="5" flex-sm type="submit" class="md-primary">Send</md-button>
 </form>

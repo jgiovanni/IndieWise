@@ -12,7 +12,7 @@
     <md-tabs md-dynamic-height md-border-bottom>
         <md-tab label="Projects &middot; {{::UserC.projects.length}}">
             <md-content class="md-padding">
-                <section layout="row" layout-sm="column" layout-wrap layout-align="space-around start">
+                <section layout="row" layout-lt-md="column" layout-wrap layout-align="space-around start">
                     <project-card flex-sm="100" flex-md="40" flex-lg="30" flex-gt-lg="20" ng-repeat="video in UserC.projects" video="video.attributes.film"></project-card>
                 </section>
             </md-content>
@@ -226,7 +226,7 @@
                                 <md-icon aria-label="{{::UserC.getEmoticonByEmotion(c.attributes.emotion).name}}" md-svg-icon="{{::UserC.getEmoticonByEmotion(c.attributes.emotion).icon}}"></md-icon>
                                 <div class="md-list-item-text" ng-class="{'md-offset': $index == 2 }">
                                     <h3> {{::c.attributes.parent.attributes.name}} <abbr title="{{::c.createdAt|date:'medium'}}" class="md-caption" ng-bind="::c.createdAt|date:'short'"></abbr></h3>
-                                    <p> Made you feel {{::c.attributes.emotion}}.</p>
+                                    <p> Made {{UserC.user.attributes.first_name}} {{UserC.user.attributes.last_name}} feel {{::c.attributes.emotion}}.</p>
                                 </div>
                             </md-list-item>
                         </md-list>

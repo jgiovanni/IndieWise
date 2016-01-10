@@ -3,7 +3,7 @@
     <form name="UserForm" ng-submit="Edit.updateUser()">
         <h2 class="md-display-1">Update Profile</h2>
         <md-divider></md-divider>
-        <div layout layout-sm="row">
+        <div layout layout-lt-md="row">
             <div flex="20">
                 <md-card flow-init flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
                          flow-files-submitted="$flow.upload()" flow-complete="Edit.updateAvatar($flow)">
@@ -48,7 +48,7 @@
         </div>
         <!--<fieldset>
             <legend>Update Password</legend>
-            <div layout layout-sm="column">
+            <div layout layout-lt-md="column">
                 <md-input-container flex>
                     <label>New Password</label>
                     <input type="text" ng-model="Edit.newPassword">

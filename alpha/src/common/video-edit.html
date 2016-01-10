@@ -1,4 +1,4 @@
-<md-content layout="row" layout-sm="column" layout-wrap layout-padding layout-align="start top" id="content">
+<md-content layout="row" layout-lt-md="column" layout-wrap layout-padding layout-align="start top" id="content">
         <div flex="100">
             <h3 class="md-title">Info & Settings - {{VEC.project.attributes.name}}</h3>
             <hr>
@@ -42,7 +42,7 @@
                     </md-button>
                 </div>
                 <hr>
-                <div layout layout-sm="column">
+                <div layout layout-lt-md="column">
                     <md-input-container flex>
                         <label>Project Title</label>
                         <input type="text" ng-model="VEC.project.attributes.name" ng-required="true">
@@ -54,7 +54,7 @@
                         <input type="month" ng-model="VEC.dateOfCompl" max="VEC.maxDate" required/>
                     </md-input-container>
                 </div>
-                <div layout layout-sm="column">
+                <div layout layout-lt-md="column">
                     <md-input-container flex>
                         <label>Description</label>
                         <textarea ng-model="VEC.project.attributes.description" columns="1"
@@ -71,7 +71,7 @@
                         </md-option>
                     </md-select>
                 </div>
-                <div layout layout-sm="column">
+                <div layout layout-lt-md="column">
                     <md-select flex placeholder="Type" ng-model="VEC.project.attributes.type.id"
                                md-on-open="VEC.getTypes()"
                                style="min-width: 200px;" ng-required="true" required>
@@ -102,7 +102,7 @@
                         </md-option>
                     </md-select>
                 </div>
-                <div layout layout-sm="column">
+                <div layout layout-lt-md="column">
                     <md-input-container flex>
                         <label>Director</label>
                         <input type="text" ng-model="VEC.project.attributes.director" ng-required="true">
@@ -119,7 +119,7 @@
                 <br>
                 <fieldset>
                     <legend>Video Duration</legend>
-                    <div layout layout-sm="column">
+                    <div layout layout-lt-md="column">
                         <md-input-container flex>
                             <label>Hours</label>
                             <input type="number" ng-model="VEC.runtime.hours" pattern="^\d+$" min="0"
@@ -140,7 +140,7 @@
                 <br>
                 <fieldset>
                     <legend>Video Upload/URL</legend>
-                    <div layout layout-sm="column">
+                    <div layout layout-lt-md="column">
                         <md-radio-group ng-model="VEC.uploadType">
                             <md-radio-button value="1" disabled>Upload Video (coming soon)</md-radio-button>
                             <md-radio-button value="2">Video Link (YouTube, Vimeo, DailyMotion, Youku, Vine)
@@ -178,7 +178,7 @@
                 <br>
                 <fieldset>
                     <legend>Optional Details</legend>
-                    <!--<div layout layout-sm="column">
+                    <!--<div layout layout-lt-md="column">
                         <md-select flex placeholder="Country of Origin" ng-model="VEC.project.originCountry"
                                    md-on-open="VEC.getCountries()" style="min-width: 200px;">
                             <md-option ng-value="c.id" ng-repeat="c in countryList|orderBy:'attributes.name.common'"
@@ -187,7 +187,7 @@
                             </md-option>
                         </md-select>
                     </div>-->
-                    <div layout layout-sm="column">
+                    <div layout layout-lt-md="column">
                         <md-input-container flex>
                             <label>Synopsis</label>
                             <textarea ng-model="VEC.project.attributes.synopsis" columns="1"
@@ -195,7 +195,7 @@
                         </md-input-container>
 
                     </div>
-                    <div layout layout-sm="column">
+                    <div layout layout-lt-md="column">
                         <md-input-container flex>
                             <label>Key Cast</label>
                             <textarea ng-model="VEC.project.attributes.keyCast" columns="1"
@@ -203,13 +203,13 @@
                         </md-input-container>
 
                     </div>
-                    <div layout layout-sm="column">
+                    <div layout layout-lt-md="column">
                         <md-input-container flex>
                             <label>Past Festivals/Awards</label>
                             <input type="text" ng-model="VEC.project.attributes.pastAwards">
                         </md-input-container>
                     </div>
-                    <div layout layout-sm="column">
+                    <div layout layout-lt-md="column">
                         <md-checkbox flex ng-model="VEC.project.attributes.disableComments"
                                      aria-label="Disable Comments">
                             Disable Comments

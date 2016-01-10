@@ -87,7 +87,7 @@
                     <md-icon aria-label="msg" md-svg-icon="msg"></md-icon>
                     <p>Post msg</p>
                 </md-list-item>
-                <form ng-if="!!Msg.showCommentInput" ng-submit="Msg.postComment()" layout="row" layout-sm="column" class="md-padding">
+                <form ng-if="!!Msg.showCommentInput" ng-submit="Msg.postComment()" layout="row" layout-lt-md="column" class="md-padding">
                     <md-input-container flex>
                         <label>msg</label>
                         <textarea ng-model="Msg.myComment" columns="1" md-maxlength="500" required></textarea>
@@ -111,7 +111,7 @@
                     </div>
                     <md-divider md-inset ng-if="!$last"></md-divider>
                 </md-list-item>
-                <form ng-show="Msgs.selectedConvo" ng-submit="Msgs.postReply()" layout="row" layout-sm="column"
+                <form ng-show="Msgs.selectedConvo" ng-submit="Msgs.postReply()" layout="row" layout-lt-md="column"
                       class="md-padding">
                     <md-input-container flex>
                         <label>Reply</label>

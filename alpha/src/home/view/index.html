@@ -26,7 +26,7 @@
                             </md-grid-tile>
                         </md-grid-list>-->
 
-                        <project-card flex-sm="50" flex-md="33" flex-lg="25" flex-gt-lg="25" ng-repeat="video in Home.trending" video="video"></project-card>
+                        <project-card class="no-shadow" flex-sm="50" flex-md="33" flex-lg="25" flex-gt-lg="25" ng-repeat="video in Home.trending" video="video"></project-card>
 
                     </div>
                 </section>
@@ -35,7 +35,7 @@
                     <div layout="row" layout-wrap layout-padding layout-align="space-around start">
                         <h6 flex="100" class="md-display-1">Highest Rated</h6>
 
-                        <project-card flex-sm="50" flex-md="33" flex-lg="25" flex-gt-lg="25" ng-repeat="video in Home.highestRated|limitTo:4" video="video"></project-card>
+                        <project-card class="no-shadow" flex-sm="50" flex-md="33" flex-lg="25" flex-gt-lg="25" ng-repeat="video in Home.highestRated|limitTo:4" video="video"></project-card>
 
                     </div>
                 </section>
@@ -44,7 +44,7 @@
                     <div layout="row" layout-wrap layout-padding layout-align="space-around start">
                         <h6 flex="100" class="md-display-1">Award Winning</h6>
 
-                        <project-card flex-sm="50" flex-md="33" flex-lg="25" flex-gt-lg="25" ng-repeat="video in Home.highestAwarded|limitTo:4" video="video"></project-card>
+                        <project-card class="no-shadow" flex-sm="50" flex-md="33" flex-lg="25" flex-gt-lg="25" ng-repeat="video in Home.highestAwarded|limitTo:4" video="video"></project-card>
 
                     </div>
                 </section>
@@ -52,7 +52,7 @@
                 <section flex="100" class="container">
                     <div layout="row" layout-wrap layout-padding layout-align="space-around start">
                         <h6 flex="100" class="md-display-1">Recently Added</h6>
-                        <project-card flex-sm="50" flex-md="33" flex-lg="25" flex-gt-lg="25" ng-repeat="video in Home.recentFilms|limitTo:4" video="video"></project-card>
+                        <project-card class="no-shadow" flex-sm="50" flex-md="33" flex-lg="25" flex-gt-lg="25" ng-repeat="video in Home.recentFilms|limitTo:4" video="video"></project-card>
 
                     </div>
                 </section>

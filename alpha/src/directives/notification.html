@@ -1,29 +1,44 @@
-<md-list-item ng-repeat="n in notifications.list"
-              ng-click="Body.markAsRead(n);" aria-label="Notification"
+<!--
+<md-list-item ng-repeat="n in AppData.Notifications.list" ng-click="Body.markAsRead(n);" aria-label="Notification"
               ng-class="{'': !n.is_seen, 'indigo lighten-4': !n.is_read}"
               class="md-2-line">
     <md-icon md-svg-icon="{{::n.icon}}"></md-icon>
     <div class="md-list-item-text">
-        <p ng-show="!(Body.checkContains(['react','comment','reply','like','unlike'], n.verb))">
+        <p ng-show="!(Body.checkContains(['react','comment','reply','like','unlike','watch'], n.verb))">
             <a ng-repeat="a in n.actors" ui-sref="user({id: a.id})">
                 {{::a.name}}<span ng-if="!$last">, </span>
             </a>
             <span ng-switch="::n.verb">
                 <span ng-switch-when="react">reacted</span>
-                <span ng-switch-when="watch">watched</span>
                 <span ng-switch-when="judge">judged</span>
                 <span ng-switch-when="comment">commented on</span>
                 <span ng-switch-when="reply">replied to a comment on</span>
                 <span ng-switch-when="upload">uploaded</span>
                 <span ng-switch-when="message">messaged</span>
             </span>
-           <span ng-repeat-start="obj in n.actiList">
+            <span ng-repeat-start="obj in n.actiList">
                 <span ng-if="!$first && !$last">, </span>
                 <span ng-if="$last && n.actiList.length == 2"> and </span>
                 <span ng-if="$last && n.actiList.length > 2">, and </span>
             </span>
             <a ui-sref="video({id: obj.url.args.id})" ng-repeat-end ng-bind="::obj.name"></a>
         </p>
+        &lt;!&ndash;<p ng-show="n.verb==='watch'">
+            <a ng-repeat="a in n.actors" ui-sref="user({id: a.id})">
+                {{::a.name}}<span ng-if="!$last">, </span>
+            </a>
+            watched
+            <a ng-pluralize ui-sref="video({id: n.actiList[0].url.args.id})" count="n.actiList.length"
+               when="{'1': '{{::n.actiList[0].name}}',
+                          'other': '{{::n.actiList[0].name}} and {} other videos.'}"></a>
+            &lt;!&ndash;<span ng-repeat-start="obj in n.actiList">&ndash;&gt;
+                &lt;!&ndash;<span ng-if="!$first && !$last">, </span>&ndash;&gt;
+                &lt;!&ndash;<span ng-if="$last && n.actiList.length == 2"> and </span>&ndash;&gt;
+                &lt;!&ndash;<span ng-if="$last && n.actiList.length > 2">, and </span>&ndash;&gt;
+            &lt;!&ndash;</span>&ndash;&gt;
+            &lt;!&ndash;<a ui-sref="video({id: obj.url.args.id})" ng-repeat-end ng-bind="::obj.name"></a>&ndash;&gt;
+        </p>&ndash;&gt;
+
         <p ng-show="n.verb==='react'">
             <span ng-repeat-start="obj in n.actiList">
                 <span ng-if="!$first && !$last">, </span>
@@ -37,6 +52,7 @@
             </a>
             feel {{::n.actiList[0].data.body}}.
         </p>
+
         <p ng-show="n.verb==='comment'">
             <a ng-repeat="a in n.actors" ui-sref="user({id: a.id})">
                 {{::a.name}}
@@ -49,6 +65,7 @@
 
             <a ui-sref="video({id: obj.data.targets.film.id})" ng-repeat-end ng-bind="::obj.data.targets.film.name"></a>
         </p>
+
         <p ng-show="n.verb==='reply'">
             <a ng-repeat="a in n.actors" ui-sref="user({id: a.id})">
                 {{::a.name}}
@@ -59,6 +76,7 @@
             <span>replied to a comment on</span>
             <span ng-bind-html="::n.summary.names"></span>
         </p>
+
         <p ng-show="n.verb==='like'">
             <a ng-repeat="a in n.actors" ui-sref="user({id: a.id})">
                 {{::a.name}}
@@ -75,6 +93,7 @@
             <a ui-sref="video({id: obj.data.targets.film.id})" ng-repeat-end ng-bind="::obj.data.targets.film.name"></a>
             <span>"Two Thumbs Up"</span>
         </p>
+
         <p ng-show="n.verb==='unlike'">
             <a ng-repeat="a in n.actors" ui-sref="user({id: a.id})">
                 {{::a.name}}
@@ -93,9 +112,124 @@
         </p>
 
         <p>
-            <small am-time-ago="::n.created_at+'Z'"></small>
+            <abbr title="{{::n.created_at+'Z'|date:'fullDate'}}" class="md-caption" am-time-ago="::n.created_at+'Z'"></abbr>
         </p>
     </div>
     <md-divider ng-if="!$last"></md-divider>
 
 </md-list-item>
+-->
+<!--
+<md-divider></md-divider>
+<md-divider></md-divider>
+<md-divider></md-divider>
+<md-divider></md-divider>
+<md-divider></md-divider>-->
+<md-list-item ng-if="AppData.User.id == 'dcyRc65vUR'" ng-repeat="n in AppData.RawNotifications.list|orderBy:'-updated_at'" ng-hide="n.verb === 'watch'"
+              ng-click="Body.notiURL(n)" aria-label="Notification"
+              ng-class="{'': !n.is_seen, 'indigo lighten-4': !n.is_read}" class="md-3-line">
+    <md-icon md-svg-icon="{{::n.icon}}"></md-icon>
+    <div class="md-list-item-text">
+        <p ng-show="!(Body.checkContains(['react','comment','reply','like','unlike','watch','judge'], n.verb))">
+            <a ng-repeat="a in n.actors" ui-sref="user({id: a.id})">
+                {{::a.name}}<span ng-if="!$last">, </span>
+            </a>
+            <span ng-switch="::n.verb">
+                <span ng-switch-when="judge">judged</span>
+                <span ng-switch-when="upload">uploaded</span>
+                <span ng-switch-when="message">messaged</span>
+            </span>
+           <span ng-repeat-start="obj in n.actiList">
+                <span ng-if="!$first && !$last">, </span>
+                <span ng-if="$last && n.actiList.length == 2"> and </span>
+                <span ng-if="$last && n.actiList.length > 2">, and </span>
+            </span>
+            <a ui-sref="video({id: obj.url.args.id})" ng-repeat-end ng-bind="::obj.name"></a>
+        </p>
+
+        <p ng-show="n.verb==='judge'">
+            <span ng-pluralize count="n.actor_count"
+                  when="{'1': '{{::n.activities[0].object_data.owner.name}}',
+                  'other': '{{::n.activities[0].object_data.owner.name}} and {} others'}"></span>
+            judged <b ng-pluralize count="n.activity_count"
+                          when="{'1': '{{::n.activities[0].object_data.targets.film.name}}',
+                          'other': '{{::n.activities[0].object_data.targets.film.name}} and {} other videos.'}"></b>
+        </p>
+
+        <!--<p ng-show="n.verb==='watch'">
+            <span ng-pluralize count="n.actor_count"
+                  when="{'1': '{{::n.activities[0].object_data.owner.name}}',
+                  'other': '{{::n.activities[0].object_data.owner.name}} and {} others'}"></span>
+            watched <b ng-pluralize count="n.activity_count"
+                          when="{'1': '{{::n.activities[0].object_data.name}}',
+                          'other': '{{::n.activities[0].object_data.name}} and {} other videos.'}"></b>
+        </p>-->
+
+        <p ng-show="n.verb==='react'">
+            <span ng-pluralize count="n.actor_count"
+                  when="{'1': '{{::n.activities[0].object_data.owner.name}}',
+                  'other': '{{::n.activities[0].object_data.owner.name}} and {} others'}"></span>
+            reacted to <b ng-pluralize count="n.activity_count"
+                             when="{'1': '{{::n.activities[0].object_data.targets.film.name}}',
+                          'other': '{{::n.activities[0].object_data.targets.film.name}} and {} other videos.'}"></b>
+        </p>
+
+        <p ng-show="n.verb==='comment'">
+            <span ng-pluralize count="n.actor_count"
+                  when="{'1': '{{::n.activities[0].object_data.owner.name}}',
+                  'other': '{{::n.activities[0].object_data.owner.name}} and {} others'}"></span>
+            commented on
+            <b ng-pluralize ng-if="n.activities[0].object_data.targets.critique" count="n.activity_count"
+                  when="{'1': '{{::n.activities[0].object_data.targets.critique.owner.name}}\'s critique.',
+                  'other': '{{::n.activities[0].object_data.targets.critique.owner.name}}\'s critique and {} other critiques.'}"></b>
+
+            <b ng-pluralize ng-if="n.activities[0].object_data.targets.film" count="n.activity_count"
+                  when="{'1': '{{::n.activities[0].object_data.targets.film.name}}',
+                  'other': '{{::n.activities[0].object_data.targets.film.name}} and {} other videos.'}"></b>
+
+        </p>
+
+        <p ng-show="n.verb==='reply'">
+            <span ng-pluralize count="n.actor_count"
+                  when="{'1': '{{::n.activities[0].object_data.owner.name}}',
+                  'other': '{{::n.activities[0].object_data.owner.name}} and {} others'}"></span>
+            replied to a comment on
+            <b ng-pluralize ng-if="n.activities[0].object_data.targets.critique" count="n.activity_count"
+                  when="{'1': '{{::n.activities[0].object_data.targets.critique.owner.name}}\'s critique.',
+                  'other': '{{::n.activities[0].object_data.targets.critique.owner.name}}\'s critique and {} other critiques.'}"></b>
+
+            <b ng-pluralize ng-if="n.activities[0].object_data.targets.film" count="n.activity_count"
+                  when="{'1': '{{::n.activities[0].object_data.targets.film.name}}',
+                  'other': '{{::n.activities[0].object_data.targets.film.name}} and {} other videos.'}"></b>
+        </p>
+
+        <p ng-show="n.verb==='like'">
+            <span ng-pluralize count="n.actor_count"
+                  when="{'1': '{{::n.activities[0].object_data.owner.name}}',
+                  'other': '{{::n.activities[0].object_data.owner.name}} and {} others'}"></span>
+            <span>gave</span>
+           <b ng-pluralize count="n.activity_count"
+                 when="{'1': '{{::n.activities[0].object_data.targets.film.name}}',
+                          'other': '{{::n.activities[0].object_data.targets.film.name}} and {} other videos.'}"></b>
+            <span>"Two Thumbs Up"</span>
+        </p>
+
+        <p ng-show="n.verb==='unlike'">
+            <span ng-pluralize count="n.actor_count"
+                  when="{'1': '{{::n.activities[0].object_data.owner.name}}',
+                  'other': '{{::n.activities[0].object_data.owner.name}} and {} others'}"></span>
+            <span>gave</span>
+           <b ng-pluralize count="n.activity_count"
+                 when="{'1': '{{::n.activities[0].object_data.targets.film.name}}',
+                          'other': '{{::n.activities[0].object_data.targets.film.name}} and {} other videos.'}"></b>
+            <span>"Two Thumbs Down"</span>
+        </p>
+
+        <p>
+            <abbr title="{{::n.created_at+'Z'|date:'fullDate'}}" class="md-caption" am-time-ago="::n.created_at+'Z'"></abbr>
+        </p>
+    </div>
+    <md-divider ng-if="!$last"></md-divider>
+
+</md-list-item>
+<md-list-item ui-sref="notifications" ng-click="$mdSidenav('right').close();">See All</md-list-item>

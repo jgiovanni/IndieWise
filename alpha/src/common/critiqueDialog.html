@@ -9,7 +9,7 @@
                 </md-button>
             </div>
         </md-toolbar>
-        <md-dialog-content style="min-width:400px;max-width:800px;max-height:810px; ">
+        <md-dialog-content style="min-width:400px;max-width:800px;max-height:810px;" class="md-padding  ">
             <div layout layout-padding></div>
             <div layout layout-padding></div>
             <div layout>
@@ -92,7 +92,7 @@
                            aria-label="Music">
                 </md-slider>
             </div>
-            <hr>
+            <md-divider></md-divider>
             <div layout class="md-accent md-hue-2">
                 <div flex layout layout-align="center center">
                     <span class="md-body-1">Overall Rating</span>
@@ -101,9 +101,9 @@
                     <span class="md-body-2">{{critique.overall|number:1}}/10</span>
                 </div>
             </div>
-            <hr>
+            <md-divider></md-divider>
             <div layout="column" layout-padding>
-                <div layout layout-sm="column">
+                <div layout layout-lt-md="column">
                     <md-input-container flex>
                         <label>Care to elaborate?</label>
                         <textarea ng-model="critique.body" columns="1" md-maxlength="5000"></textarea>

@@ -96,6 +96,13 @@ $user_feed_all = $client->feed('user', 'all');
                         <li ng-if="!AppData.User">
                             <a class="md-accent md-hue-2" aria-label="Join" ui-sref="register">Join</a>
                         </li>
+                        <li ng-if="AppData.User">
+                            <a class="md-icon-button" aria-label="Notifications" ng-click="Body.openNotificationsMenu()">
+                                <md-icon md-svg-icon="notifications_none" ng-if="!AppData.Notifications.unseen"></md-icon>
+                                <md-icon md-svg-icon="notifications_active" ng-if="AppData.Notifications.unseen"></md-icon>
+                                <span class="badge new" ng-if="AppData.Notifications.unseen>0" ng-bind="AppData.Notifications.unseen"></span>
+                            </a>
+                        </li>
                         <li>
                             <a ng-if="!AppData.User" class="md-accent" aria-label="Sign In" ui-sref="sign_in">Sign in</a>
                             <md-menubar ng-if="AppData.User">
@@ -158,7 +165,6 @@ $user_feed_all = $client->feed('user', 'all');
                                 <md-tooltip md-direction="bottom">Upload a video</md-tooltip>
                             </a>
                         </li>
-
                     </ul>
                 </div>
             </nav>
@@ -185,23 +191,13 @@ $user_feed_all = $client->feed('user', 'all');
                 </md-content>
             </md-sidenav>
             <div ui-view class=""></div>
-            <md-sidenav class="md-sidenav-right md-whiteframe-1dp" md-component-id="right">
-                <md-toolbar class="md-theme-light">
-                    <h1 class="md-toolbar-tools">Notifications</h1>
-                </md-toolbar>
-                <md-content>
-                    <md-progress-linear md-mode="{{notifications.loaded}}" class="md-accent"></md-progress-linear>
-                    <md-list ng-include="Body.notificationsTemplate">
-                    </md-list>
-                </md-content>
-            </md-sidenav>
         </div>
     </main>
 
     <footer class="page-footer indigo" flex>
         <div class="footer-copyright">
             <div class="container">
-                &copy; <?php echo date('Y'); ?> IndieWise
+                &copy; 2015 - <?php echo date('Y'); ?> IndieWise
 
                 <a class="grey-text text-lighten-4 right padding-left action-link" ui-sref="privacy">Privacy Policy</a>
                 <a class="grey-text text-lighten-3 right padding-left action-link" ui-sref="advertise">Advertise</a>
@@ -213,6 +209,16 @@ $user_feed_all = $client->feed('user', 'all');
     </footer>
 
 </div>
+<md-sidenav class="md-sidenav-right md-whiteframe-1dp" md-component-id="right">
+    <md-toolbar class="md-theme-light">
+        <h1 class="md-toolbar-tools">Notifications</h1>
+    </md-toolbar>
+    <md-content>
+        <md-progress-linear md-mode="{{AppData.Notifications.loaded}}" class="md-accent"></md-progress-linear>
+        <md-list ng-include="Body.notificationsTemplate">
+        </md-list>
+    </md-content>
+</md-sidenav>
 
 <script src="./app/bower_components/underscore/underscore-min.js"></script>
 <script src="./app/bower_components/momentjs/moment.js"></script>

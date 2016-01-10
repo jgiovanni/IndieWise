@@ -19,7 +19,7 @@
                 </hgroup>
             </div>
 
-            <md-whiteframe flex class="md-whiteframe-z5">
+            <md-whiteframe flex class="md-whiteframe-5dp">
                 <md-content layout-padding align="center" style="padding: 40px">
                     <md-button class="indigo md-fab" ng-click="RC.doLoginFacebook()" aria-label="Register with Facebook">
                         <md-tooltip md-direction="top">Register with Facebook</md-tooltip>
@@ -68,9 +68,10 @@
                                 <input type="date" ng-model="RC.user.dob" max="today" required />
                             </md-input-container>
                         </div>
-                        <div layout="row">
-                            <md-radio-group flex ng-model="RC.user.gender" layout="row" required>
+                        <div layout="row" layout-align="center center">
+                            <md-radio-group flex="50" ng-model="RC.user.gender" layout="row" required layout-align="center center">
                                 <md-radio-button flex value="male" class="md-primary">Male</md-radio-button>
+                                <span flex></span>
                                 <md-radio-button flex value="female" class="md-primary">Female</md-radio-button>
                             </md-radio-group>
                         </div>
@@ -91,7 +92,9 @@
                                     {{::g.attributes.name}}
                                 </md-option>
                             </md-select>
-                            <md-select flex placeholder="Your Favorite Types" ng-model="RC.user.selected_types" multiple
+                        </div>
+                        <div layout="row">
+                        <md-select flex placeholder="Your Favorite Types" ng-model="RC.user.selected_types" multiple
                                        md-on-open="RC.getTypes()" style="min-width: 200px;">
                                 <md-option ng-value="t.attributes.slug" ng-repeat="t in typesList|orderBy:'attributes.slug'" class="md-accent">
                                     {{::t.attributes.name}}
@@ -106,7 +109,7 @@
                             <span ng-show="RC.error.code === 101">Please check your credentials and try again.</span>
                         </p>
                         <div layout="row" layout-wrap>
-                            <small flex="100" class="md-caption">By clicking Done, you agree to our <a ui-sref="tos">Terms</a> and that you have read our <a ui-sref="privacy">Privacy Policy</a>/</small>
+                            <small flex="100" class="md-caption">By clicking Done, you agree to our <a ui-sref="tos">Terms</a> and that you have read our <a ui-sref="privacy">Privacy Policy</a></small>
                             <md-button type="submit" class="md-raised md-primary md-hue-2" flex="100">Done!</md-button>
                         </div>
                     </form>

@@ -94,7 +94,7 @@
                 },
                 link: function (scope, el, attrs) {
                     scope.isOpenFab = false;
-                    scope.isLoggedIn = $rootScope.isLoggedIn;
+                    scope.isLoggedIn = $rootScope.AppData.User;
                     scope.toFavorites = toFavorites;
                     scope.toWatchLater = toWatchLater;
                     scope.checkFabActions = checkFabActions;

@@ -1,16 +1,26 @@
 <md-content class="md-padding" ng-if="!disable">
     <md-list>
-    <md-list-item ng-click="toggleCommentInput()">
+    <!--<md-list-item ng-click="toggleCommentInput()">
         <md-icon aria-label="Comment" md-svg-icon="comment"></md-icon>
         <p>Post Comment</p>
-    </md-list-item>
-    <form ng-show="!!showCommentInput" ng-submit="postComment()" layout="row" layout-sm="column" class="md-padding">
+    </md-list-item>-->
+        <md-list-item class="md-3-line">
+            <img ng-src="{{::AppData.User.attributes.avatar || './assets/img/avatar-1.png'}}" class="md-avatar">
+            <form ng-submit="postComment()" layout="row" layout-lt-md="column" class="md-padding md-list-item-text">
+                <md-input-container flex>
+                    <label>Add a comment</label>
+                    <textarea linkify ng-model="model.myComment" ng-minlength="1"></textarea>
+                </md-input-container>
+                <md-button flex="5" flex-sm type="submit" class="md-primary" style="text-align: center;">Send</md-button>
+            </form>
+        </md-list-item>
+    <!--<form ng-submit="postComment()" layout="row" layout-lt-md="column" class="md-padding">
         <md-input-container flex>
-            <label>Comment</label>
-            <input autocomplete="off" linkify type="text" ng-model="model.myComment" ng-minlength="1"/>
+            <label>Add a comment</label>
+            <textarea linkify ng-model="model.myComment" ng-minlength="1"></textarea>
         </md-input-container>
         <md-button flex="5" flex-sm type="submit" class="md-primary" style="text-align: center;">Send</md-button>
-    </form>
+    </form>-->
     <md-list-item class="md-3-line" ng-repeat-start="comment in comments|orderBy:'-createdAt'"
                   ng-init="comment.replies=[];">
         <img ng-src="{{::comment.attributes.author.attributes.avatar || './assets/img/avatar-1.png'}}" class="md-avatar">
@@ -20,7 +30,7 @@
                 <a ui-sref="user({id: comment.attributes.author.id})">
                     {{::comment.attributes.author.attributes.first_name+' '+comment.attributes.author.attributes.last_name}}
                 </a>
-                <abbr title="{{::comment.createdAt|date:'medium'}}"
+                <abbr title="{{::comment.createdAt|date:'fullDate'}}"
                       am-time-ago="::comment.createdAt" class="md-caption"></abbr>
             </h3>
 

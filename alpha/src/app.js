@@ -50,7 +50,7 @@
                 .icon("view_module", "./assets/svg/view_module.svg", 24)
                 .icon("visibility", "./assets/svg/visibility.svg", 24)
                 .icon("more_horiz", "./assets/svg/more_horiz.svg", 24)
-                .icon("more_vert", "./assets/svg/more_vert.svg", 24)
+                .icon("more_vert", "./assets/svg/dots-vertical.svg", 24)
                 .icon("more_vert_white", "./assets/svg/more_vert_white.svg", 24)
                 .icon("mode_edit", "./assets/svg/mode_edit.svg", 24)
                 .icon("add_circle", "./assets/svg/add_circle.svg", 24)
@@ -82,6 +82,7 @@
                 .icon("file_upload", "./assets/svg/file_upload.svg", 24)
                 .icon("help_circle", "./assets/svg/help_circle.svg", 24)
                 .icon("watch_later", "./assets/svg/watch_later.svg", 24)
+                .icon("refresh", "./assets/svg/refresh.svg", 24)
 
                 // Emoticons
                 .icon("emotion", "./assets/svg/emotion.svg", 120)
@@ -150,7 +151,20 @@
                     url: '/screen/{id}',
                     authenticate: false,
                     templateUrl: './src/common/video.html',
-                    controller: 'VideoCtrl as VC'
+                    controller: 'VideoCtrl as VC',
+                    resolve: {
+                        Project: ['$stateParams', '$q', function ($stateParams, $q) {
+                            var deferred = $q.defer();
+                            var filmQuery = new Parse.Query("Film");
+                            filmQuery.include(["owner", "type"]);
+                            //filmQuery.notEqualTo("disableProject", true);
+                            filmQuery.notEqualTo("unlist", true);
+                            filmQuery.get($stateParams.id).then(function (result) {
+                                deferred.resolve(result);
+                            });
+                            return deferred.promise;
+                        }]
+                    }
                 })
                 .state('video-edit', {
                     url: '/screen/{id}/edit',
@@ -244,18 +258,25 @@
                     url: '/profile/{profile_id}/critique/{id}',
                     authenticate: false,
                     templateUrl: './src/common/critique.html',
-                        controller: 'VideoCritiqueCtrl as VCC'
+                    controller: 'VideoCritiqueCtrl as VCC'
                 })
                 .state('profile_edit', {
                     url: '/profile/edit',
                     authenticate: true,
                     templateUrl: './src/auth/profile-edit.html',
                     controller: 'EditProfileCtrl as Edit'
-                }).state('messages', {
+                })
+                .state('messages', {
                     url: '/messages/{id}',
                     authenticate: true,
                     templateUrl: './src/auth/messages.html',
                     controller: 'MessagesCtrl as Msgs'
+                })
+                .state('notifications', {
+                    url: '/notifications',
+                    authenticate: true,
+                    templateUrl: './src/auth/notifications.html',
+                    controller: 'NotificationsCtrl as NC'
                 })
 
                 // Auth Pages
@@ -323,7 +344,7 @@
                 authorizationEndpoint: 'https://api.twitter.com/oauth/authorize',
                 redirectUri: window.location.origin,
                 type: '1.0',
-                popupOptions: { width: 495, height: 645 }
+                popupOptions: {width: 495, height: 645}
             });
             $authProvider.instagram({
                 clientId: '7b1d007ff12644d6a9804af4f0a2e18c',
@@ -353,9 +374,11 @@
             };
             $rootScope.$stateParams = $stateParams;
             $rootScope.isViewLoading = false;
-            $rootScope.AppData = { User: Parse.User.current() };
-            $rootScope.notifications = {
-                loaded: 'indeterminate'
+            $rootScope.AppData = {
+                User: Parse.User.current(),
+                Notifications: {
+                    loaded: 'indeterminate',
+                }
             };
             $rootScope.today = moment().toDate();
 
@@ -376,19 +399,6 @@
             };
 
             $rootScope.subscribeUserFeeds = function () {
-                /*$rootScope.getNewToken('user', $rootScope.isLoggedIn.id).then(function (token) {
-                 var myFeed = window.StreamClient.feed('user', $rootScope.isLoggedIn.id, token);
-
-                 myFeed.subscribe(function (data) {
-                 console.log(data);
-
-                 }).then(function(obj){}, function (data) {
-                 alert('something went wrong, check the console logs');
-                 console.log(data);
-
-                 });
-                 });*/
-
                 $rootScope.getNewToken('notification', $rootScope.AppData.User.id).then(function (token) {
                     var feed = window.StreamClient.feed('notification', $rootScope.AppData.User.id, token);
                     feed.subscribe(function (obj) {
@@ -400,34 +410,56 @@
                 });
             };
 
+            $rootScope.refreshNotificationsFeed = function () {
+                $rootScope.AppData.RawNotifications.loaded = $rootScope.AppData.Notifications.loaded = 'indeterminate';
+                $rootScope.getNewToken('notification', $rootScope.AppData.User.id).then(function (token) {
+                    var feed = window.StreamClient.feed('notification', $rootScope.AppData.User.id, token);
+                    $rootScope.getNotificationsFeed(feed);
+                });
+            };
+
             $rootScope.getNotificationsFeed = function (feed) {
-                feed.get({limit:10 }, function (error, response, body) {
+                feed.get({limit: 10}, function (error, response, body) {
                     console.log('Raw Notifications: ', body);
-                 /*$rootScope.notifications = {
-                 loaded: '',
-                 list: body.results,
-                 unseen: body.unseen,
-                 unread: body.unread
-                 };*/
-                 });
+                    try {
+                        var data = UtilsService.enrichRawNotifications(body.results);
+                        console.log(data);
+                        $rootScope.AppData.RawNotifications = {
+                            loaded: '',
+                            list: data.data,
+                            unseen: data.unseen,
+                            unread: data.unread
+                        };
+                    } catch (e) {
+                        console.log(e);
+                    }
+                });
                 Parse.Cloud.run("feed", {feed: "notification:" + $rootScope.AppData.User.id, limit: 10}, {
                     success: function (data) {
                         try {
                             var dataObj = UtilsService.enrichNotifications(data);
 
-                            $rootScope.notifications = {
+                            $rootScope.AppData.Notifications = {
                                 loaded: '',
                                 list: dataObj.data.activities,
                                 unseen: dataObj.unseen,
                                 unread: dataObj.unread
                             };
+
+                            /*$rootScope.AppData.RawNotifications = {
+                                loaded: '',
+                                list: dataObj.results,
+                                unseen: dataObj.unseen,
+                                unread: dataObj.unread
+                            };*/
+
                         } catch (e) {
                             console.log(e);
                             $timeout(function () {
                                 $rootScope.getNotificationsFeed(feed);
-                            }, 10000);
+                            }, 5000);
                         }
-                        console.log($rootScope.notifications.list);
+                        console.log($rootScope.AppData.Notifications.list);
                     },
                     error: function (error) {
 
