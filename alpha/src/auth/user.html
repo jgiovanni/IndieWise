@@ -269,13 +269,15 @@
                             </md-list>
                         </md-content>
                     </md-tab>
-                    <md-tab label="Wins &middot; {{::UserC.user.wins.length}}">
+                    <md-tab label="Wins &middot; {{::UserC.myWins.length}}">
                         <md-content class="md-padding">
                             <md-list>
-                                <md-list-item class="" ng-repeat="win in UserC.user.wins">
+                                <md-list-item class="" ng-repeat="win in UserC.myWins">
                                     <!--<img ng-src="{{::nom.attributes.author.attributes.avatar}}" class="md-avatar" ng-if="::nom.attributes.author.attributes.avatar">-->
                                     <md-icon class="md-avatar" md-svg-icon="stars"></md-icon>
-                                    <p ng-bind="::win.attributes.name"></p>
+                                    <p>
+                                        {{::win.attributes.award.attributes.name}} for <a ui-sref="video({id: win.attributes.film.id})">{{::win.attributes.film.attributes.name}}</a>
+                                    </p>
                                 </md-list-item>
                             </md-list>
 

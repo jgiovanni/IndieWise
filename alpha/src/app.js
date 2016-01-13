@@ -47,6 +47,7 @@
                 .icon("style", "./assets/svg/style.svg", 24)
                 .icon("video_library", "./assets/svg/video_library.svg", 24)
                 .icon("arrow_back", "./assets/svg/arrow_back.svg", 24)
+                .icon("chevron-right", "./assets/svg/chevron-right.svg", 24)
                 .icon("view_module", "./assets/svg/view_module.svg", 24)
                 .icon("visibility", "./assets/svg/visibility.svg", 24)
                 .icon("more_horiz", "./assets/svg/more_horiz.svg", 24)
@@ -54,6 +55,7 @@
                 .icon("more_vert_white", "./assets/svg/more_vert_white.svg", 24)
                 .icon("mode_edit", "./assets/svg/mode_edit.svg", 24)
                 .icon("add_circle", "./assets/svg/add_circle.svg", 24)
+                .icon("eye", "./assets/svg/eye.svg", 24)
                 .icon("thumb_up", "./assets/svg/thumb_up.svg", 24)
                 .icon("two_thumbs_up", "./assets/svg/two_thumbs_up.svg", 24)
                 .icon("thumb_down", "./assets/svg/thumb_down.svg", 24)
@@ -126,6 +128,7 @@
                 .icon("facebook", "./assets/svg/social/facebook.svg", 120)
                 .icon("google-plus", "./assets/svg/social/google-plus.svg", 120)
                 .icon("twitter", "./assets/svg/social/twitter.svg", 120)
+
                 .icon("instagram", "./assets/svg/social/instagram.svg", 120)
 
             $mdThemingProvider.theme('default')
@@ -193,8 +196,29 @@
                     templateUrl: './src/common/critique.html',
                     controller: 'VideoCritiqueCtrl as VCC'
                 })
+                .state('video_critique-edit', {
+                    url: '/screen/{video_id}/critique/{id}/edit',
+                    authenticate: true,
+                    templateUrl: './src/common/critique-edit.html',
+                    controller: 'VideoCritiqueEditCtrl as VCEC',
+                    resolve: {
+                        Critique: ['$stateParams', '$q', function ($stateParams, $q) {
+                            var deferred = $q.defer();
+                            var critiqueQuery = new Parse.Query("Critique");
+                            critiqueQuery.include(["author", "parent.owner"]);
+                            critiqueQuery.get($stateParams.id).then(function (result) {
+                                if (result.attributes.author.id === Parse.User.current().id) {
+                                    deferred.resolve(result);
+                                } else {
+                                    deferred.reject('Not Owner');
+                                }
+                            });
+                            return deferred.promise;
+                        }]
+                    }
+                })
                 .state('browse', {
-                    url: '/browse',
+                    url: '/browse?q&sort&genres&types',
                     authenticate: false,
                     templateUrl: './src/browse/view/index.html',
                     controller: 'BrowseCtrl as Browse'
@@ -205,30 +229,7 @@
                     templateUrl: './src/common/search-results.html',
                     controller: 'ResultsCtrl as Results'
                 })
-                //.state('browse_type', {
-                //    url: '/types',
-                //    authenticate: false,
-                //    templateUrl: './src/browse/view/index.html',
-                //    controller: 'BrowseTypesCtrl as Browse'
-                //})
-                .state('browse_film', {
-                    url: '/browse/{id}',
-                    authenticate: false,
-                    templateUrl: 'templates/video.html',
-                    controller: 'VideoCtrl as VC'
-                })
-                //.state('genre', {
-                //    url: '/browse/genres/{slug}',
-                //    authenticate: false,
-                //    templateUrl: 'templates/genre.html',
-                //    controller: 'GenreCtrl as GC'
-                //})
-                //.state('genre_film', {
-                //    url: '/browse/genres/{slug}/{id}',
-                //    authenticate: false,
-                //    templateUrl: 'templates/video.html',
-                //    controller: 'VideoCtrl as VC'
-                //})
+
                 // Authenticated Pages
                 .state('upload', {
                     url: '/upload',
@@ -259,6 +260,27 @@
                     authenticate: false,
                     templateUrl: './src/common/critique.html',
                     controller: 'VideoCritiqueCtrl as VCC'
+                })
+                .state('profile_critique-edit', {
+                    url: '/profile/{profile_id}/critique/{id}/edit',
+                    authenticate: true,
+                    templateUrl: './src/common/critique-edit.html',
+                    controller: 'VideoCritiqueEditCtrl as VCEC',
+                    resolve: {
+                        Critique: ['$stateParams', '$q', function ($stateParams, $q) {
+                            var deferred = $q.defer();
+                            var critiqueQuery = new Parse.Query("Critique");
+                            critiqueQuery.include(["author", "parent.owner"]);
+                            critiqueQuery.get($stateParams.id).then(function (result) {
+                                if (result.attributes.author.id === Parse.User.current().id) {
+                                    deferred.resolve(result);
+                                } else {
+                                    deferred.reject('Not Owner');
+                                }
+                            });
+                            return deferred.promise;
+                        }]
+                    }
                 })
                 .state('profile_edit', {
                     url: '/profile/edit',
@@ -378,7 +400,11 @@
                 User: Parse.User.current(),
                 Notifications: {
                     loaded: 'indeterminate',
-                }
+                },
+                NotificationsFeed: {
+                    loaded: 'indeterminate',
+                },
+                searchText: ''
             };
             $rootScope.today = moment().toDate();
 
@@ -434,32 +460,26 @@
                         console.log(e);
                     }
                 });
-                Parse.Cloud.run("feed", {feed: "notification:" + $rootScope.AppData.User.id, limit: 10}, {
+            };
+
+            $rootScope.getFlatNotificationsFeed = function () {
+                Parse.Cloud.run("feed", {feed: "flat_notifications:" + $rootScope.AppData.User.id, limit: 10}, {
                     success: function (data) {
                         try {
                             var dataObj = UtilsService.enrichNotifications(data);
-
-                            $rootScope.AppData.Notifications = {
+                            console.log(dataObj);
+                            $rootScope.AppData.NotificationsFeed =  {
                                 loaded: '',
                                 list: dataObj.data.activities,
                                 unseen: dataObj.unseen,
                                 unread: dataObj.unread
                             };
-
-                            /*$rootScope.AppData.RawNotifications = {
-                                loaded: '',
-                                list: dataObj.results,
-                                unseen: dataObj.unseen,
-                                unread: dataObj.unread
-                            };*/
-
                         } catch (e) {
                             console.log(e);
                             $timeout(function () {
-                                $rootScope.getNotificationsFeed(feed);
-                            }, 5000);
+                                $rootScope.getFlatNotificationsFeed(feed);
+                            }, 3000);
                         }
-                        console.log($rootScope.AppData.Notifications.list);
                     },
                     error: function (error) {
 

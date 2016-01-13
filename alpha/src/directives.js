@@ -84,6 +84,15 @@
                 }
             }
         }])
+        .directive('embedWatcher', [function () {
+            return {
+                link: function (scope, el, attrs) {
+                    el.bind('click', function () {
+                        debugger;
+                    })
+                }
+            }
+        }])
         .directive('projectCard', ['$rootScope', '$state', '$mdDialog', 'UserActions', function($rootScope, $state, $mdDialog, UserActions){
             return {
                 restrict: 'E',

@@ -53,7 +53,7 @@ angular.module('IndieWise.utilities', [])
                         if ( angular.isDefined(object.attributes.parentComment)) { // if reply, notify original comment author
                             verb = 'reply';
                             action.addUnique('to', 'notification:' + object.attributes.parentComment.attributes.author.id);
-                            action.addUnique('to', 'aggregated:' + object.attributes.parentComment.attributes.author.id);
+                            action.addUnique('to', 'flat_notifications:' + object.attributes.parentComment.attributes.author.id);
                             objData.targets.comment = {
                                 id: object.attributes.parentComment.id,
                                 owner: {
@@ -65,7 +65,7 @@ angular.module('IndieWise.utilities', [])
                         }
                         if ( angular.isDefined(object.attributes.parentFilm)) { // if comment to film, notify original film owner
                             action.addUnique('to', 'notification:' + object.attributes.parentFilm.attributes.owner.id);
-                            action.addUnique('to', 'aggregated:' + object.attributes.parentFilm.attributes.owner.id);
+                            action.addUnique('to', 'flat_notifications:' + object.attributes.parentFilm.attributes.owner.id);
                             objData.targets.film = {
                                 id: object.attributes.parentFilm.attributes.owner.id,
                                 owner: {
@@ -77,7 +77,7 @@ angular.module('IndieWise.utilities', [])
                         }
                         if ( angular.isDefined(object.attributes.parentCritique)) { // if comment to film, notify original critique author
                             action.addUnique('to', 'notification:' + object.attributes.parentCritique.attributes.author.id);
-                            action.addUnique('to', 'aggregated:' + object.attributes.parentCritique.attributes.author.id);
+                            action.addUnique('to', 'flat_notifications:' + object.attributes.parentCritique.attributes.author.id);
                             objData.targets.critique = {
                                 id: object.attributes.parentCritique.id,
                                 owner: {
@@ -124,7 +124,7 @@ angular.module('IndieWise.utilities', [])
                         };
                         objectOwner = object.attributes.author;
                         action.addUnique('to', 'notification:' + object.attributes.parent.attributes.owner.id);
-                        action.addUnique('to', 'aggregated:' + object.attributes.parent.attributes.owner.id);
+                        action.addUnique('to', 'flat_notifications:' + object.attributes.parent.attributes.owner.id);
                         break;
                     case 'Message':
                         verb = verb || 'message';
@@ -132,7 +132,7 @@ angular.module('IndieWise.utilities', [])
                         _.each(object.participants, function (a) {
                             if (a.id !== me.id)
                                 action.addUnique('to', 'notification:'+a.id);
-                                action.addUnique('to', 'aggregated:'+a.id);
+                                action.addUnique('to', 'flat_notifications:'+a.id);
                         });
                         objData.body = object.attributes.body;
                         break;
@@ -157,7 +157,7 @@ angular.module('IndieWise.utilities', [])
                             name: object.attributes.parent.attributes.name
                         };
                         action.addUnique('to', 'notification:' + object.attributes.parent.attributes.owner.id);
-                        action.addUnique('to', 'aggregated:' + object.attributes.parent.attributes.owner.id);
+                        action.addUnique('to', 'flat_notifications:' + object.attributes.parent.attributes.owner.id);
                         break;
                 }
                 objData.owner = {
@@ -179,7 +179,7 @@ angular.module('IndieWise.utilities', [])
                 // Notify Object Owner
                 if (angular.isDefined(objectOwner) && (!me || objectOwner.id !== me.id)) {
                     action.addUnique('to', 'notification:'+objectOwner.id);
-                    action.addUnique('to', 'aggregated:'+objectOwner.id);
+                    action.addUnique('to', 'flat_notifications:'+objectOwner.id);
                 }
 
                 if(_.contains(['Comment', 'Film', 'Critique', 'Message', 'Nomination'], object.className)) {
@@ -212,77 +212,72 @@ angular.module('IndieWise.utilities', [])
             enrichNotifications: function (data) {
                 // TODO rule out the need to query Parse for additional data
                 var unseen = 0,unread = 0;
-                _.each(data.activities, function (n) {
-                    n.actors = [], n.actiList = [], n.summary = {
-                        names: ''
-                    };
+                _.each(data.activities, function (a) {
+                    a.actors = [], a.actiList = [];
                     var actorIds = [];
-                    _.each(n.activities, function (a, i) {
-                        if(angular.isDefined(a.actor_parse)) {
-                            var actor = {
-                                id: a.actor_parse.id || null,
-                                name: a.actor_parse.attributes.first_name + ' ' + a.actor_parse.attributes.last_name
-                            };
-                            if (!_.contains(actorIds, actor.id)) {
-                                n.actors.push(actor);
-                                actorIds.push(actor.id);
-                            }
+                    if(angular.isDefined(a.actor_parse)) {
+                        var actor = {
+                            id: a.actor_parse.id || null,
+                            name: a.actor_parse.attributes.first_name + ' ' + a.actor_parse.attributes.last_name
+                        };
+                        if (!_.contains(actorIds, actor.id)) {
+                            a.actors.push(actor);
+                            actorIds.push(actor.id);
                         }
-                        if (angular.isDefined(a.object_parse)) {
-                            var obj = {id: a.object_parse.id, name: a.object_parse.attributes.name, class: a.object_parse.className};
+                    }
+                    if (angular.isDefined(a.object_parse)) {
+                        var obj = {id: a.object_parse.id, name: a.object_parse.attributes.name, class: a.object_parse.className};
 
-                            n.icon = 'notifications';
+                        a.icon = 'notifications';
 
-                            switch (n.verb) {
-                                case 'watch':
-                                    n.icon = 'video_library';
-                                    obj.url = {state: 'video', args: {id: a.object_parse.id}};
-                                    break;
-                                case 'judge':
-                                    n.icon = 'grade';
-                                    obj.url = {state: 'video_critique', args: {id: a.object_data.targets.film.id}};
+                        switch (a.verb) {
+                            case 'watch':
+                                a.icon = 'video_library';
+                                obj.url = {state: 'video', args: {id: a.object_parse.id}};
+                                break;
+                            case 'judge':
+                                a.icon = 'grade';
+                                obj.url = {state: 'video_critique', args: {id: a.object_data.targets.film.id}};
+                                obj.name = a.object_data.targets.film.name;
+                                break;
+                            case 'comment':
+                                a.icon = 'comment';
+                                if (angular.isDefined(a.object_parse.attributes.parentComment)) {
+                                    a.verb = 'reply';
+                                }
+                                if (angular.isDefined(a.object_data.targets.film)) {
+                                    obj.url = {state: 'video', args: {id: a.object_data.targets.film.id}};
                                     obj.name = a.object_data.targets.film.name;
-                                    break;
-                                case 'comment':
-                                    n.icon = 'comment';
-                                    if (angular.isDefined(a.object_parse.attributes.parentComment)) {
-                                        n.verb = 'reply';
-                                    }
-                                    if (angular.isDefined(a.object_data.targets.film)) {
-                                        obj.url = {state: 'video', args: {id: a.object_data.targets.film.id}};
-                                        obj.name = a.object_data.targets.film.name;
-                                    }
-                                    if (angular.isDefined(a.object_data.targets.critique)) {
-                                        obj.url = {state: 'video_critique', args: {id: a.object_data.targets.critique.id}};
-                                        obj.name = a.object_data.owner.name.endsWith('s') ? a.object_data.owner.name + '\' critique.' : a.object_data.owner.name + '\'s critique.';
-                                    }
-                                    break;
-                                case 'message':
-                                    n.icon = 'comment';
-                                    obj.url = {state: 'messages', args: {id: a.object_parse.attributes.parent.id}};
-                                    break;
-                            }
-                            obj.timestamp = a.object_parse.createdAt;
-                            obj.data = a.object_data;
-                            n.actiList.push(obj);
-                        } else {
-                            //var obj = {id: a.object.split(':')[2].id, name: '', class: a.object.split(':')[1].className};
+                                }
+                                if (angular.isDefined(a.object_data.targets.critique)) {
+                                    obj.url = {state: 'video_critique', args: {id: a.object_data.targets.critique.id}};
+                                    obj.name = a.object_data.owner.name.endsWith('s') ? a.object_data.owner.name + '\' critique.' : a.object_data.owner.name + '\'s critique.';
+                                }
+                                break;
+                            case 'message':
+                                a.icon = 'comment';
+                                obj.url = {state: 'messages', args: {id: a.object_parse.attributes.parent.id}};
+                                break;
                         }
+                        obj.timestamp = a.object_parse.createdAt;
+                        obj.data = a.object_data;
+                        a.actiList.push(obj);
+                    } else {
+                        //var obj = {id: a.object.split(':')[2].id, name: '', class: a.object.split(':')[1].className};
+                    }
 
-                        if (obj && obj.name) {
-                            n.summary.names += i == 0 ? '<a ui-sref="video({id: '+obj.id+'})">'+obj.name+'</a>' : ', <a ui-sref="video({id: '+obj.id+'})">'+obj.name+'</a>';
-                        } /*else {
-                            n.summary.names += i == 0 ? '<a ui-sref="video({id: '+obj.id+'})">'+obj.name+'</a>' : ', <a ui-sref="video({id: '+obj.id+'})">'+obj.name+'</a>';
-                        }*/
-                    });
-                    if (!n.is_seen) {
+                    /* if (obj && obj.name) {
+                        a.summary.names += i == 0 ? '<a ui-sref="video({id: '+obj.id+'})">'+obj.name+'</a>' : ', <a ui-sref="video({id: '+obj.id+'})">'+obj.name+'</a>';
+                    }else {
+                     a.summary.names += i == 0 ? '<a ui-sref="video({id: '+obj.id+'})">'+obj.name+'</a>' : ', <a ui-sref="video({id: '+obj.id+'})">'+obj.name+'</a>';
+                     }*/
+                    if (!a.is_seen) {
                         unseen++;
                     }
-                    if (!n.is_read) {
+                    if (!a.is_read) {
                         unread++;
                     }
-                    n.summary.names = $sce.trustAsHtml(n.summary.names);
-                    n.actiList = _.uniq(n.actiList, 'id');
+                    a.actiList = _.uniq(a.actiList, 'id');
                 });
 
                 return {

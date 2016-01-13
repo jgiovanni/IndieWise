@@ -47,7 +47,10 @@
                                         <h6>
                                             <a ui-sref="video({id: c.attributes.parent.id})" ng-bind="::c.attributes.parent.attributes.name"></a>
                                         </h6>
-                                        <abbr title="{{::c.createdAt|date:'medium'}}" class="md-caption" ng-bind="::c.createdAt|date:'short'"></abbr>
+                                        <abbr title="{{::c.createdAt|date:'medium'}}" class="md-caption"
+                                              ng-bind="::c.createdAt|date:'short'"></abbr> <span class="grey-text" ng-if="!Body.isSame(c.createdAt, c.updatedAt)">Edited:
+                                                <abbr title="{{::c.updatedAt|date:'medium'}}" class="md-caption"
+                                                      ng-bind="::c.updatedAt|date:'short'"></abbr></span>
                                         <p class="md-body-1" ng-bind="::c.attributes.body"></p>
 
                                     </div>
@@ -126,9 +129,15 @@
 
                                     </div>
                                 </section>
+                                <md-divider></md-divider>
+                                <p>{{::c.attributes.commentCount||0}} comments</p>
                             </md-card-content>
                             <div class="md-actions" layout="row" layout-align="end center">
-                                <md-button class="md-accent md-hue-2" ng-click="Body.toPage('profile_critique', {profile_id:AppData.User.id, id:c.id})">Reply</md-button>
+                                <!--<md-button class="md-warn" ng-if="::c.attributes.author.id === AppData.User.id"
+                                           ng-click="VC.deleteCritique(c, $event)">Delete
+                                </md-button>-->
+                                <span flex></span>
+                                <md-button class="md-accent md-hue-2" ui-sref="profile_critique-edit({profile_id:AppData.User.id, id:c.id})">Edit</md-button>
                                 <md-button class="md-primary md-hue-2" ui-sref="profile_critique({profile_id:AppData.User.id, id:c.id})">
                                     View
                                 </md-button>
@@ -288,13 +297,12 @@
                             </md-list>
                         </md-content>
                     </md-tab>
-                    <md-tab label="Wins &middot; {{::Profile.wins.length}}">
+                    <md-tab label="Wins &middot; {{::Profile.myWins.length}}">
                         <md-content class="md-padding">
                             <md-list>
-                                <md-list-item class="" ng-repeat="win in Profile.wins">
-                                    <!--<img ng-src="{{::nom.attributes.author.attributes.avatar}}" class="md-avatar" ng-if="::nom.attributes.author.attributes.avatar">-->
-                                    <md-icon class="md-avatar" md-svg-icon="stars"></md-icon>
-                                    <p ng-bind="::win.attributes.name"></p>
+                                <md-list-item class="" ng-repeat="win in Profile.myWins">
+                                    <md-icon class="md-avatar-icon" md-svg-icon="stars"></md-icon>
+                                    <p ng-bind="::win.attributes.award.attributes.name"></p>
                                 </md-list-item>
                             </md-list>
 

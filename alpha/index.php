@@ -78,14 +78,14 @@ $user_feed_all = $client->feed('user', 'all');
                     <md-icon md-svg-icon="menu"></md-icon>
                 </md-button>
                 <md-autocomplete class="" flex flex-gt-sm="33" md-selected-item="selectedItem"
-                                 md-search-text="Body.searchText"
-                                 md-items="item in Body.getMatches(Body.searchText)"
+                                 md-search-text="AppData.searchText"
+                                 md-items="item in Body.getMatches(AppData.searchText)"
                                  md-item-text="item.attributes.name||item.attributes.term"
                                  md-selected-item-change="Body.startSearch(selectedItem)"
                                  ng-keydown="Body.checkIfEnterKeyWasPressed($event)" md-no-cache="true"
                                  placeholder="Search project name or user" md-min-length="2" md-input-minlength="2">
                     <md-item-template>
-                        <span md-highlight-text="Body.searchText" md-highlight-flags="^i">{{item.attributes.name||item.attributes.term}}</span>
+                        <span md-highlight-text="AppData.searchText" md-highlight-flags="^i">{{item.attributes.name||item.attributes.term}}</span>
                     </md-item-template>
                     <md-not-found>
                         No matches found.
@@ -211,10 +211,20 @@ $user_feed_all = $client->feed('user', 'all');
 </div>
 <md-sidenav class="md-sidenav-right md-whiteframe-1dp" md-component-id="right">
     <md-toolbar class="md-theme-light">
-        <h1 class="md-toolbar-tools">Notifications</h1>
+        <div class="md-toolbar-tools">
+            <h3>Notifications</h3>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="Body.markAllAsRead()" aria-label="Mark all as read">
+                <md-icon md-svg-icon="eye"></md-icon>
+                <md-tooltip md-direction="left">Mark all as read</md-tooltip>
+            </md-button>
+            <!--<md-button class="md-icon-button" aria-label="More">
+                <md-icon md-svg-icon="more_vert"></md-icon>
+            </md-button>-->
+        </div>
     </md-toolbar>
     <md-content>
-        <md-progress-linear md-mode="{{AppData.Notifications.loaded}}" class="md-accent"></md-progress-linear>
+        <md-progress-linear md-mode="{{AppData.RawNotifications.loaded}}" class="md-accent"></md-progress-linear>
         <md-list ng-include="Body.notificationsTemplate">
         </md-list>
     </md-content>

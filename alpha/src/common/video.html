@@ -1,5 +1,5 @@
 <!--<div class="video-container">-->
-<embed-video ng-if="VC.loaded" ng-href="{{VC.film.attributes.video_url}}" width="100%" height="500" ng-click="VC.test()"></embed-video>
+<embed-video ng-if="VC.loaded" ng-href="{{VC.film.attributes.video_url}}" width="100%" height="500" embed-watcher></embed-video>
 <!--</div>-->
 <section class="container" layout="row" layout-align="center center">
     <md-content flex id="content" class="grey lighten-3">
@@ -82,34 +82,6 @@
                         <md-icon md-menu-origin md-svg-icon="share"></md-icon> Share
                     </md-button>
                     <span flex></span>
-                    <md-button ng-show="!VC.toggleReactionsList" class="md-accent md-hue-2" aria-label="Reaction" ng-if="VC.canReact" ng-click="VC.toggleReactions()">
-                        <span ng-show="VC.canReact===true">How'd this make you feel?</span>
-                        <span ng-show="VC.canReact!==true&&VC.canReact != 'login'">
-                            <!--<md-icon md-svg-icon="{{VC.canReactIcon()}}" style="width:24px;height:24px;"></md-icon>-->
-                            <span class="black-text">I Feel:</span> {{VC.canReact.attributes.emotion}}
-                        </span>
-
-                    </md-button>
-                    <div ng-show="VC.toggleReactionsList" flex="20" ng-if="VC.canReact">
-                        <md-autocomplete focus-on="!!VC.toggleReactionsList" md-selected-item="VC.selectedReaction" md-selected-item-change="VC.react(item)" md-search-text="VC.searchReactionsText"
-                                         md-items="item in VC.emotions|filter:VC.searchReactionsText|orderBy:'name'" md-item-text="item.name" md-no-cache="true"
-                                         placeholder="Search a feeling" md-min-length="0" md-autofocus="true">
-                            <md-item-template>
-                                <md-icon md-svg-icon="{{item.icon}}" style="width:24px;height:24px;"></md-icon>
-                                <span md-highlight-text="VC.searchReactionsText" md-highlight-flags="^i">{{item.name}}</span>
-                            </md-item-template>
-                            <md-not-found>
-                                No matches found.
-                            </md-not-found>
-                        </md-autocomplete>
-                    </div>
-
-                    <md-button class="md-primary" aria-label="Judge it" ng-if="VC.film && VC.canCritique"
-                               ng-disabled="VC.canCritique!==true" ng-click="VC.showCritiqueDialog()">
-                        <md-icon md-svg-icon="grade"></md-icon>
-                        <span ng-show="VC.canCritique===true">Judge it</span>
-                        <span ng-show="VC.canCritique!==true&&VC.canCritique != 'login'">Judged <span class="orange-text">{{VC.canCritique.attributes.overall}}</span></span>
-                    </md-button>
                 </div>
                 <div layout="row" ng-show="VC.displayShare">
                     <md-button socialshare socialshare-provider="facebook" socialshare-url="{{::window.location.href}}"
@@ -137,6 +109,45 @@
                 </div>
             </md-card-content>
         </md-card>
+        <md-card>
+            <md-card-content style="padding:2px 8px;">
+                <div layout="row">
+                    <md-button  ng-show="!VC.toggleReactionsList" class="md-accent md-hue-2" aria-label="Reaction" ng-click="VC.toggleReactions()">
+                        <span ng-show="VC.canReact===true">How'd this make you feel?</span>
+                        <span ng-show="VC.canReact!==true&&VC.canReact != 'login'">
+                            <!--<md-icon md-svg-icon="{{VC.canReactIcon()}}" style="width:24px;height:24px;"></md-icon>-->
+                            <span class="black-text">I Feel:</span> {{VC.canReact.attributes.emotion}}
+                        </span>
+
+                    </md-button>
+                    <div ng-show="VC.toggleReactionsList" layout="row">
+                        <md-autocomplete flex focus-on="!!VC.toggleReactionsList" md-selected-item="VC.selectedReaction" md-selected-item-change="VC.react(item)" md-search-text="VC.searchReactionsText"
+                                         md-items="item in VC.emotions|filter:VC.searchReactionsText|orderBy:'name'" md-item-text="item.name" md-no-cache="true"
+                                         placeholder="Search a feeling" md-min-length="0" md-autofocus="true">
+                            <md-item-template>
+                                <md-icon md-svg-icon="{{item.icon}}" style="width:24px;height:24px;"></md-icon>
+                                <span md-highlight-text="VC.searchReactionsText" md-highlight-flags="^i">{{item.name}}</span>
+                            </md-item-template>
+                            <md-not-found>
+                                No matches found.
+                            </md-not-found>
+                        </md-autocomplete>
+                        <md-button flex class="md-icon-button" ng-click="VC.toggleReactions()">
+                            <md-icon md-svg-icon="close"></md-icon>
+                        </md-button>
+                    </div>
+                    <span flex></span>
+
+                    <md-button class="md-primary" aria-label="Judge it" ng-if="VC.film && VC.canCritique"
+                               ng-disabled="VC.canCritique!==true" ng-click="VC.showCritiqueDialog()">
+                        <md-icon md-svg-icon="grade"></md-icon>
+                        <span ng-show="VC.canCritique===true">Judge it</span>
+                        <span ng-show="VC.canCritique!==true&&VC.canCritique != 'login'">Judged <span class="orange-text">{{VC.canCritique.attributes.overall}}</span></span>
+                    </md-button>
+
+                </div>
+            </md-card-content>
+        </md-card>
         <div layout="column" layout-gt-sm="row">
             <div flex-gt-sm="70" flex-gt-sm="60" flex-order="2" flex-order-gt-sm="1">
                 <md-card>
@@ -155,7 +166,9 @@
                                                 </h6>
 
                                                 <abbr title="{{::c.createdAt|date:'medium'}}" class="md-caption"
-                                                      ng-bind="::c.createdAt|date:'short'"></abbr>
+                                                      ng-bind="::c.createdAt|date:'short'"></abbr> <span class="grey-text" ng-if="!Body.isSame(c.createdAt, c.updatedAt)">Edited:
+                                                <abbr title="{{::c.updatedAt|date:'medium'}}" class="md-caption"
+                                                      ng-bind="::c.updatedAt|date:'short'"></abbr></span>
 
                                                 <p class="md-body-1" ng-bind="::c.attributes.body"></p>
                                             </div>
@@ -253,15 +266,18 @@
 
                                             </div>
                                         </section>
+                                        <md-divider></md-divider>
+                                        <p>{{::c.attributes.commentCount||0}} comments</p>
+
                                     </md-card-content>
                                     <div class="md-actions" layout="row" layout-align="end center">
                                         <md-button class="md-warn" ng-if="::c.attributes.author.id === AppData.User.id"
                                                    ng-click="VC.deleteCritique(c, $event)">Delete
                                         </md-button>
                                         <span flex></span>
-                                        <md-button class="md-accent md-hue-2"
-                                                   ng-click="Body.toPage('video_critique', {video_id:VC.film.id, id:c.id})">
-                                            Reply
+                                        <md-button class="md-accent md-hue-2" ng-if="::c.attributes.author.id === AppData.User.id"
+                                                   ng-click="Body.toPage('video_critique-edit', {video_id:VC.film.id, id:c.id})">
+                                            Edit
                                         </md-button>
                                         <md-button class="md-primary md-raised md-hue-2" ui-sref="video_critique({video_id:VC.film.id, id:c.id})">
                                             View
@@ -305,8 +321,8 @@
                                                 <md-list>
                                                     <md-list-item class="" ng-repeat="win in VC.wins">
                                                         <!--<img ng-src="{{::nom.attributes.author.attributes.avatar}}" class="md-avatar" ng-if="::nom.attributes.author.attributes.avatar">-->
-                                                        <md-icon class="md-avatar" md-svg-icon="stars"></md-icon>
-                                                        <p ng-bind="::win.attributes.name"></p>
+                                                        <md-icon class="md-avatar-icon" md-svg-icon="stars"></md-icon>
+                                                        <p ng-bind="::win.attributes.award.attributes.name"></p>
                                                     </md-list-item>
                                                 </md-list>
 
@@ -360,6 +376,17 @@
                                 <help-info text="'This is the Average of all Ratings you\'ve received on this Video.'"></help-info>
                                 <span ng-if="VC.critiqueAverage" class="badge indigo white-text">{{VC.critiqueAverage|number:1}}</span>
                                 <span ng-if="!VC.critiqueAverage" class="badge indigo white-text">N/A</span>
+                            </p>
+                        </md-list-item>
+                    </md-list>
+                </md-card>
+
+                <md-card ng-if="VC.wins.length"
+                    <md-list>
+                        <md-list-item ng-repeat="win in VC.wins">
+                            <md-icon class="md-avatar-icon blue-text" md-svg-icon="stars"></md-icon>
+                            <p class="">
+                                {{::win.attributes.award.attributes.name}}
                             </p>
                         </md-list-item>
                     </md-list>

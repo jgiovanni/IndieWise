@@ -258,6 +258,24 @@ body.modal-is-open {
     position: relative;
 }
 
+embed-video {
+    display: block;
+}
+
+md-list-item.short {
+    min-height: 36px;
+    height: 36px;
+}
+md-list-item.short .md-ripple-container  {
+    height: 36px;
+    top: 6px;
+}
+.no-borders {
+    border: none;
+}
+.no-shadow {
+    box-shadow: none;
+}
 .no-shadow md-card  {
     box-shadow: none;
 }

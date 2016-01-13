@@ -11,18 +11,18 @@
             <div class="collection" flex>
                 <div class="collection-item" ng-repeat="result in Results.results" layout="row" layout-padding>
                     <div flex="25">
-                        <img class="title" style="width: 100%;" ng-if="result.className === 'Film_Genre'" ng-src="{{::result.attributes.film.attributes.thumbnail_url}}" ui-sref="video({id: result.attributes.film.id})"/>
+                        <img class="title" style="width: 100%;" ng-if="result.className === 'Film'" ng-src="{{::result.attributes.thumbnail_url}}" ui-sref="video({id: result.id})"/>
                         <img class="title" ng-if="result.className === '_User'" ng-src="{{::result.attributes.avatar||'./assets/img/avatar-1.png'}}" ui-sref="user({id: result.id})"/>
                     </div>
-                    <div flex="75" ng-if="result.className === 'Film_Genre'">
-                        <a class="md-subhead" ui-sref="video({id: result.attributes.film.id})" ng-bind="::result.attributes.film.attributes.name"></a><br>
+                    <div flex="75" ng-if="result.className === 'Film'">
+                        <a class="md-subhead" ui-sref="video({id: result.id})" ng-bind="::result.attributes.name"></a><br>
                         <span class="md-caption">by
-                            <a class="action-link" ui-sref="user({id: video.attributes.film.attributes.owner.id})">
-                                {{::result.attributes.film.attributes.owner.attributes.first_name+' '+result.attributes.film.attributes.owner.attributes.last_name}}
+                            <a class="action-link" ui-sref="user({id: video.attributes.owner.id})">
+                                {{::result.attributes.owner.attributes.first_name+' '+result.attributes.owner.attributes.last_name}}
                             </a>
                         </span>
-                        <span class="md-caption"><span am-time-ago="::result.attributes.film.createdAt"></span></span>
-                        <span class="md-caption truncate" ng-bind="::result.attributes.film.attributes.description"></span>
+                        <span class="md-caption"><span am-time-ago="::result.createdAt"></span></span>
+                        <span class="md-caption truncate" ng-bind="::result.attributes.description"></span>
                     </div>
                     <div flex="75" ng-if="result.className === '_User'">
                         <a class="md-subhead" ui-sref="user({id: result.id})" ng-bind="::result.attributes.first_name+' '+result.attributes.last_name"></a>

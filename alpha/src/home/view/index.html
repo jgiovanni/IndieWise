@@ -1,4 +1,5 @@
-<md-content layout="row" layout-align="space-around start" id="content" class="grey lighten-3" layout-padding layout-wrap>
+<md-content layout="row" layout-align="space-around start" id="content" class="grey lighten-3" layout-padding
+            layout-wrap>
 
     <!-- Featured Area -->
     <section flex="100" class="md-padding">
@@ -11,48 +12,157 @@
         </md-grid-list>
     </section>
 
-    <section flex="100" flex-gt-sm="70" class="md-padding">
+    <section flex="100" class="md-padding">
+        <md-card>
+            <div class="card-content" layout="row" layout-sm="column" layout-wrap layout-align="space-around start">
+
+                <!-- Latest Watched -->
+                <div class="md-padding" flex="33" flex-sm="100">
+                    <h3 class="md-display-1 card-title grey-text text-darken-4">
+                        People Are Watching
+                        <md-progress-linear md-mode="{{Home.latest.watchedLoaded}}"
+                                            class="md-accent"></md-progress-linear>
+                    </h3>
+                    <md-list>
+                        <md-list-item class="md-2-lines wrap-text" ng-repeat-start="w in Home.latest.watched"
+                                      ui-sref="video({id: w.attributes.film.id})">
+                            <img ng-src="{{::w.attributes.film.attributes.thumbnail_url}}" class="md-avatar"
+                                 style="border-radius: 0;">
+                            <a ui-sref="video({id: w.attributes.film.id})">{{::w.attributes.film.attributes.name}}</a>
+                        </md-list-item>
+                        <md-divider ng-repeat-end ng-if="!$last"></md-divider>
+                    </md-list>
+                </div>
+
+                <!-- Latest Comments and Reactions -->
+                <div class="md-padding" flex="33" flex-sm="100">
+                    <h3 class="md-display-1 grey-text text-darken-4">Latest</h3>
+                    <md-tabs md-dynamic-height md-border-bottom>
+                        <md-tab label="Reactions">
+                            <md-content>
+                                <md-progress-linear md-mode="{{Home.latest.reactionsLoaded}}"
+                                                    class="md-accent"></md-progress-linear>
+                                <md-list>
+                                    <md-list-item class="md-2-line wrap-text" ng-repeat="c in Home.latest.reactions">
+                                        <img ng-src="{{::c.attributes.author.attributes.avatar || './assets/img/avatar-1.png'}}"
+                                             class="md-avatar" ui-sref="user({id: c.attributes.author.id})">
+
+                                        <div class="md-list-item-text" layout="column">
+                                            <h3><a ui-sref="video({id: c.attributes.parent.id})">{{::c.attributes.parent.attributes.name}}</a>
+                                            </h3>
+                                            <h4>made <a ui-sref="user({id: c.attributes.user.id})">{{::c.attributes.user.attributes.first_name}}
+                                                {{::c.attributes.user.attributes.last_name}}</a> feel
+                                                {{::c.attributes.emotion}}.</h4>
+                                        </div>
+                                        <md-divider ng-if="!$last"></md-divider>
+                                    </md-list-item>
+                                </md-list>
+                            </md-content>
+                        </md-tab>
+                        <md-tab label="Comments">
+                            <md-content>
+                                <md-progress-linear md-mode="{{Home.latest.commentsLoaded}}"
+                                                    class="md-accent"></md-progress-linear>
+                                <md-list>
+                                    <md-list-item class="md-2-line wrap-text" ng-repeat="c in Home.latest.comments">
+                                        <img ng-src="{{::c.attributes.author.attributes.avatar || './assets/img/avatar-1.png'}}"
+                                             class="md-avatar" ui-sref="user({id: c.attributes.author.id})">
+
+                                        <div class="md-list-item-text" layout="column">
+                                            <h3 ng-if="c.attributes.parentFilm">
+                                                <a ui-sref="user({id: c.attributes.author.id})">{{::c.attributes.author.attributes.first_name}}
+                                                    {{::c.attributes.author.attributes.last_name}}</a>
+                                                <span ng-if="c.attributes.parentComment">replied to <a
+                                                        ui-sref="user({id: c.attributes.parentComment.attributes.author.id})">{{::c.attributes.parentComment.attributes.author.attributes.first_name}}</a> on</span>
+                                                <span ng-if="!c.attributes.parentComment">commented on</span>
+                                                <a ui-sref="video({id: c.attributes.parentFilm.id})">{{::c.attributes.parentFilm.attributes.name}}</a>
+                                            </h3>
+
+                                            <h3 ng-if="c.attributes.parentCritique">
+                                                <a ui-sref="user({id: c.attributes.author.id})">{{::c.attributes.author.attributes.first_name}}
+                                                    {{::c.attributes.author.attributes.last_name}}</a>
+                                                <span ng-if="c.attributes.parentComment">replied to <a
+                                                        ui-sref="video_critique({video_id:c.attributes.parentCritique.attributes.parent.id, id: c.attributes.parentCritique.id})">{{::c.attributes.parentCritique.attributes.author.attributes.first_name}}'s</a></span>
+                                                <span ng-if="!c.attributes.parentComment">commented on <a
+                                                        ui-sref="video_critique({video_id:c.attributes.parentCritique.attributes.parent.id, id: c.attributes.parentCritique.id})">{{::c.attributes.parentCritique.attributes.author.attributes.first_name}}'s</a></span>
+                                                <a ui-sref="video_critique({video_id:c.attributes.parentCritique.attributes.parent.id, id: c.attributes.parentCritique.id})">critique</a>
+                                            </h3>
+                                            <h4 ng-bind="::c.attributes.body"></h4>
+                                        </div>
+                                        <md-divider ng-if="!$last"></md-divider>
+                                    </md-list-item>
+                                </md-list>
+                            </md-content>
+                        </md-tab>
+                    </md-tabs>
+
+                </div>
+
+                <!-- Latest Critiques -->
+                <div class="md-padding" flex="33" flex-sm="100">
+                    <h3 class="md-display-1 grey-text text-darken-4">
+                        Latest Critiques
+                        <md-progress-linear md-mode="{{Home.latest.critiquesLoaded}}"
+                                            class="md-accent"></md-progress-linear>
+                    </h3>
+                    <md-content>
+                        <md-list>
+                            <md-list-item class="md-2-line wrap-text" ng-repeat="c in Home.latest.critiques">
+                                <img ng-src="{{::c.attributes.author.attributes.avatar || './assets/img/avatar-1.png'}}"
+                                     class="md-avatar" ui-sref="user({id: c.attributes.author.id})">
+
+                                <div class="md-list-item-text" layout="column">
+                                    <h3><a ui-sref="user({id: c.attributes.author.id})">{{::c.attributes.author.attributes.first_name}}
+                                        {{::c.attributes.author.attributes.last_name}}</a></h3>
+                                    <h4>Gave <a ui-sref="video({id: c.attributes.parent.id})">{{::c.attributes.parent.attributes.name}}</a>
+                                        a {{::c.attributes.overall|number:1}}</h4>
+                                </div>
+                                <md-divider ng-if="!$last"></md-divider>
+                            </md-list-item>
+                        </md-list>
+                    </md-content>
+                </div>
+            </div>
+        </md-card>
+    </section>
+
+    <section flex="100" class="md-padding">
         <md-card>
             <div class="card-content" layout="row" layout-wrap layout-align="space-around start">
-                <!--<project-card flex-sm="100" flex-md="40" flex-lg="30" flex-gt-lg="25" ng-repeat="video in Home.films" video="video.attributes.film"></project-card>-->
                 <section flex="100" class="container">
                     <div class="" layout="row" layout-wrap layout-padding layout-align="space-around start">
-                        <h6 flex="100" class="md-display-1">Trending</h6>
-                        <!--<md-grid-list md-cols="4" md-row-height="16:9" md-gutter-gt-md="16px" md-gutter-gt-sm="8px" md-gutter="4px">
-                            <md-grid-tile ng-repeat="video in Home.trending|limitTo:4" style="background-image: url('{{::video.attributes.film.attributes.thumbnail_url}}');background-position: center center;background-size: cover;background-repeat: no-repeat;"
-                                          md-colspan-gt-sm="1" md-rowspan-gt-sm="1">
-                                &lt;!&ndash;<md-icon md-svg-icon="{{tile.icon}}"></md-icon>&ndash;&gt;
-                                <md-grid-tile-footer><h3>{{video.attributes.film.attributes.name}}</h3></md-grid-tile-footer>
-                            </md-grid-tile>
-                        </md-grid-list>-->
-
-                        <project-card class="no-shadow" flex-sm="50" flex-md="33" flex-lg="25" flex-gt-lg="25" ng-repeat="video in Home.trending" video="video"></project-card>
-
+                        <div flex="100" class="md-toolbar-tools">
+                            <h6 class="md-display-1">Trending</h6>
+                            <span flex></span>
+                            <md-button class="md-primary" ui-sref="browse({sort:'trending'})" aria-label="Browse Trending">
+                                Browse Trending
+                                <md-icon class="md-secondary" md-svg-icon="chevron-right"></md-icon>
+                            </md-button>
+                        </div>
+                        <project-card class="no-shadow" flex-sm="50" flex-md="25" flex-lg="25" flex-gt-lg="25"
+                                      ng-repeat="video in Home.trending" video="video"></project-card>
                     </div>
                 </section>
+            </div>
+        </md-card>
+    </section>
 
+    <section flex="100" class="md-padding">
+        <md-card>
+            <div class="card-content" layout="row" layout-wrap layout-align="space-around start">
                 <section flex="100" class="container">
                     <div layout="row" layout-wrap layout-padding layout-align="space-around start">
-                        <h6 flex="100" class="md-display-1">Highest Rated</h6>
+                        <div flex="100" class="md-toolbar-tools">
+                            <h6 class="md-display-1">Highest Rated</h6>
+                            <span flex></span>
+                            <md-button class="md-primary" ui-sref="browse({sort:'rating'})" aria-label="Browse Highest Rated">
+                                Browse Highest Rated
+                                <md-icon class="md-secondary" md-svg-icon="chevron-right"></md-icon>
+                            </md-button>
+                        </div>
 
-                        <project-card class="no-shadow" flex-sm="50" flex-md="33" flex-lg="25" flex-gt-lg="25" ng-repeat="video in Home.highestRated|limitTo:4" video="video"></project-card>
-
-                    </div>
-                </section>
-
-                <section flex="100" class="container">
-                    <div layout="row" layout-wrap layout-padding layout-align="space-around start">
-                        <h6 flex="100" class="md-display-1">Award Winning</h6>
-
-                        <project-card class="no-shadow" flex-sm="50" flex-md="33" flex-lg="25" flex-gt-lg="25" ng-repeat="video in Home.highestAwarded|limitTo:4" video="video"></project-card>
-
-                    </div>
-                </section>
-
-                <section flex="100" class="container">
-                    <div layout="row" layout-wrap layout-padding layout-align="space-around start">
-                        <h6 flex="100" class="md-display-1">Recently Added</h6>
-                        <project-card class="no-shadow" flex-sm="50" flex-md="33" flex-lg="25" flex-gt-lg="25" ng-repeat="video in Home.recentFilms|limitTo:4" video="video"></project-card>
+                        <project-card class="no-shadow" flex-sm="50" flex-md="25" flex-lg="25" flex-gt-lg="25"
+                                      ng-repeat="video in Home.highestRated|limitTo:4" video="video"></project-card>
 
                     </div>
                 </section>
@@ -60,9 +170,54 @@
         </md-card>
     </section>
 
-    <aside flex="100" flex-gt-sm="30" layout="row" layout-wrap hide-sm layout-align="center start">
+    <section flex="100" class="md-padding">
+        <md-card>
+            <div class="card-content" layout="row" layout-wrap layout-align="space-around start">
+                <section flex="100" class="container">
+                    <div layout="row" layout-wrap layout-padding layout-align="space-around start">
+                        <div flex="100" class="md-toolbar-tools">
+                            <h6 class="md-display-1">Award Winning</h6>
+                            <span flex></span>
+                            <md-button class="md-primary" ui-sref="browse({sort:'awards'})" aria-label="Browse Award Winning">
+                                Browse Award Winning
+                                <md-icon class="md-secondary" md-svg-icon="chevron-right"></md-icon>
+                            </md-button>
+                        </div>
+
+                        <project-card class="no-shadow" flex-sm="50" flex-md="25" flex-lg="25" flex-gt-lg="25"
+                                      ng-repeat="video in Home.highestAwarded|limitTo:4" video="video"></project-card>
+
+                    </div>
+                </section>
+            </div>
+        </md-card>
+    </section>
+
+    <section flex="100" class="md-padding">
+        <md-card>
+            <div class="card-content" layout="row" layout-wrap layout-align="space-around start">
+                <section flex="100" class="container">
+                    <div layout="row" layout-wrap layout-padding layout-align="space-around start">
+                        <div flex="100" class="md-toolbar-tools">
+                            <h6 class="md-display-1">Recently Added</h6>
+                            <span flex></span>
+                            <md-button class="md-primary" ui-sref="browse({sort:'trending'})" aria-label="Browse Recently Added">
+                                Browse Recently Added
+                                <md-icon class="md-secondary" md-svg-icon="chevron-right"></md-icon>
+                            </md-button>
+                        </div>
+                        <project-card class="no-shadow fadeIn" flex-sm="50" flex-md="25" flex-lg="25" flex-gt-lg="25"
+                                      ng-repeat="video in Home.recentFilms|limitTo:4" video="video"></project-card>
+
+                    </div>
+                </section>
+            </div>
+        </md-card>
+    </section>
+
+    <!--<aside flex="100" flex-gt-sm="30" layout="row" layout-wrap hide-sm layout-align="center start">
         <div class="flex">
-            <!-- Latest Watched -->
+            &lt;!&ndash; Latest Watched &ndash;&gt;
             <div class="card">
                 <div class="card-content">
                     <span class="card-title grey-text text-darken-4">
@@ -79,7 +234,7 @@
                 </div>
             </div>
 
-            <!-- Latest Comments and Reactions -->
+            &lt;!&ndash; Latest Comments and Reactions &ndash;&gt;
             <div class="card">
                 <div class="card-content">
                     <span class="card-title grey-text text-darken-4">Latest</span>
@@ -132,7 +287,7 @@
                 </div>
             </div>
 
-            <!-- Latest Critiques -->
+            &lt;!&ndash; Latest Critiques &ndash;&gt;
             <div class="card">
                 <div class="card-content">
                     <span class="card-title grey-text text-darken-4">
@@ -153,10 +308,29 @@
                         </md-list>
                     </md-content>
                 </div>
-            </div class="card">
+            </div>
         </div>
-    </aside>
-
-    <md-divider></md-divider>
-
+    </aside>-->
 </md-content>
+
+<!--
+<blockquote class="instagram-media" data-instgrm-captioned data-instgrm-version="6"
+            style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:658px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);">
+    <div style="padding:8px;">
+        <div style=" background:#F8F8F8; line-height:0; margin-top:40px; padding:50.0% 0; text-align:center; width:100%;">
+            <div style=" background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAMAAAApWqozAAAAGFBMVEUiIiI9PT0eHh4gIB4hIBkcHBwcHBwcHBydr+JQAAAACHRSTlMABA4YHyQsM5jtaMwAAADfSURBVDjL7ZVBEgMhCAQBAf//42xcNbpAqakcM0ftUmFAAIBE81IqBJdS3lS6zs3bIpB9WED3YYXFPmHRfT8sgyrCP1x8uEUxLMzNWElFOYCV6mHWWwMzdPEKHlhLw7NWJqkHc4uIZphavDzA2JPzUDsBZziNae2S6owH8xPmX8G7zzgKEOPUoYHvGz1TBCxMkd3kwNVbU0gKHkx+iZILf77IofhrY1nYFnB/lQPb79drWOyJVa/DAvg9B/rLB4cC+Nqgdz/TvBbBnr6GBReqn/nRmDgaQEej7WhonozjF+Y2I/fZou/qAAAAAElFTkSuQmCC); display:block; height:44px; margin:0 auto -44px; position:relative; top:-22px; width:44px;"></div>
+        </div>
+        <p style=" margin:8px 0 0 0; padding:0 4px;"><a href="https://www.instagram.com/p/ /"
+                                                        style=" color:#000; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px; text-decoration:none; word-wrap:break-word;"
+                                                        target="_blank">Pass wha ball bey maggs????? #ayeeeedaddiii
+            #stephonomics @brits_kinq</a></p>
+
+        <p style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; line-height:17px; margin-bottom:0; margin-top:8px; overflow:hidden; padding:8px 0 7px; text-align:center; text-overflow:ellipsis; white-space:nowrap;">
+            A video posted by Ashton Alleyne-McQuay (@ashmclaw) on
+            <time style=" font-family:Arial,sans-serif; font-size:14px; line-height:17px;"
+                  datetime="2016-01-10T20:09:17+00:00">Jan 10, 2016 at 12:09pm PST
+            </time>
+        </p>
+    </div>
+</blockquote>
+<script async defer src="//platform.instagram.com/en_US/embeds.js"></script>-->

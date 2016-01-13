@@ -18,8 +18,17 @@
                         <a ui-sref="user({id:VCC.critique.attributes.author.id})">
                             {{::VCC.critique.attributes.author.attributes.first_name}} {{::VCC.critique.attributes.author.attributes.last_name}}
                         </a>
+                        on
+                        <abbr title="{{::VCC.critique.createdAt|date:'medium'}}" class="md-caption"
+                              ng-bind="::VCC.critique.createdAt|date:'short'"></abbr> <span class="grey-text" ng-if="!Body.isSame(VCC.critique.createdAt, VCC.critique.updatedAt)">Edited:
+                        <abbr title="{{::VCC.critique.updatedAt|date:'medium'}}" class="md-caption"
+                              ng-bind="::VCC.critique.updatedAt|date:'short'"></abbr></span>
+
                     </span>
                 </md-card-header-text>
+                <md-button ng-if="AppData.User.id === VCC.critique.attributes.author.id" class="md-icon-button" ui-sref="video_critique-edit({video_id:VCC.film.id, id:VCC.critique.id})">
+                    <md-icon class="md-secondary" md-svg-icon="mode_edit"></md-icon>
+                </md-button>
             </md-card-header>
             <md-card-content>
                 <section layout="row" class="md-padding">
@@ -126,7 +135,6 @@
                 </section>
             </md-card-content>
         </md-card>
-
         <md-card>
             <md-card-content>
                 <h6><md-icon md-svg-icon="comment" class="md-icon-avatar"></md-icon> Comments</h6>

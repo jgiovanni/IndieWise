@@ -537,7 +537,7 @@
                     if (!$rootScope.authModalOpen) {
                         var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'));
                         $mdDialog.show({
-                            controller: SignInCtrl,
+                            controller: ['$rootScope', '$localForage', '$q', '$state', 'AuthService', '$mdDialog', SignInModalCtrl],
                             controllerAs: 'SIC',
                             templateUrl: './src/auth/sign-in-dialog.html',
                             parent: angular.element(document.body),
@@ -682,5 +682,50 @@
                 normal: _linkifyAsType()
             };
         }]);
+
+    function SignInModalCtrl($rootScope, $localForage, $q, $state, AuthService, $mdDialog) {
+        'use strict';
+        $rootScope.metadata.title = 'Sign In';
+        var self = this;
+        self.user = {
+            email: '',
+            password: ''
+        };
+
+        self.doLogin = function (redirect) {
+            redirect = redirect || true;
+            self.error = false;
+            AuthService.login(self.user.email, self.user.password).then(function (res) {
+                console.log('Success', res);
+                if (redirect) {
+                    //$state.go('home');
+                    //window.location.reload();
+                }
+            }, function (res) {
+                self.error = res;
+                console.log('Failed', res);
+            }).then(function () {
+                self.cancelModal();
+            });
+        };
+
+        self.doLoginFacebook = function () {
+            AuthService.loginWithFB().then(function (res) {
+                //$state.go('home');
+                //window.location.reload();
+            });
+        };
+
+        self.authenticate = function (provider) {
+            self.error = null;
+            AuthService.otherSocialLogin(provider).then(function (a) {
+                console.log(a);
+            });
+        };
+        self.cancelModal = function () {
+            $mdDialog.cancel();
+        };
+    }
+
 })();
 

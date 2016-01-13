@@ -71,7 +71,8 @@ Parse.Cloud.afterDelete(settings.followModel, function (request) {
 Parse.Cloud.afterSave('Critique', function (request) {
     // Re-Calculate IndieWise Rating
     var cQuery = new Parse.Query("Critique");
-    cQuery.find(request.object.get("parent").id, {
+    cQuery.equalTo('parent', request.object.get("parent"));
+    cQuery.find({
         success: function(critiques) {
             var total = 0;
             _.each(critiques, function (a) {
@@ -96,19 +97,35 @@ Parse.Cloud.afterSave('Critique', function (request) {
 });
 
 Parse.Cloud.afterSave('Nomination', function (request) {
-    // Check for other nominations of that type
+    // Check for other nominations of that award type that has not already been won
+    var innerQuery = new Parse.Query('AwardWin');
+    innerQuery.notEqualTo("award", request.object.get("awardPntr"));
+
     var query = new Parse.Query("Nomination");
+    query.matchesQuery("awardPntr", innerQuery);
     query.equalTo("awardPntr", request.object.get("awardPntr"));
     query.equalTo("filmPntr", request.object.get("filmPntr"));
     query.notEqualTo("critique", request.object.get("critique"));
-    //query.notEqualTo("nominator", request.object.get("nominator"));
-    query.find(null, {
+    query.notEqualTo("nominator", request.object.get("nominator"));
+    query.find({
         success: function (noms) {
-            if (noms.length > (4)) {
-                var win = new Parse.Object("AwardWin");
-                win.set("award", request.object.get("awardPntr"));
-                win.set("film", request.object.get("filmPntr"));
-                win.save();
+            if (noms.length >= 4) {
+                var win = new Parse.Object("AwardWin", {
+                    award: request.object.get("awardPntr"),
+                    film: request.object.get("filmPntr")
+                });
+                win.save().then(function (newWin) {
+                    var filmPntr = request.object.get("filmPntr");
+                    filmPntr.fetch({
+                        success: function (film) {
+                            film.increment('awardCount');
+                            film.save().then(function (film) {
+                                response.success();
+
+                            });
+                        }
+                    });
+                });
             }
         },
         error: function (error) {
@@ -127,8 +144,8 @@ Parse.Cloud.define("top", function (request, response) {
 
     var query = new Parse.Query("Action");
     query.equalTo("verb", verb);
-
 });
+
 /*Parse.Cloud.define("latest", function (request, response) {
     var verb = request.params.verb;
     var promises = [];
