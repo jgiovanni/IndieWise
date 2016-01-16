@@ -1,552 +1,554 @@
 (function () {
-angular
-    .module('IndieWise.controllers', [])
-    // Auth Controllers
-    .controller('SignInCtrl', ['$rootScope', '$localForage', '$q', '$state', 'AuthService', '$mdDialog', SignInCtrl])
-    .controller('ForgotPasswordCtrl', ['$rootScope', '$state', 'AuthService', ForgotPasswordCtrl])
-    .controller('RegisterCtrl', ['$rootScope', '$localForage', '$q', '$state', 'AuthService', 'ParseService', '$auth', RegisterCtrl])
-    .controller('UploadCtrl', ['$rootScope', 'ParseService', '$state', '$http', 'UtilsService', UploadCtrl])
-    .controller('ProfileCtrl', ['$rootScope', 'ParseService', '$state', '$mdDialog', ProfileCtrl])
-    .controller('UserCtrl', ['$rootScope', 'ParseService', '$state', UserCtrl])
-    .controller('EditProfileCtrl', ['$rootScope', '$scope', 'AuthService', 'ParseService', '$state', EditProfileCtrl])
-    .controller('MessagesCtrl', ['$rootScope', '$mdSidenav', 'UserActions', 'UtilsService', MessagesCtrl])
-    .controller('NotificationsCtrl', ['$rootScope', 'UserActions', 'UtilsService', NotificationsCtrl])
-    // App Controllers
-    .controller('BodyCtrl', ['$rootScope', '$localForage', '$mdSidenav', '$mdBottomSheet', '$log', '$q', '$state', 'AuthService', '$mdToast', 'UserActions', '$sce', BodyCtrl])
-    .controller('HomeCtrl', ['$rootScope', '$scope', '$q', '$mdDialog', '$timeout', '$interval', HomeCtrl])
-    .controller('BrowseCtrl', ['$scope', '$rootScope', '$state', '$localForage', '$q', '$timeout', '$mdSidenav', '$mdDialog', BrowseCtrl])
-    .controller('ResultsCtrl', ['$scope', '$rootScope', '$state', '$localForage', '$q', '$timeout', '$mdSidenav', '$mdDialog', ResultsCtrl])
-    .controller('VideoCtrl', ['$rootScope', '$scope', 'Project', '$mdDialog', 'UserActions', 'UtilsService', VideoCtrl])
-    .controller('VideoEditCtrl', ['$rootScope', '$state', '$mdDialog', 'UserActions', 'Project', 'ParseService', VideoEditCtrl])
-    .controller('VideoCritiqueCtrl', ['$rootScope', '$scope', '$mdDialog', 'UserActions', 'UtilsService', VideoCritiqueCtrl])
-    .controller('VideoCritiqueEditCtrl', ['$rootScope', '$scope', '$state', 'Critique', VideoCritiqueEditCtrl])
-    //.controller('GenreCtrl', ['$scope', '$rootScope', '$state', '$localForage', GenreCtrl])
-;
-
-function SignInCtrl($rootScope, $localForage, $q, $state, AuthService, $mdDialog) {
     'use strict';
-    $rootScope.metadata.title = 'Sign In';
-    var self = this;
-    self.user = {
-        email: '',
-        password: ''
-    };
+    angular
+        .module('IndieWise.controllers', [])
+        // Auth Controllers
+        .controller('SignInCtrl', ['$rootScope', '$localForage', '$q', '$state', 'AuthService', '$mdDialog', SignInCtrl])
+        .controller('ForgotPasswordCtrl', ['$rootScope', '$state', 'AuthService', ForgotPasswordCtrl])
+        .controller('RegisterCtrl', ['$rootScope', '$localForage', '$q', '$state', 'AuthService', 'ParseService', '$auth', RegisterCtrl])
+        .controller('UploadCtrl', ['$rootScope', 'ParseService', '$state', '$http', 'UtilsService', UploadCtrl])
+        .controller('ProfileCtrl', ['$rootScope', 'ParseService', '$state', '$mdDialog', ProfileCtrl])
+        .controller('UserCtrl', ['$rootScope', 'ParseService', '$state', UserCtrl])
+        .controller('EditProfileCtrl', ['$rootScope', '$scope', 'AuthService', 'ParseService', '$state', EditProfileCtrl])
+        .controller('MessagesCtrl', ['$rootScope', '$mdSidenav', 'UserActions', 'UtilsService', MessagesCtrl])
+        .controller('NotificationsCtrl', ['$rootScope', 'UserActions', 'UtilsService', NotificationsCtrl])
+        // App Controllers
+        .controller('BodyCtrl', ['$rootScope', '$localForage', '$mdSidenav', '$mdBottomSheet', '$log', '$q', '$state', 'AuthService', '$mdToast', 'UserActions', '$sce', BodyCtrl])
+        .controller('HomeCtrl', ['$rootScope', '$scope', '$q', '$mdDialog', '$timeout', '$interval', HomeCtrl])
+        .controller('BrowseCtrl', ['$scope', '$rootScope', '$state', '$localForage', '$q', '$timeout', '$mdSidenav', '$mdDialog', BrowseCtrl])
+        .controller('ResultsCtrl', ['$scope', '$rootScope', '$state', '$localForage', '$q', '$timeout', '$mdSidenav', '$mdDialog', ResultsCtrl])
+        .controller('VideoCtrl', ['$rootScope', '$scope', 'Project', '$mdDialog', 'UserActions', 'UtilsService', VideoCtrl])
+        .controller('VideoEditCtrl', ['$rootScope', '$state', '$mdDialog', 'UserActions', 'Project', 'ParseService', VideoEditCtrl])
+        .controller('VideoCritiqueCtrl', ['$rootScope', '$scope', '$mdDialog', 'UserActions', 'UtilsService', VideoCritiqueCtrl])
+        .controller('VideoCritiqueEditCtrl', ['$rootScope', '$scope', '$state', 'Critique', VideoCritiqueEditCtrl])
+        //.controller('GenreCtrl', ['$scope', '$rootScope', '$state', '$localForage', GenreCtrl])
+    ;
 
-    self.doLogin = function (redirect) {
-        redirect = redirect || true;
-        self.error = false;
-        AuthService.login(self.user.email, self.user.password).then(function (res) {
-            console.log('Success', res);
-            if (redirect) {
+    function SignInCtrl($rootScope, $localForage, $q, $state, AuthService, $mdDialog) {
+        $rootScope.metadata.title = 'Sign In';
+        var self = this;
+        self.user = {
+            email: '',
+            password: ''
+        };
+
+        self.doLogin = function (redirect) {
+            redirect = redirect || true;
+            self.error = false;
+            AuthService.login(self.user.email, self.user.password).then(function (res) {
+                console.log('Success', res);
+                if (redirect) {
+                    $state.go('home');
+                    //window.location.reload();
+                }
+            }, function (res) {
+                self.error = res;
+                console.log('Failed', res);
+            }).then(function () {
+                self.cancelModal();
+            });
+        };
+
+        self.doLoginFacebook = function () {
+            AuthService.loginWithFB().then(function (res) {
+                $state.go('home');
+                window.location.reload();
+            });
+        };
+
+        self.authenticate = function (provider) {
+            self.error = null;
+            AuthService.otherSocialLogin(provider).then(function (a) {
+                console.log(a);
+            });
+        };
+        self.cancelModal = function () {
+            $mdDialog.cancel();
+        };
+    }
+    function ForgotPasswordCtrl($rootScope, $state, AuthService) {
+        $rootScope.metadata.title = 'Password Recovery';
+
+        var self = this;
+        self.email = '';
+
+        self.doPasswordReset = function () {
+            AuthService.passwordReset(self.email).then(function (res) {
+                console.log(res);
+                $rootScope.toastMessage('Check your inbox for our email! Should be there soon.');
+                //$state.go('sign_in');
+            }, function (error) {
+                $rootScope.toastMessage('Error: ' + error.message);
+            });
+        };
+    }
+
+    function RegisterCtrl($rootScope, $localForage, $q, $state, AuthService, ParseService, $auth) {
+        $rootScope.metadata.title = 'Register';
+        var self = this;
+        self.user = {
+            email: '',
+            password: '',
+            first_name: '',
+            last_name: '',
+            //selected_genres: ''
+        };
+
+        self.getGenres = function () {
+            ParseService.genres();
+        };
+
+        self.getTypes = function () {
+            if (!angular.isArray($rootScope.typesList))
+                ParseService.types();
+        };
+        self.getCountries = function () {
+            if (!angular.isArray($rootScope.countryList))
+                ParseService.countries();
+        };
+
+        self.doRegister = function () {
+            AuthService.createUser(self.user).then(function (res) {
+                console.log('Success', res);
+                $state.go('home');
+            }, function (res) {
+                $scope.error = res.message;
+                console.log('Failed', res);
+            }).then(function () {
+                //window.location.reload();
+            })
+        };
+
+        self.doLoginFacebook = function () {
+            AuthService.registerWithFB().then(function (res) {
                 $state.go('home');
                 //window.location.reload();
-            }
-        }, function (res) {
-            self.error = res;
-            console.log('Failed', res);
-        }).then(function () {
-            self.cancelModal();
-        });
-    };
+            });
+        };
 
-    self.doLoginFacebook = function () {
-        AuthService.loginWithFB().then(function (res) {
-            $state.go('home');
-            window.location.reload();
-        });
-    };
+        self.authenticate = function (provider) {
+            self.error = null;
+            AuthService.otherSocialLogin(provider).then(function (a) {
+                console.log(a);
+            });
+        };
 
-    self.authenticate = function (provider) {
-        self.error = null;
-        AuthService.otherSocialLogin(provider).then(function (a) {
-            console.log(a);
-        });
-    };
-    self.cancelModal = function () {
-        $mdDialog.cancel();
-    };
-}
-function ForgotPasswordCtrl($rootScope, $state, AuthService) {
-    'use strict';
-    $rootScope.metadata.title = 'Password Recovery';
+    }
 
-    var self = this;
-    self.email = '';
+    function BodyCtrl($rootScope, $localForage, $mdSidenav, $mdBottomSheet, $log, $q, $state, AuthService, $mdToast, UserActions, $sce) {
+        var self = this;
 
-    self.doPasswordReset = function () {
-        AuthService.passwordReset(self.email).then(function (res) {
-            console.log(res);
-            $rootScope.toastMessage('Check your inbox for our email! Should be there soon.');
-            //$state.go('sign_in');
-        }, function (error) {
-            $rootScope.toastMessage('Error: ' + error.message);
-        });
-    };
-}
-function RegisterCtrl($rootScope, $localForage, $q, $state, AuthService, ParseService, $auth) {
-    'use strict';
-    $rootScope.metadata.title = 'Register';
-    var self = this;
-    self.user = {
-        email: '',
-        password: '',
-        first_name: '',
-        last_name: '',
-        //selected_genres: ''
-    };
+        self.selected = null;
+        self.toggleList = toggleUsersList;
+        self.showContactOptions = showContactOptions;
+        //console.log($rootScope.$stateParams);
+        $rootScope.AppData.searchText = decodeURIComponent($rootScope.$stateParams.q || '');
+        self.selectedItem = '';
 
-    self.getGenres = function () {
-        ParseService.genres();
-    };
+        self.notificationsTemplate = $sce.trustAsResourceUrl('src/directives/notification.html');
 
-    self.getTypes = function () {
-        if (!angular.isArray($rootScope.typesList))
-            ParseService.types();
-    };
-    self.getCountries = function () {
-        if (!angular.isArray($rootScope.countryList))
-            ParseService.countries();
-    };
+        self.getMatches = function (search) {
+            var deferred = $q.defer();
 
-    self.doRegister = function () {
-        AuthService.createUser(self.user).then(function (res) {
-            console.log('Success', res);
-            $state.go('home');
-        }, function (res) {
-            $scope.error = res.message;
-            console.log('Failed', res);
-        }).then(function () {
-            //window.location.reload();
-        })
-    };
+            // Get matching search queries
+            var terms = new Parse.Query('Search');
+            terms.contains('term', search.toLowerCase());
+            terms.find().then(function (res) {
+                deferred.resolve(res);
+            });
 
-    self.doLoginFacebook = function () {
-        AuthService.loginWithFB().then(function (res) {
-            $state.go('home');
-            //window.location.reload();
-        });
-    };
+            return deferred.promise;
+        };
 
-    self.authenticate = function (provider) {
-        self.error = null;
-        AuthService.otherSocialLogin(provider).then(function (a) {
-            console.log(a);
-        });
-    };
-
-}
-function BodyCtrl($rootScope, $localForage, $mdSidenav, $mdBottomSheet, $log, $q, $state, AuthService, $mdToast, UserActions, $sce) {
-    'use strict';
-    var self = this;
-
-    self.selected = null;
-    self.toggleList = toggleUsersList;
-    self.showContactOptions = showContactOptions;
-    //console.log($rootScope.$stateParams);
-    $rootScope.AppData.searchText = decodeURIComponent($rootScope.$stateParams.q || '');
-    self.selectedItem = '';
-
-    self.notificationsTemplate = $sce.trustAsResourceUrl('src/directives/notification.html');
-
-    self.getMatches = function (search) {
-        var deferred = $q.defer();
-
-        // Get matching search queries
-        var terms = new Parse.Query('Search');
-        terms.contains('term', search.toLowerCase());
-        terms.find().then(function (res) {
-            deferred.resolve(res);
-        });
-
-        return deferred.promise;
-    };
-
-    self.startSearch = function (text) {
-        //console.log(text);
-        if (text) {
-            if (angular.isString(text)) {
-                // save search
-                var query = new Parse.Query("Search");
-                query.equalTo('term', text.toLowerCase());
-                query.first().then(function (res) {
-                    if (res) {
-                        res.increment('count');
-                        res.save();
-                    } else {
-                        var term = new Parse.Object("Search");
-                        term.set('term', text.toLowerCase());
-                        term.set('count', 0);
-                        term.save();
-                    }
-                    // show results
-                    self.toPage('results', {q: text});
-                    if ($state.is('results')) {
-                        $rootScope.$broadcast('search', text);
-                    }
-                });
-            }
-            if (angular.isObject(text)) {
-                switch (text.className) {
-                    case 'Film':
-                        var term = new Parse.Object("Search");
-                        term.set('term', text.attributes.name_lowercase);
-                        term.set('count', 0);
-                        term.save();
-                        // show results
-                        self.toPage('results', {q: text.attributes.name_lowercase});
-                        break;
-                    case 'Search':
-                        // save search
-                        text.increment('count');
-                        text.save();
-                        // show results
-                        self.toPage('results', {q: text.attributes.term});
-                        if ($state.is('results')) {
-                            $rootScope.$broadcast('search', text.attributes.term);
+        self.startSearch = function (text) {
+            //console.log(text);
+            if (text) {
+                if (angular.isString(text)) {
+                    // save search
+                    var query = new Parse.Query("Search");
+                    query.equalTo('term', text.toLowerCase());
+                    query.first().then(function (res) {
+                        if (res) {
+                            res.increment('count');
+                            res.save();
+                        } else {
+                            var term = new Parse.Object("Search");
+                            term.set('term', text.toLowerCase());
+                            term.set('count', 0);
+                            term.save();
                         }
-                        break;
+                        // show results
+                        self.toPage('results', {q: text});
+                        if ($state.is('results')) {
+                            $rootScope.$broadcast('search', text);
+                        }
+                    });
+                }
+                if (angular.isObject(text)) {
+                    switch (text.className) {
+                        case 'Film':
+                            var term = new Parse.Object("Search");
+                            term.set('term', text.attributes.name_lowercase);
+                            term.set('count', 0);
+                            term.save();
+                            // show results
+                            self.toPage('results', {q: text.attributes.name_lowercase});
+                            break;
+                        case 'Search':
+                            // save search
+                            text.increment('count');
+                            text.save();
+                            // show results
+                            self.toPage('results', {q: text.attributes.term});
+                            if ($state.is('results')) {
+                                $rootScope.$broadcast('search', text.attributes.term);
+                            }
+                            break;
+                    }
                 }
             }
-        }
-    };
+        };
 
-    self.checkIfEnterKeyWasPressed = function ($event) {
-        var keyCode = $event.which || $event.keyCode;
-        if (keyCode === 13) {
-            // initiate search
-            self.startSearch($rootScope.AppData.searchText);
-        }
-    };
+        self.checkIfEnterKeyWasPressed = function ($event) {
+            var keyCode = $event.which || $event.keyCode;
+            if (keyCode === 13) {
+                // initiate search
+                self.startSearch($rootScope.AppData.searchText);
+            }
+        };
 
-    $rootScope.generateGenres = function () {
-        var deferred = $q.defer();
-        var genreQuery = new Parse.Query("Genre");
-        genreQuery.find().then(function (result) {
-            $rootScope.genresList = result;
-            $localForage.setItem('genres', result);
-            deferred.resolve(result);
-        });
-        return deferred.promise;
-    };
+        $rootScope.generateGenres = function () {
+            var deferred = $q.defer();
+            var genreQuery = new Parse.Query("Genre");
+            genreQuery.find().then(function (result) {
+                $rootScope.genresList = result;
+                $localForage.setItem('genres', result);
+                deferred.resolve(result);
+            });
+            return deferred.promise;
+        };
 
-    $rootScope.generateTypes = function () {
-        var deferred = $q.defer();
+        $rootScope.generateTypes = function () {
+            var deferred = $q.defer();
 
-        var typeQuery = new Parse.Query("Type");
-        typeQuery.find().then(function (result) {
-            $rootScope.typesList = result;
-            $localForage.setItem('types', result);
-            deferred.resolve(result);
-        });
+            var typeQuery = new Parse.Query("Type");
+            typeQuery.find().then(function (result) {
+                $rootScope.typesList = result;
+                $localForage.setItem('types', result);
+                deferred.resolve(result);
+            });
 
-        return deferred.promise;
-    };
+            return deferred.promise;
+        };
 
-    $rootScope.generateReactions = function () {
-        return [
-            {name: 'Happy', emotion: 'happy', icon: 'happy'},
-            {name: 'Sad', emotion: 'sad', icon: 'sad'},
-            {name: 'Offended', emotion: 'offended', icon: 'annoyed'},
-            {name: 'Amused', emotion: 'amused', icon: 'grinning'},
-            {name: 'Mad', emotion: 'mad', icon: 'mad'},
-            {name: 'Furious', emotion: 'furious', icon: 'angry'},
-            {name: 'Awesome', emotion: 'awesome', icon: 'woah'},
-            {name: 'Terrified', emotion: 'terrified', icon: 'shocked'},
-            {name: 'Confused', emotion: 'confused', icon: 'confused'},
-            {name: 'In-Love', emotion: 'in-love', icon: 'love'},
-            {name: 'Amazed', emotion: 'amazed', icon: 'woah'},
-            {name: 'Motivated', emotion: 'motivated', icon: 'interested'},
-            {name: 'Inspired', emotion: 'inspired', icon: 'interested'},
-            {name: 'Bored', emotion: 'bored', icon: 'bored'},
-            {name: 'Sleepy', emotion: 'sleepy', icon: 'bored'},
-            //{name: 'Determined', emotion: 'determined', icon: 'interested'},
-            {name: 'Emotional', emotion: 'emotional', icon: 'emotional'},
-            {name: 'Excited', emotion: 'excited', icon: 'big-smile'},
-            {name: 'Nostalgic', emotion: 'nostalgic', icon: 'nostalgic'},
-            {name: 'Annoyed', emotion: 'annoyed', icon: 'annoyed'},
-            {name: 'Sorry', emotion: 'sorry', icon: 'sad-tear'},
-            {name: 'Ashamed', emotion: 'ashamed', icon: 'sad-tear'},
-            {name: 'Meh', emotion: 'meh', icon: 'meh'},
-            {name: 'Special', emotion: 'special', icon: 'wink'},
-            {name: 'Sick', emotion: 'sick', icon: 'mute'},
-            {name: 'Great', emotion: 'great', icon: 'grinning'},
-            //{name: 'Down', emotion: 'down', icon: 'sad'},
-            {name: 'Better', emotion: 'better', icon: 'interested'},
-            {name: 'Guilty', emotion: 'guilty', icon: 'sympathetic'},
-            {name: 'Hopeful', emotion: 'hopeful', icon: 'hopeful'},
-            {name: 'Hopeless', emotion: 'hopeless', icon: 'sad'},
-            {name: 'Secure', emotion: 'secure', icon: 'nerdy'},
-            {name: 'Blessed', emotion: 'blessed', icon: 'grinning'},
-            {name: 'Interested', emotion: 'interested', icon: 'interested'},
-            {name: 'Comfortable', emotion: 'comfortable', icon: 'hehe'},
-            {name: 'Disturbed', emotion: 'disturbed', icon: 'confused'},
-            {name: 'Stupid', emotion: 'stupid', icon: 'confused'},
-            {name: 'Sexy', emotion: 'sexy', icon: 'sexy'},
-            {name: 'Relaxed', emotion: 'relaxed', icon: 'happy'},
+        $rootScope.generateReactions = function () {
+            return [
+                {name: 'Happy', emotion: 'happy', icon: 'happy'},
+                {name: 'Sad', emotion: 'sad', icon: 'sad'},
+                {name: 'Offended', emotion: 'offended', icon: 'annoyed'},
+                {name: 'Amused', emotion: 'amused', icon: 'grinning'},
+                {name: 'Mad', emotion: 'mad', icon: 'mad'},
+                {name: 'Furious', emotion: 'furious', icon: 'angry'},
+                {name: 'Awesome', emotion: 'awesome', icon: 'woah'},
+                {name: 'Terrified', emotion: 'terrified', icon: 'shocked'},
+                {name: 'Confused', emotion: 'confused', icon: 'confused'},
+                {name: 'In-Love', emotion: 'in-love', icon: 'love'},
+                {name: 'Amazed', emotion: 'amazed', icon: 'woah'},
+                {name: 'Motivated', emotion: 'motivated', icon: 'interested'},
+                {name: 'Inspired', emotion: 'inspired', icon: 'interested'},
+                {name: 'Bored', emotion: 'bored', icon: 'bored'},
+                {name: 'Sleepy', emotion: 'sleepy', icon: 'bored'},
+                //{name: 'Determined', emotion: 'determined', icon: 'interested'},
+                {name: 'Emotional', emotion: 'emotional', icon: 'emotional'},
+                {name: 'Excited', emotion: 'excited', icon: 'big-smile'},
+                {name: 'Nostalgic', emotion: 'nostalgic', icon: 'nostalgic'},
+                {name: 'Annoyed', emotion: 'annoyed', icon: 'annoyed'},
+                {name: 'Sorry', emotion: 'sorry', icon: 'sad-tear'},
+                {name: 'Ashamed', emotion: 'ashamed', icon: 'sad-tear'},
+                {name: 'Meh', emotion: 'meh', icon: 'meh'},
+                {name: 'Special', emotion: 'special', icon: 'wink'},
+                {name: 'Sick', emotion: 'sick', icon: 'mute'},
+                {name: 'Great', emotion: 'great', icon: 'grinning'},
+                //{name: 'Down', emotion: 'down', icon: 'sad'},
+                {name: 'Better', emotion: 'better', icon: 'interested'},
+                {name: 'Guilty', emotion: 'guilty', icon: 'sympathetic'},
+                {name: 'Hopeful', emotion: 'hopeful', icon: 'hopeful'},
+                {name: 'Hopeless', emotion: 'hopeless', icon: 'sad'},
+                {name: 'Secure', emotion: 'secure', icon: 'nerdy'},
+                {name: 'Blessed', emotion: 'blessed', icon: 'grinning'},
+                {name: 'Interested', emotion: 'interested', icon: 'interested'},
+                {name: 'Comfortable', emotion: 'comfortable', icon: 'hehe'},
+                {name: 'Disturbed', emotion: 'disturbed', icon: 'confused'},
+                {name: 'Stupid', emotion: 'stupid', icon: 'confused'},
+                {name: 'Sexy', emotion: 'sexy', icon: 'sexy'},
+                {name: 'Relaxed', emotion: 'relaxed', icon: 'happy'},
 
-            {name: 'Empowered', emotion: 'Empowered', icon: 'happy'},
-            {name: 'Cool', emotion: 'Cool', icon: 'happy'},
-            {name: 'Pumped', emotion: 'Pumped', icon: 'happy'},
-            {name: 'Turned On', emotion: 'Turned On', icon: 'happy'},
-            {name: 'Proud', emotion: 'Proud', icon: 'happy'},
-            {name: 'Disgusted', emotion: 'Disgusted', icon: 'annoyed'},
-            {name: 'Sympathetic', emotion: 'Sympathetic', icon: 'happy'},
-            {name: 'Overwhelmed', emotion: 'Overwhelmed', icon: 'happy'},
-            {name: 'Passionate', emotion: 'Passionate', icon: 'happy'},
-            {name: 'Thrilled', emotion: 'Thrilled', icon: 'happy'},
-            {name: 'Loved', emotion: 'Loved', icon: 'happy'},
-            {name: 'Thankful', emotion: 'Thankful', icon: 'happy'},
-            {name: 'Appreciated', emotion: 'Appreciated', icon: 'happy'},
-            {name: 'Romantic', emotion: 'Romantic', icon: 'love'},
-            {name: 'Chill', emotion: 'Chill', icon: 'happy'},
-            {name: 'Pissed Off', emotion: 'Pissed Off', icon: 'annoyed'},
-            {name: 'Accomplished', emotion: 'Accomplished', icon: 'happy'},
-            {name: 'Honored', emotion: 'Honored', icon: 'happy'},
-            {name: 'Relaxed', emotion: 'Relaxed', icon: 'happy'},
-            {name: 'Young', emotion: 'Young', icon: 'happy'},
-            {name: 'Wild', emotion: 'Wild', icon: 'happy'},
-            {name: 'Old', emotion: 'Old', icon: 'happy'},
-            {name: 'Free', emotion: 'Free', icon: 'happy'},
-            {name: 'Epic', emotion: 'Epic', icon: 'happy'},
-            {name: 'Engaged', emotion: 'Engaged', icon: 'happy'},
-            {name: 'Fired Up', emotion: 'Fired Up', icon: 'happy'},
-            {name: 'Detached', emotion: 'Detached', icon: 'happy'},
-            {name: 'Disconnected', emotion: 'Disconnected', icon: 'confused'},
-            {name: 'Connected', emotion: 'Connected', icon: 'happy'},
-            {name: 'Distant', emotion: 'Distant', icon: 'happy'},
-            {name: 'Beautiful', emotion: 'Beautiful', icon: 'happy'},
+                {name: 'Empowered', emotion: 'Empowered', icon: 'happy'},
+                {name: 'Cool', emotion: 'Cool', icon: 'happy'},
+                {name: 'Pumped', emotion: 'Pumped', icon: 'happy'},
+                {name: 'Turned On', emotion: 'Turned On', icon: 'happy'},
+                {name: 'Proud', emotion: 'Proud', icon: 'happy'},
+                {name: 'Disgusted', emotion: 'Disgusted', icon: 'annoyed'},
+                {name: 'Sympathetic', emotion: 'Sympathetic', icon: 'happy'},
+                {name: 'Overwhelmed', emotion: 'Overwhelmed', icon: 'happy'},
+                {name: 'Passionate', emotion: 'Passionate', icon: 'happy'},
+                {name: 'Thrilled', emotion: 'Thrilled', icon: 'happy'},
+                {name: 'Loved', emotion: 'Loved', icon: 'happy'},
+                {name: 'Thankful', emotion: 'Thankful', icon: 'happy'},
+                {name: 'Appreciated', emotion: 'Appreciated', icon: 'happy'},
+                {name: 'Romantic', emotion: 'Romantic', icon: 'love'},
+                {name: 'Chill', emotion: 'Chill', icon: 'happy'},
+                {name: 'Pissed Off', emotion: 'Pissed Off', icon: 'annoyed'},
+                {name: 'Accomplished', emotion: 'Accomplished', icon: 'happy'},
+                {name: 'Honored', emotion: 'Honored', icon: 'happy'},
+                {name: 'Relaxed', emotion: 'Relaxed', icon: 'happy'},
+                {name: 'Young', emotion: 'Young', icon: 'happy'},
+                {name: 'Wild', emotion: 'Wild', icon: 'happy'},
+                {name: 'Old', emotion: 'Old', icon: 'happy'},
+                {name: 'Free', emotion: 'Free', icon: 'happy'},
+                {name: 'Epic', emotion: 'Epic', icon: 'happy'},
+                {name: 'Engaged', emotion: 'Engaged', icon: 'happy'},
+                {name: 'Fired Up', emotion: 'Fired Up', icon: 'happy'},
+                {name: 'Detached', emotion: 'Detached', icon: 'happy'},
+                {name: 'Disconnected', emotion: 'Disconnected', icon: 'confused'},
+                {name: 'Connected', emotion: 'Connected', icon: 'happy'},
+                {name: 'Distant', emotion: 'Distant', icon: 'happy'},
+                {name: 'Beautiful', emotion: 'Beautiful', icon: 'happy'},
 
-            {name: 'Confident', emotion: 'confident', icon: 'happy'},
-            {name: 'Positive', emotion: 'positive', icon: 'happy'},
-            {name: 'Negative', emotion: 'negative', icon: 'annoyed'},
-            {name: 'Heartbroken', emotion: 'heartbroken', icon: 'emotional'},
-            {name: 'Silly', emotion: 'Silly', icon: 'hehe'},
-            {name: 'Disappointed', emotion: 'disappointed', icon: 'sad'},
-            {name: 'Stressed', emotion: 'stressed', icon: 'annoyed'},
-            {name: 'Fantastic', emotion: 'fantastic', icon: 'big-smile'},
-            {name: 'Hungry', emotion: 'hungry', icon: 'annoyed'},
-            {name: 'Shocked', emotion: 'shocked', icon: 'shocked'},
-            {name: 'Frustrated', emotion: 'frustrated', icon: 'annoyed'},
-            {name: 'Engrossed', emotion: 'engrossed', icon: 'interested'},
-            {name: 'Peaceful', emotion: 'peaceful', icon: 'happy'},
-            {name: 'Surprised', emotion: 'surprised', icon: 'woah'},
-            {name: 'Satisfied', emotion: 'satisfied', icon: 'happy'},
-            {name: 'Incomplete', emotion: 'incomplete', icon: 'sad'},
-            {name: 'Complete', emotion: 'complete', icon: 'happy'},
-            {name: 'Entertained', emotion: 'entertained', icon: 'hehe'},
-            {name: 'Enlightened', emotion: 'enlightened', icon: 'interested'},
-            {name: 'Relieved', emotion: 'relieved', icon: 'happy'},
-            {name: 'Concerned', emotion: 'concerned', icon: 'sympathetic'},
-            {name: 'Strong', emotion: 'strong', icon: 'happy'},
-            {name: 'Optimistic', emotion: 'optimistic', icon: 'happy'},
-            {name: 'Discouraged', emotion: 'discouraged', icon: 'happy'},
-            {name: 'Lucky', emotion: 'lucky', icon: 'happy'},
-            {name: 'Scared', emotion: 'scared', icon: 'happy'},
-            {name: 'Brave', emotion: 'brave', icon: 'happy'},
-            {name: 'Naughty', emotion: 'naughty', icon: 'sexy'},
-            {name: 'Alert', emotion: 'alert', icon: 'happy'},
-            {name: 'Alive', emotion: 'alive', icon: 'happy'},
-            {name: 'Perfect', emotion: 'perfect', icon: 'happy'},
-            {name: 'Nervous', emotion: 'nervous', icon: 'happy'},
-            {name: 'Tense', emotion: 'tense', icon: 'annoyed'},
-            {name: 'Eager', emotion: 'eager', icon: 'happy'},
-            {name: 'Impatient', emotion: 'impatient', icon: 'annoyed'},
-            {name: 'Philosophical', emotion: 'philosophical', icon: 'interested'},
-            {name: 'Empty', emotion: 'empty', icon: 'happy'},
-            {name: 'Informed', emotion: 'informed', icon: 'nerdy'},
-            {name: 'Playful', emotion: 'playful', icon: 'happy'},
-            {name: 'Knowledgeable', emotion: 'knowledgeable', icon: 'nerdy'},
-            {name: 'Refreshed', emotion: 'refreshed', icon: 'happy'},
-            {name: 'Fortunate', emotion: 'fortunate', icon: 'happy'},
-            {name: 'Wanted', emotion: 'wanted', icon: 'annoyed'},
-            {name: 'Thirsty', emotion: 'thirsty', icon: 'happy'},
-            {name: 'Desperate', emotion: 'desperate', icon: 'happy'}
-        ];
-    };
+                {name: 'Confident', emotion: 'confident', icon: 'happy'},
+                {name: 'Positive', emotion: 'positive', icon: 'happy'},
+                {name: 'Negative', emotion: 'negative', icon: 'annoyed'},
+                {name: 'Heartbroken', emotion: 'heartbroken', icon: 'emotional'},
+                {name: 'Silly', emotion: 'Silly', icon: 'hehe'},
+                {name: 'Disappointed', emotion: 'disappointed', icon: 'sad'},
+                {name: 'Stressed', emotion: 'stressed', icon: 'annoyed'},
+                {name: 'Fantastic', emotion: 'fantastic', icon: 'big-smile'},
+                {name: 'Hungry', emotion: 'hungry', icon: 'annoyed'},
+                {name: 'Shocked', emotion: 'shocked', icon: 'shocked'},
+                {name: 'Frustrated', emotion: 'frustrated', icon: 'annoyed'},
+                {name: 'Engrossed', emotion: 'engrossed', icon: 'interested'},
+                {name: 'Peaceful', emotion: 'peaceful', icon: 'happy'},
+                {name: 'Surprised', emotion: 'surprised', icon: 'woah'},
+                {name: 'Satisfied', emotion: 'satisfied', icon: 'happy'},
+                {name: 'Incomplete', emotion: 'incomplete', icon: 'sad'},
+                {name: 'Complete', emotion: 'complete', icon: 'happy'},
+                {name: 'Entertained', emotion: 'entertained', icon: 'hehe'},
+                {name: 'Enlightened', emotion: 'enlightened', icon: 'interested'},
+                {name: 'Relieved', emotion: 'relieved', icon: 'happy'},
+                {name: 'Concerned', emotion: 'concerned', icon: 'sympathetic'},
+                {name: 'Strong', emotion: 'strong', icon: 'happy'},
+                {name: 'Optimistic', emotion: 'optimistic', icon: 'happy'},
+                {name: 'Discouraged', emotion: 'discouraged', icon: 'happy'},
+                {name: 'Lucky', emotion: 'lucky', icon: 'happy'},
+                {name: 'Scared', emotion: 'scared', icon: 'happy'},
+                {name: 'Brave', emotion: 'brave', icon: 'happy'},
+                {name: 'Naughty', emotion: 'naughty', icon: 'sexy'},
+                {name: 'Alert', emotion: 'alert', icon: 'happy'},
+                {name: 'Alive', emotion: 'alive', icon: 'happy'},
+                {name: 'Perfect', emotion: 'perfect', icon: 'happy'},
+                {name: 'Nervous', emotion: 'nervous', icon: 'happy'},
+                {name: 'Tense', emotion: 'tense', icon: 'annoyed'},
+                {name: 'Eager', emotion: 'eager', icon: 'happy'},
+                {name: 'Impatient', emotion: 'impatient', icon: 'annoyed'},
+                {name: 'Philosophical', emotion: 'philosophical', icon: 'interested'},
+                {name: 'Empty', emotion: 'empty', icon: 'happy'},
+                {name: 'Informed', emotion: 'informed', icon: 'nerdy'},
+                {name: 'Playful', emotion: 'playful', icon: 'happy'},
+                {name: 'Knowledgeable', emotion: 'knowledgeable', icon: 'nerdy'},
+                {name: 'Refreshed', emotion: 'refreshed', icon: 'happy'},
+                {name: 'Fortunate', emotion: 'fortunate', icon: 'happy'},
+                {name: 'Wanted', emotion: 'wanted', icon: 'annoyed'},
+                {name: 'Thirsty', emotion: 'thirsty', icon: 'happy'},
+                {name: 'Desperate', emotion: 'desperate', icon: 'happy'}
+            ];
+        };
 
-    $rootScope.generateGenres();
-    $rootScope.generateTypes();
+        $rootScope.generateGenres();
+        $rootScope.generateTypes();
 
-    $rootScope.toastMessage = function (msg) {
-        $mdToast.showSimple(msg);
-    };
+        $rootScope.toastMessage = function (msg) {
+            $mdToast.showSimple(msg);
+        };
 
-
-    /**
-     * First hide the bottomsheet IF visible, then
-     * hide or Show the 'left' sideNav area
-     */
-    function toggleUsersList() {
-        var pending = $mdBottomSheet.hide() || $q.when(true);
-
-        pending.then(function () {
-            $mdSidenav('left').toggle();
-        });
-    }
-
-    self.closeLeftMenu = function () {
-        $mdSidenav('left').close();
-    };
-
-    /**
-     * Show the bottom sheet
-     */
-    function showContactOptions($event) {
-        var user = self.selected;
-
-        return $mdBottomSheet.show({
-            parent: angular.element(document.getElementById('content')),
-            templateUrl: './src/users/view/contactSheet.html',
-            controller: ['$mdBottomSheet', ContactPanelController],
-            controllerAs: "cp",
-            bindToController: true,
-            targetEvent: $event
-        }).then(function (clickedItem) {
-            clickedItem && $log.debug(clickedItem.name + ' clicked!');
-        });
 
         /**
-         * Bottom Sheet controller for the Avatar Actions
+         * First hide the bottomsheet IF visible, then
+         * hide or Show the 'left' sideNav area
          */
-        function ContactPanelController($mdBottomSheet) {
-            this.user = user;
-            this.actions = [
-                {name: 'Phone', icon: 'phone', icon_url: 'assets/svg/phone.svg'},
-                {name: 'Twitter', icon: 'twitter', icon_url: 'assets/svg/twitter.svg'},
-                {name: 'Google+', icon: 'google_plus', icon_url: 'assets/svg/google_plus.svg'},
-                {name: 'Hangout', icon: 'hangouts', icon_url: 'assets/svg/hangouts.svg'}
-            ];
-            this.submitContact = function (action) {
-                $mdBottomSheet.hide(action);
-            };
-        }
-    }
+        function toggleUsersList() {
+            var pending = $mdBottomSheet.hide() || $q.when(true);
 
-
-    self.toPage = function (state, args) {
-        $state.go(state, args);
-    };
-
-    self.notiURL = function (n) {
-        if (!n.is_read) {
-            self.markAsRead(n);
-        }
-        self.toPage(n.main_url.state, n.main_url.args);
-        $mdSidenav('right').close();
-    };
-
-    self.markAllAsSeen = function () {
-        $rootScope.getNewToken('notification', $rootScope.AppData.User.id).then(function (token) {
-            var feed = window.StreamClient.feed('notification', $rootScope.AppData.User.id, token);
-            feed.get({limit: 5, mark_seen: true}, function (a) {
-                console.log(a);
-                _.each($rootScope.AppData.RawNotifications.list, function (n) {
-                    n.is_seen = true;
-                });
-                $rootScope.AppData.RawNotifications.unseen = 0;
-            })
-        });
-    };
-
-    self.markAllAsRead = function () {
-        $rootScope.getNewToken('notification', $rootScope.AppData.User.id).then(function (token) {
-            var feed = window.StreamClient.feed('notification', $rootScope.AppData.User.id, token);
-            feed.get({limit: 20, mark_read: true}, function (a) {
-                _.each($rootScope.AppData.RawNotifications.list, function (n) {
-                    n.is_read = true;
-                });
-                $rootScope.AppData.RawNotifications.unread = 0;
-            })
-        });
-    };
-
-    self.markAsRead = function (n) {
-        $rootScope.getNewToken('notification', $rootScope.AppData.User.id).then(function (token) {
-            var feed = window.StreamClient.feed('notification', $rootScope.AppData.User.id, token);
-            feed.get({limit: 5, mark_read: [n.id]}, function (a) {
-                n.is_read = true;
-                --$rootScope.AppData.RawNotifications.unseen;
-                --$rootScope.AppData.RawNotifications.unread;
-                return n;
-            })
-        });
-    };
-
-    self.doSignOut = function () {
-        AuthService.logout().then(function (res) {
-            window.location.reload();
-        })
-    };
-
-    self.openNotificationsMenu = function () {
-        $mdSidenav('right').toggle()
-            .then(function () {
-
+            pending.then(function () {
+                $mdSidenav('left').toggle();
             });
-        self.markAllAsSeen();
-    };
+        }
 
-    $rootScope.toFavorites = self.toFavorites = toFavorites;
-    $rootScope.toWatchLater = self.toWatchLater = toWatchLater;
-    $rootScope.checkContains = self.checkContains = checkContains;
-    $rootScope.isSame = self.isSame = isSame;
+        self.closeLeftMenu = function () {
+            $mdSidenav('left').close();
+        };
 
-    function toFavorites(obj) {
-        return UserActions.favorite(obj);
+        /**
+         * Show the bottom sheet
+         */
+        function showContactOptions($event) {
+            var user = self.selected;
+
+            return $mdBottomSheet.show({
+                parent: angular.element(document.getElementById('content')),
+                templateUrl: './src/users/view/contactSheet.html',
+                controller: ['$mdBottomSheet', ContactPanelController],
+                controllerAs: "cp",
+                bindToController: true,
+                targetEvent: $event
+            }).then(function (clickedItem) {
+                clickedItem && $log.debug(clickedItem.name + ' clicked!');
+            });
+
+            /**
+             * Bottom Sheet controller for the Avatar Actions
+             */
+            function ContactPanelController($mdBottomSheet) {
+                this.user = user;
+                this.actions = [
+                    {name: 'Phone', icon: 'phone', icon_url: 'assets/svg/phone.svg'},
+                    {name: 'Twitter', icon: 'twitter', icon_url: 'assets/svg/twitter.svg'},
+                    {name: 'Google+', icon: 'google_plus', icon_url: 'assets/svg/google_plus.svg'},
+                    {name: 'Hangout', icon: 'hangouts', icon_url: 'assets/svg/hangouts.svg'}
+                ];
+                this.submitContact = function (action) {
+                    $mdBottomSheet.hide(action);
+                };
+            }
+        }
+
+
+        self.toPage = function (state, args) {
+            $state.go(state, args);
+        };
+
+        self.notiURL = function (n) {
+            if (!n.is_read) {
+                self.markAsRead(n);
+            }
+            self.toPage(n.main_url.state, n.main_url.args);
+            $mdSidenav('right').close();
+        };
+
+        self.markAllAsSeen = function () {
+            $rootScope.getNewToken('notification', $rootScope.AppData.User.id).then(function (token) {
+                var feed = window.StreamClient.feed('notification', $rootScope.AppData.User.id, token);
+                feed.get({limit: 5, mark_seen: true}, function (a) {
+                    console.log(a);
+                    _.each($rootScope.AppData.RawNotifications.list, function (n) {
+                        n.is_seen = true;
+                    });
+                    $rootScope.AppData.RawNotifications.unseen = 0;
+                })
+            });
+        };
+
+        self.markAllAsRead = function () {
+            $rootScope.getNewToken('notification', $rootScope.AppData.User.id).then(function (token) {
+                var feed = window.StreamClient.feed('notification', $rootScope.AppData.User.id, token);
+                feed.get({limit: 20, mark_read: true}, function (a) {
+                    _.each($rootScope.AppData.RawNotifications.list, function (n) {
+                        n.is_read = true;
+                    });
+                    $rootScope.AppData.RawNotifications.unread = 0;
+                })
+            });
+        };
+
+        self.markAsRead = function (n) {
+            $rootScope.getNewToken('notification', $rootScope.AppData.User.id).then(function (token) {
+                var feed = window.StreamClient.feed('notification', $rootScope.AppData.User.id, token);
+                feed.get({limit: 5, mark_read: [n.id]}, function (a) {
+                    n.is_read = true;
+                    --$rootScope.AppData.RawNotifications.unseen;
+                    --$rootScope.AppData.RawNotifications.unread;
+                    return n;
+                })
+            });
+        };
+
+        self.doSignOut = function () {
+            AuthService.logout().then(function (res) {
+                window.location.reload();
+            })
+        };
+
+        self.openNotificationsMenu = function () {
+            $mdSidenav('right').toggle()
+                .then(function () {
+
+                });
+            self.markAllAsSeen();
+        };
+
+        $rootScope.toFavorites = self.toFavorites = toFavorites;
+        $rootScope.toWatchLater = self.toWatchLater = toWatchLater;
+        $rootScope.checkContains = self.checkContains = checkContains;
+        $rootScope.isSame = self.isSame = isSame;
+
+        function toFavorites(obj) {
+            return UserActions.favorite(obj);
+        }
+
+        function toWatchLater(obj) {
+            return UserActions.watchLater(obj);
+        }
+
+        function checkContains(obj, search) {
+            return _.contains(obj, search);
+        }
+
+        function isSame(a, b) {
+            return moment(a).isSame(b, 'hour');
+        }
     }
 
-    function toWatchLater(obj) {
-        return UserActions.watchLater(obj);
-    }
+    function HomeCtrl($rootScope, $scope, $q, $mdDialog, $timeout, $interval) {
+        var self = this;
+        $rootScope.metadata.title = 'Home';
 
-    function checkContains(obj, search) {
-        return _.contains(obj, search);
-    }
+        self.indeterminate = 'indeterminate';
+        self.latest = {
+            watched: [],
+            watchedLoaded: 'indeterminate',
+            critiques: [],
+            critiquesLoaded: 'indeterminate',
+            reactions: [],
+            reactionsLoaded: 'indeterminate',
+            comments: [],
+            commentsLoaded: 'indeterminate'
+        };
+        self.featuredProjects = [
+            {title: 'Featured 1', icon: '', color: 'darkBlue'},
+            {title: 'Featured 2', icon: '', color: 'pink'},
+            {title: 'Featured 3', icon: '', color: 'yellow'},
+            {title: 'Featured 4', icon: '', color: 'blue'},
+            {title: 'Featured 5', icon: '', color: 'red'},
+            //{title: 'Featured 6', icon: '', color:'green'},
+        ];
 
-    function isSame(a, b) {
-        return moment(a).isSame(b, 'hour');
-    }
-}
-function HomeCtrl($rootScope, $scope, $q, $mdDialog, $timeout, $interval) {
-    var self = this;
-    $rootScope.metadata.title = 'Home';
+        self.toggleLoader = function (loader, state) {
 
-    self.indeterminate = 'indeterminate';
-    self.latest = {
-        watched: [],
-        watchedLoaded: 'indeterminate',
-        critiques: [],
-        critiquesLoaded: 'indeterminate',
-        reactions: [],
-        reactionsLoaded: 'indeterminate',
-        comments: [],
-        commentsLoaded: 'indeterminate'
-    };
-    self.featuredProjects = [
-        {title: 'Featured 1', icon: '', color: 'darkBlue'},
-        {title: 'Featured 2', icon: '', color: 'pink'},
-        {title: 'Featured 3', icon: '', color: 'yellow'},
-        {title: 'Featured 4', icon: '', color: 'blue'},
-        {title: 'Featured 5', icon: '', color: 'red'},
-        //{title: 'Featured 6', icon: '', color:'green'},
-    ];
+        };
 
-    self.toggleLoader = function (loader, state) {
+        self.refresh = function () {
+            var innerQuery = new Parse.Query("Film");
+            //innerQuery.notEqualTo("disableProject", true);
+            innerQuery.notEqualTo("unlist", true);
+            innerQuery.limit(8);
+            innerQuery.include(["type", "owner"]);
 
-    };
-
-    self.refresh = function () {
-        var innerQuery = new Parse.Query("Film");
-        //innerQuery.notEqualTo("disableProject", true);
-        innerQuery.notEqualTo("unlist", true);
-
-        var filmsQuery = new Parse.Query("Film_Genre");
-        filmsQuery.matchesQuery("film", innerQuery);
-        filmsQuery.include(["film.type", "film.owner"]);
-        filmsQuery.descending("createdAt");
-        filmsQuery.find().then(function (result) {
-            self.films = result;
-            /*_.each(self.films, function (film) {
+            /*var filmsQuery = new Parse.Query("Film_Genre");
+             filmsQuery.matchesQuery("film", innerQuery);
+             filmsQuery.include(["film.type", "film.owner"]);
+             filmsQuery.descending("createdAt");
+             filmsQuery.find().then(function (result) {
+             self.films = result;
+             /!*_.each(self.films, function (film) {
              var fGRelation = film.relation("genres");
              fGRelation.query().find({
              success: function (list) {
@@ -561,8 +563,8 @@ function HomeCtrl($rootScope, $scope, $q, $mdDialog, $timeout, $interval) {
 
              }
              });
-             });*/
-            /*var cQ = new Parse.Query("Critique");
+             });*!/
+             /!*var cQ = new Parse.Query("Critique");
              cQ.exists("author");
              cQ.equalTo('parent', film.attributes.film);
              cQ.find().then(function (res) {
@@ -578,1490 +580,1439 @@ function HomeCtrl($rootScope, $scope, $q, $mdDialog, $timeout, $interval) {
              console.log(total / res.length);
              film.attributes.film.save();
              });
+             });*!/
              });*/
-        });
 
-        // Trending Videos
-        var innerQ_1 = innerQuery;
-        innerQ_1.descending("reactionCount");
-        innerQ_1.limit(4);
-        innerQ_1.include(["type", "owner"]);
-        innerQ_1.find().then(function (result) {
-            self.trending = result;
-        });
+            // Trending Videos
+            var innerQ_1 = innerQuery;
+            innerQ_1.descending("reactionCount");
+            innerQ_1.find().then(function (result) {
+                self.trending = result;
+            });
 
-        // Highest Rated Videos
-        var innerQ_2 = innerQuery;
-        innerQ_2.descending("iwRating");
-        innerQ_2.limit(4);
-        innerQ_2.include(["type", "owner"]);
-        innerQ_2.find().then(function (result) {
-            self.highestRated = result;
-        });
+            // Highest Rated Videos
+            var innerQ_2 = innerQuery;
+            innerQ_2.descending("iwRating");
+            innerQ_2.find().then(function (result) {
+                self.highestRated = result;
+            });
 
-        // Highest Awarded Videos
-        var innerQ_3 = innerQuery;
-        innerQ_3.descending("awardCount");
-        innerQ_3.limit(4);
-        innerQ_3.include(["type", "owner"]);
-        innerQ_3.find().then(function (result) {
-            self.highestAwarded = result;
-        });
+            // Highest Awarded Videos
+            var innerQ_3 = innerQuery;
+            innerQ_3.descending("awardCount");
+            innerQ_3.find().then(function (result) {
+                self.highestAwarded = result;
+            });
 
-        // Recent Videos
-        var innerQ_4 = innerQuery;
-        innerQ_4.descending("createdAt");
-        innerQ_4.limit(4);
-        innerQ_4.include(["type", "owner"]);
-        innerQ_4.find().then(function (result) {
-            self.recentFilms = result;
-        });
+            // Recent Videos
+            var innerQ_4 = innerQuery;
+            innerQ_4.descending("createdAt");
+            innerQ_4.find().then(function (result) {
+                self.recentFilms = result;
+            });
 
-        // Recent Critiques
-        var critiqueQuery = new Parse.Query("Critique");
-        critiqueQuery.descending("createdAt");
-        critiqueQuery.exists("author");
-        critiqueQuery.include(["author", "parent"]);
-        critiqueQuery.limit(5);
-        var q1 = critiqueQuery.find().then(function (result) {
+            // Recent Critiques
+            var critiqueQuery = new Parse.Query("Critique");
+            critiqueQuery.descending("createdAt");
+            critiqueQuery.exists("author");
+            critiqueQuery.include(["author", "parent"]);
+            critiqueQuery.limit(6);
+            var q1 = critiqueQuery.find().then(function (result) {
 
-            return result;
-        });
+                return result;
+            });
 
-        // Recent Reactions
-        var reactionQuery = new Parse.Query("Reaction");
-        reactionQuery.descending("createdAt");
-        reactionQuery.exists("user");
-        reactionQuery.exists("parent");
-        reactionQuery.include(["user", "parent"]);
-        reactionQuery.limit(5);
-        var q2 = reactionQuery.find().then(function (result) {
-            return result;
-        });
+            // Recent Reactions
+            var reactionQuery = new Parse.Query("Reaction");
+            reactionQuery.descending("createdAt");
+            reactionQuery.exists("user");
+            reactionQuery.exists("parent");
+            reactionQuery.include(["user", "parent"]);
+            reactionQuery.limit(5);
+            var q2 = reactionQuery.find().then(function (result) {
+                return result;
+            });
 
-        // Recent Comments
-        var commentQuery = new Parse.Query("Comment");
-        commentQuery.descending("createdAt");
-        commentQuery.exists("author");
-        commentQuery.include(["author", "parentFilm", "parentComment.author", "parentCritique.parent"]);
-        commentQuery.limit(5);
-        var q3 = commentQuery.find().then(function (result) {
-            return result;
-        });
+            // Recent Comments
+            var commentQuery = new Parse.Query("Comment");
+            commentQuery.descending("createdAt");
+            commentQuery.exists("author");
+            commentQuery.include(["author", "parentFilm", "parentComment.author", "parentCritique.parent"]);
+            commentQuery.limit(5);
+            var q3 = commentQuery.find().then(function (result) {
+                return result;
+            });
 
-        $q.all([q1, q2, q3]).then(function (vars) {
-            self.latest.critiques = vars[0];
-            self.latest.reactions = vars[1];
-            self.latest.comments = vars[2];
-            self.latest.critiquesLoaded = '';
-            self.latest.reactionsLoaded = '';
-            self.latest.commentsLoaded = '';
+            $q.all([q1, q2, q3]).then(function (vars) {
+                self.latest.critiques = vars[0];
+                self.latest.reactions = vars[1];
+                self.latest.comments = vars[2];
+                self.latest.critiquesLoaded = '';
+                self.latest.reactionsLoaded = '';
+                self.latest.commentsLoaded = '';
 
-        })
+            })
 
-    };
-    self.refresh();
-    self.refInterval = $interval(self.refresh, 30000);
-
-    self.openMenu = function ($mdOpenMenu, ev) {
-        var originatorEv = ev;
-        $mdOpenMenu(ev);
-    };
-
-    self.toggleFavorite = function (video) {
-
-    };
-
-    self.toggleWatchLater = function (video) {
-
-    };
-
-    /*$rootScope.getNewToken('user', 'all').then(function (token) {
-     var feed1 = window.StreamClient.feed('user', 'all', token);
-     });*/
-
-
-    function failCallback(data) {
-        //alert('something went wrong, check the console logs');
-        console.log(data);
-    }
-
-    /*feed1.get({limit:5}, function(error, response, body) {
-     self.recently.watched = body.results;
-     console.log(error, response, body);
-     });*/
-
-    $rootScope.getNewToken('watched', 'all').then(function (token) {
-        var feed2 = window.StreamClient.feed('watched', 'all', token);
-        feed2.subscribe(function () {
-            var throttledWatch = _.throttle(self.getWatchedList(feed2), 60000);
-            $timeout(throttledWatch, 0);
-            //console.log(obj);
-        }).then(function (obj) {
-            self.getWatchedList(feed2);
-        }, failCallback);
-    });
-
-    self.getWatchedList = function (feed) {
-        self.latest.watchedLoaded = self.indeterminate;
-        var watchedQuery = new Parse.Query("Watched");
-        watchedQuery.include('film');
-        watchedQuery.limit(5);
-        watchedQuery.descending("updatedAt");
-        watchedQuery.find().then(function (res) {
-            self.latest.watched = res;
-            self.latest.watchedLoaded = '';
-        });
-    };
-
-    $scope.$on('$destroy', function () {
-        $interval.cancel(self.refInterval);
-    });
-}
-function BrowseCtrl($scope, $rootScope, $state, $localForage, $q, $timeout, $mdSidenav, $mdDialog) {
-    "use strict";
-    $rootScope.metadata.title = 'Browse';
-
-    var Browse = this;
-    Browse.isOpen = false;
-    Browse.selectedGenres = [];
-    Browse.selectedTypes = [];
-    Browse.films = [];
-    Browse.arrs = {
-        genres: [],
-        types: []
-    };
-    Browse.filters = {
-        sort: '',
-        genres: [],
-        types: []
-    };
-
-
-    $('.collapsible').collapsible({
-        accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
-    });
-
-    $rootScope.generateTypes().then(function (types) {
-        var d = $q.defer();
-        Browse.arrs.types = angular.isArray(Browse.selectedTypes) && Browse.selectedTypes.length ? Browse.selectedTypes : types;
-        return d.promise;
-    });
-    $rootScope.generateGenres().then(function (genres) {
-        var d = $q.defer();
-        Browse.arrs.genres = angular.isArray(Browse.selectedGenres) && Browse.selectedGenres.length ? Browse.selectedGenres : genres;
-        return d.promise;
-    });
-
-    Browse.toggleFilterNav = function () {
-        $mdSidenav('filterNav').toggle();
-    };
-
-    Browse.refresh = function () {
-        $q.all([$rootScope.generateTypes(), $rootScope.generateGenres()]).then(function (values) {
-            Browse.filters.sort = $rootScope.$stateParams.sort || 'recent';
-            Browse.search(values[1], values[0], Browse.filters.sort);
-        });
-    };
-
-    Browse.search = function (genres, types, filter) {
-        if (genres && !genres.length)
-            genres = Browse.arrs.genres;
-        if (types && !types.length)
-            types = Browse.arrs.types;
-        //var joinQuery = new Parse.Query("Film_Genre");
-        var filmQuery = new Parse.Query("Film");
-        //innerQuery.notEqualTo("disableProject", true);
-        filmQuery.notEqualTo("unlist", true);
-        filmQuery.include(["type", "owner"]);
-        switch (filter) {
-            case 'trending':
-                filmQuery.descending("reactionCount");
-                break;
-            case 'rating':
-                filmQuery.descending("iwRating");
-                break;
-            case 'awards':
-                filmQuery.descending("awardCount");
-                break;
-            case 'recent':
-            default:
-                filmQuery.descending("createdAt");
-                break;
-        }
-        //joinQuery.limit(10);
-        filmQuery.containedIn('genres', genres);
-        filmQuery.containedIn('type', types);
-        //joinQuery.descending("film.reactionCount");
-        filmQuery.limit(30);
-        filmQuery.find().then(function (data) {
-            //console.log(data);
-            Browse.films = data;
-        });
-
-        $scope.$broadcast('scroll.refreshComplete');
-    };
-
-    Browse.selectGenres = function (genre) {
-        var exists = _.find(Browse.selectedGenres, function (a) {
-            return a && a.id == genre.id;
-        });
-        !!exists ? Browse.selectedGenres = _.reject(Browse.selectedGenres, genre) : Browse.selectedGenres.push(genre);
-        Browse.search(Browse.selectedGenres, Browse.selectedTypes);
-    };
-
-    Browse.selectTypes = function (type) {
-        var exists = _.find(Browse.selectedTypes, function (a) {
-            return a && a.id == type.objectId;
-        });
-        !!exists ? Browse.selectedGenres = _.reject(Browse.selectedTypes, type) : Browse.selectedTypes.push(type);
-        Browse.search(Browse.selectedGenres, Browse.selectedTypes);
-    };
-
-    Browse.filterBy = function (filter) {
-        Browse.filters.sort = filter;
-        Browse.search(Browse.selectedGenres, Browse.selectedTypes, filter);
-    };
-
-    Browse.openMenu = function ($mdOpenMenu, ev) {
-        var originatorEv = ev;
-        $mdOpenMenu(ev);
-    };
-
-    Browse.toggleFavorite = function (video) {
-
-    };
-
-    Browse.toggleWatchLater = function (video) {
-
-    };
-
-    $scope.$watch('', function (newValue, oldValue) {
-
-    });
-
-    Browse.refresh();
-}
-function ResultsCtrl($scope, $rootScope, $state, $localForage, $q, $timeout, $mdSidenav, $mdDialog) {
-
-    $rootScope.metadata.title = 'Search';
-    $rootScope.AppData.searchText = decodeURIComponent($rootScope.$stateParams.q || '');
-    var self = this;
-    self.isOpen = false;
-    self.selectedGenres = [];
-    self.selectedTypes = [];
-    self.results = [];
-    self.arrs = {
-        genres: [],
-        types: []
-    };
-
-    $('.collapsible').collapsible({
-        accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
-    });
-
-    $rootScope.generateTypes().then(function (types) {
-        var d = $q.defer();
-        self.arrs.types = angular.isArray(self.selectedTypes) && self.selectedTypes.length ? self.selectedTypes : types;
-        return d.promise;
-    });
-    $rootScope.generateGenres().then(function (genres) {
-        var d = $q.defer();
-        self.arrs.genres = angular.isArray(self.selectedGenres) && self.selectedGenres.length ? self.selectedGenres : genres;
-        return d.promise;
-    });
-
-    self.toggleFilterNav = function () {
-        $mdSidenav('filterNav').toggle();
-    };
-
-    self.refresh = function () {
-        $q.all([$rootScope.generateTypes(), $rootScope.generateGenres()]).then(function (values) {
-            self.search(values[1], values[0]);
-            //console.log(self);
-        })
-    };
-
-    self.search = function (genres, types) {
-        if (genres && !genres.length)
-            genres = self.arrs.genres;
-        if (types && !types.length)
-            types = self.arrs.types;
-
-        var deferred = $q.defer();
-        var decodedURI = decodeURIComponent($rootScope.$stateParams.q || '');
-
-        // Search Films
-        var filmQuery = new Parse.Query("Film");
-        //innerQuery.notEqualTo("disableProject", true);
-        filmQuery.notEqualTo("unlist", true);
-        filmQuery.contains("name_lowercase", decodedURI);
-        //filmQuery.containsAll("tags", decodedURI.spl);
-        //var joinQuery = new Parse.Query("Film_Genre");
-        //joinQuery.matchesQuery("film", innerQuery);
-        filmQuery.include(["type", "owner"]);
-        filmQuery.descending("createdAt");
-        //joinQuery.limit(10);
-        filmQuery.containedIn('genres', genres);
-        filmQuery.containedIn('type', types);
-        var p1 = filmQuery.find().then(function (data) {
-            return data;
-            //angular.extend(self.results, data);
-        });
-
-        //Search user
-        var searchUsersFirstName = new Parse.Query('User');
-        searchUsersFirstName.matches('first_name', decodedURI);
-        var searchUsersLastName = new Parse.Query('User');
-        searchUsersLastName.matches('last_name', decodedURI);
-        var searchUsers = new Parse.Query.or(searchUsersFirstName, searchUsersLastName);
-        var p2 = searchUsers.find().then(function (data) {
-            return data;
-        });
-
-        $q.all([p1, p2]).then(function (values) {
-            self.results = _.flatten(values, true);
-            $scope.$broadcast('scroll.refreshComplete');
-        });
-    };
-
-    self.advancedSearch = function (genres, types) {
-
-    };
-
-    self.selectGenres = function (genre) {
-        var exists = _.find(self.selectedGenres, function (a) {
-            return a && a.id == genre.id;
-        });
-        !!exists ? self.selectedGenres = _.reject(self.selectedGenres, genre) : self.selectedGenres.push(genre);
-        self.search(self.selectedGenres, self.selectedTypes);
-    };
-
-    self.selectTypes = function (type) {
-        var exists = _.find(self.selectedTypes, function (a) {
-            return a && a.id == type.objectId;
-        });
-        !!exists ? self.selectedGenres = _.reject(self.selectedTypes, type) : self.selectedTypes.push(type);
-        self.search(self.selectedGenres, self.selectedTypes);
-    };
-
-    self.openMenu = function ($mdOpenMenu, ev) {
-        var originatorEv = ev;
-        $mdOpenMenu(ev);
-    };
-
-    $scope.$on('search', function (text) {
-        self.refresh();
-    });
-
-    self.refresh();
-}
-function VideoCtrl($rootScope, $scope, Project, $mdDialog, UserActions, UtilsService) {
-    "use strict";
-    var self = this;
-    self.loaded = false;
-    self.displayShare = false;
-    self.toggleReactionsList = false;
-    self.emotions = $rootScope.generateReactions();
-    self.critiqueAverage = 0;
-
-    self.critique = {
-        originality: 0,
-        direction: 0,
-        writing: 0,
-        cinematography: 0,
-        performances: 0,
-        production: 0,
-        pacing: 0,
-        structure: 0,
-        audio: 0,
-        music: 0,
-        overall: 0,
-        private: false,
-        author: Parse.User.current(),
-        body: '',
-        parent: self.film
-    };
-
-    self.film = Project;
-    function init(result) {
-        $rootScope.currentTitle = result.attributes.name;
-        self.film = result;
-        $scope.commentsParent = self.critique.parent = self.film;
-        self.loaded = true;
-
-        $rootScope.metadata = {
-            title: result.attributes.name,
-            description: result.attributes.description.substr(0, 150),
-            image: result.attributes.thumbnail_url,
-            url: window.location.href
         };
-        //$scope.$broadcast('scroll.refreshComplete');
+        self.refresh();
+        self.refInterval = $interval(self.refresh, 30000);
 
-        // Fetch Genres
-        var relGenres = self.film.relation("genres");
-        relGenres.query().find().then(function (genres) {
-            self.filmGenres = genres;
+        self.openMenu = function ($mdOpenMenu, ev) {
+            var originatorEv = ev;
+            $mdOpenMenu(ev);
+        };
+
+        self.toggleFavorite = function (video) {
+
+        };
+
+        self.toggleWatchLater = function (video) {
+
+        };
+
+        /*$rootScope.getNewToken('user', 'all').then(function (token) {
+         var feed1 = window.StreamClient.feed('user', 'all', token);
+         });*/
+
+
+        function failCallback(data) {
+            //alert('something went wrong, check the console logs');
+            console.log(data);
+        }
+
+        /*feed1.get({limit:5}, function(error, response, body) {
+         self.recently.watched = body.results;
+         console.log(error, response, body);
+         });*/
+
+        $rootScope.getNewToken('watched', 'all').then(function (token) {
+            var feed2 = window.StreamClient.feed('watched', 'all', token);
+            feed2.subscribe(function () {
+                var throttledWatch = _.throttle(self.getWatchedList(feed2), 60000);
+                $timeout(throttledWatch, 0);
+                //console.log(obj);
+            }).then(function (obj) {
+                self.getWatchedList(feed2);
+            }, failCallback);
         });
 
-        // Fetch Comments
-        var commentsQuery = new Parse.Query("Comment");
-        commentsQuery.equalTo('parentFilm', self.film);
-        commentsQuery.include("author");
-        commentsQuery.doesNotExist("parentComment");
-        commentsQuery.find().then(function (result) {
-            //console.log("Comments: ", result);
-            self.comments = result;
-        });
-
-        self.qReactions();
-
-        self.qCritiques();
-
-        // Fetch Nominations
-        var nominationQuery = new Parse.Query("Nomination");
-        nominationQuery.equalTo('filmPntr', self.film);
-        nominationQuery.include(["nominator", "awardPntr"]);
-        nominationQuery.find().then(function (result) {
-            self.nominations = result;
-            //console.log('Nominations: ', result);
-            //self.loaded = true;
-            //$scope.$broadcast('scroll.refreshComplete');
-        });
-
-        var awardWinQuery = new Parse.Query("AwardWin");
-        awardWinQuery.equalTo("film", self.film);
-        awardWinQuery.include("award");
-        awardWinQuery.find().then(function (result) {
-            self.wins = result;
-        });
-
-        self.checkUserActions();
-        // Fetch Awards Won
-
-        // TODO: trigger after clicking play button
-        self.activeWatch = UserActions.markAsWatched(self.film);
+        self.getWatchedList = function (feed) {
+            self.latest.watchedLoaded = self.indeterminate;
+            var watchedQuery = new Parse.Query("Watched");
+            watchedQuery.notEqualTo("unlist", true);
+            watchedQuery.include('film');
+            watchedQuery.limit(6);
+            watchedQuery.descending("updatedAt");
+            watchedQuery.find().then(function (res) {
+                self.latest.watched = res;
+                self.latest.watchedLoaded = '';
+            });
+        };
 
         $scope.$on('$destroy', function () {
-            UserActions.cancelWatched(self.activeWatch);
+            $interval.cancel(self.refInterval);
+        });
+    }
+
+    function BrowseCtrl($scope, $rootScope, $state, $localForage, $q, $timeout, $mdSidenav, $mdDialog) {
+        $rootScope.metadata.title = 'Browse';
+
+        var Browse = this;
+        Browse.isOpen = false;
+        Browse.selectedGenres = [];
+        Browse.selectedTypes = [];
+        Browse.films = [];
+        Browse.arrs = {
+            genres: [],
+            types: []
+        };
+        Browse.filters = {
+            sort: '',
+            genres: [],
+            types: []
+        };
+
+
+        $('.collapsible').collapsible({
+            accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
         });
 
-        self.test = function () {
-            console.log('Clicked');
+        $rootScope.generateTypes().then(function (types) {
+            var d = $q.defer();
+            Browse.arrs.types = angular.isArray(Browse.selectedTypes) && Browse.selectedTypes.length ? Browse.selectedTypes : types;
+            return d.promise;
+        });
+        $rootScope.generateGenres().then(function (genres) {
+            var d = $q.defer();
+            Browse.arrs.genres = angular.isArray(Browse.selectedGenres) && Browse.selectedGenres.length ? Browse.selectedGenres : genres;
+            return d.promise;
+        });
+
+        Browse.toggleFilterNav = function () {
+            $mdSidenav('filterNav').toggle();
+        };
+
+        Browse.refresh = function () {
+            $q.all([$rootScope.generateTypes(), $rootScope.generateGenres()]).then(function (values) {
+                Browse.filters.sort = $rootScope.$stateParams.sort || 'recent';
+                Browse.search(values[1], values[0], Browse.filters.sort);
+            });
+        };
+
+        Browse.search = function (genres, types, filter) {
+            if (genres && !genres.length)
+                genres = Browse.arrs.genres;
+            if (types && !types.length)
+                types = Browse.arrs.types;
+            //var joinQuery = new Parse.Query("Film_Genre");
+            var filmQuery = new Parse.Query("Film");
+            //innerQuery.notEqualTo("disableProject", true);
+            filmQuery.notEqualTo("unlist", true);
+            filmQuery.include(["type", "owner"]);
+            switch (filter) {
+                case 'trending':
+                    filmQuery.descending("reactionCount");
+                    break;
+                case 'rating':
+                    filmQuery.descending("iwRating");
+                    break;
+                case 'awards':
+                    filmQuery.descending("awardCount");
+                    break;
+                case 'recent':
+                default:
+                    filmQuery.descending("createdAt");
+                    break;
+            }
+            //joinQuery.limit(10);
+            filmQuery.containedIn('genres', genres);
+            filmQuery.containedIn('type', types);
+            //joinQuery.descending("film.reactionCount");
+            filmQuery.limit(30);
+            filmQuery.find().then(function (data) {
+                //console.log(data);
+                Browse.films = data;
+            });
+
+            $scope.$broadcast('scroll.refreshComplete');
+        };
+
+        Browse.selectGenres = function (genre) {
+            var exists = _.find(Browse.selectedGenres, function (a) {
+                return a && a.id == genre.id;
+            });
+            !!exists ? Browse.selectedGenres = _.reject(Browse.selectedGenres, genre) : Browse.selectedGenres.push(genre);
+            Browse.search(Browse.selectedGenres, Browse.selectedTypes);
+        };
+
+        Browse.selectTypes = function (type) {
+            var exists = _.find(Browse.selectedTypes, function (a) {
+                return a && a.id == type.objectId;
+            });
+            !!exists ? Browse.selectedGenres = _.reject(Browse.selectedTypes, type) : Browse.selectedTypes.push(type);
+            Browse.search(Browse.selectedGenres, Browse.selectedTypes);
+        };
+
+        Browse.filterBy = function (filter) {
+            Browse.filters.sort = filter;
+            Browse.search(Browse.selectedGenres, Browse.selectedTypes, filter);
+        };
+
+        Browse.openMenu = function ($mdOpenMenu, ev) {
+            var originatorEv = ev;
+            $mdOpenMenu(ev);
+        };
+
+        Browse.toggleFavorite = function (video) {
+
+        };
+
+        Browse.toggleWatchLater = function (video) {
+
+        };
+
+        $scope.$watch('', function (newValue, oldValue) {
+
+        });
+
+        Browse.refresh();
+    }
+
+    function ResultsCtrl($scope, $rootScope, $state, $localForage, $q, $timeout, $mdSidenav, $mdDialog) {
+        $rootScope.metadata.title = 'Search';
+        $rootScope.AppData.searchText = decodeURIComponent($rootScope.$stateParams.q || '');
+        var self = this;
+        self.isOpen = false;
+        self.selectedGenres = [];
+        self.selectedTypes = [];
+        self.results = [];
+        self.arrs = {
+            genres: [],
+            types: []
+        };
+
+        $('.collapsible').collapsible({
+            accordion: false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+        });
+
+        $rootScope.generateTypes().then(function (types) {
+            var d = $q.defer();
+            self.arrs.types = angular.isArray(self.selectedTypes) && self.selectedTypes.length ? self.selectedTypes : types;
+            return d.promise;
+        });
+        $rootScope.generateGenres().then(function (genres) {
+            var d = $q.defer();
+            self.arrs.genres = angular.isArray(self.selectedGenres) && self.selectedGenres.length ? self.selectedGenres : genres;
+            return d.promise;
+        });
+
+        self.toggleFilterNav = function () {
+            $mdSidenav('filterNav').toggle();
+        };
+
+        self.refresh = function () {
+            $q.all([$rootScope.generateTypes(), $rootScope.generateGenres()]).then(function (values) {
+                self.search(values[1], values[0]);
+                //console.log(self);
+            })
+        };
+
+        self.search = function (genres, types) {
+            if (genres && !genres.length)
+                genres = self.arrs.genres;
+            if (types && !types.length)
+                types = self.arrs.types;
+
+            var deferred = $q.defer();
+            var decodedURI = decodeURIComponent($rootScope.$stateParams.q || '');
+
+            // Search Films
+            var filmQuery = new Parse.Query("Film");
+            //innerQuery.notEqualTo("disableProject", true);
+            filmQuery.notEqualTo("unlist", true);
+            filmQuery.contains("name_lowercase", decodedURI);
+            //filmQuery.containsAll("tags", decodedURI.spl);
+            //var joinQuery = new Parse.Query("Film_Genre");
+            //joinQuery.matchesQuery("film", innerQuery);
+            filmQuery.include(["type", "owner"]);
+            filmQuery.descending("createdAt");
+            //joinQuery.limit(10);
+            //filmQuery.containedIn('genres', genres);
+            //filmQuery.containedIn('type', types);
+            var p1 = filmQuery.find().then(function (data) {
+                return data;
+                //angular.extend(self.results, data);
+            });
+
+            //Search user
+            var searchUsersFirstName = new Parse.Query('User');
+            _.each(decodedURI.split(' '), function (a) {
+                searchUsersFirstName.matches('first_name', a);
+            });
+            var searchUsersLastName = new Parse.Query('User');
+            _.each(decodedURI.split(' '), function (a) {
+                searchUsersLastName.matches('last_name', decodedURI);
+            });
+            var searchUsers = new Parse.Query.or(searchUsersFirstName, searchUsersLastName);
+            var p2 = searchUsers.find().then(function (data) {
+                return data;
+            });
+
+            $q.all([p1, p2]).then(function (values) {
+                self.results = _.flatten(values, true);
+                $scope.$broadcast('scroll.refreshComplete');
+            });
+        };
+
+        self.advancedSearch = function (genres, types) {
+
+        };
+
+        self.selectGenres = function (genre) {
+            var exists = _.find(self.selectedGenres, function (a) {
+                return a && a.id == genre.id;
+            });
+            !!exists ? self.selectedGenres = _.reject(self.selectedGenres, genre) : self.selectedGenres.push(genre);
+            self.search(self.selectedGenres, self.selectedTypes);
+        };
+
+        self.selectTypes = function (type) {
+            var exists = _.find(self.selectedTypes, function (a) {
+                return a && a.id == type.objectId;
+            });
+            !!exists ? self.selectedGenres = _.reject(self.selectedTypes, type) : self.selectedTypes.push(type);
+            self.search(self.selectedGenres, self.selectedTypes);
+        };
+
+        self.openMenu = function ($mdOpenMenu, ev) {
+            var originatorEv = ev;
+            $mdOpenMenu(ev);
+        };
+
+        $scope.$on('search', function (text) {
+            self.refresh();
+        });
+
+        self.refresh();
+    }
+
+    function VideoCtrl($rootScope, $scope, Project, $mdDialog, UserActions, UtilsService) {
+        var self = this;
+        self.loaded = false;
+        self.displayShare = false;
+        self.toggleReactionsList = false;
+        self.emotions = $rootScope.generateReactions();
+        self.critiqueAverage = 0;
+
+        self.critique = {
+            originality: 0,
+            direction: 0,
+            writing: 0,
+            cinematography: 0,
+            performances: 0,
+            production: 0,
+            pacing: 0,
+            structure: 0,
+            audio: 0,
+            music: 0,
+            overall: 0,
+            private: false,
+            author: Parse.User.current(),
+            body: '',
+            parent: self.film
+        };
+
+        self.film = Project;
+        function init(result) {
+            $rootScope.currentTitle = result.attributes.name;
+            self.film = result;
+            $scope.commentsParent = self.critique.parent = self.film;
+
+            if (self.film.attributes.video_url.indexOf('youtu') != -1) {
+                self.type = 'youtube';
+            } else if (self.film.attributes.video_url.indexOf('vimeo') != -1) {
+                self.type = 'vimeo';
+            } else {
+                self.type = 'other';
+            }
+            self.loaded = true;
+
+            $rootScope.metadata = {
+                title: result.attributes.name,
+                description: result.attributes.description.substr(0, 150),
+                image: result.attributes.thumbnail_url,
+                url: window.location.href
+            };
+            //$scope.$broadcast('scroll.refreshComplete');
+
+            // Fetch Genres
+            var relGenres = self.film.relation("genres");
+            relGenres.query().find().then(function (genres) {
+                self.filmGenres = genres;
+            });
+
+            self.qComments();
+
+            self.qReactions();
+
+            self.qCritiques();
+
+            // Fetch Nominations
+            var nominationQuery = new Parse.Query("Nomination");
+            nominationQuery.equalTo('filmPntr', self.film);
+            nominationQuery.include(["nominator", "awardPntr"]);
+            nominationQuery.find().then(function (result) {
+                self.nominations = result;
+                //console.log('Nominations: ', result);
+                //self.loaded = true;
+                //$scope.$broadcast('scroll.refreshComplete');
+            });
+
+            var awardWinQuery = new Parse.Query("AwardWin");
+            awardWinQuery.equalTo("film", self.film);
+            awardWinQuery.include("award");
+            awardWinQuery.find().then(function (result) {
+                self.wins = result;
+            });
+
+            self.checkUserActions();
+            // Fetch Awards Won
+
+            // TODO: trigger after clicking play button
+            $rootScope.initWatch = function () {
+                UserActions.markAsWatched(self.film)
+            };
+            //self.activeWatch = UserActions.markAsWatched(self.film);
+
+            $scope.$on('$destroy', function () {
+                //UserActions.cancelWatched(self.activeWatch);
+                $rootScope.initWatch = undefined;
+            });
+
+            self.test = function () {
+                console.log('Clicked');
+            }
         }
-    }
 
-    self.checkUserActions = function () {
-        UserActions.canReact(self.film.id).then(function (res) {
-            self.canReact = res;
-        }, function (error) {
-            self.canReact = error;
-        });
-
-        UserActions.canCritique(self.film.id).then(function (res) {
-            self.canCritique = res;
-        }, function (error) {
-            self.canCritique = error;
-        });
-
-        UserActions.canRate(self.film.id).then(function (res) {
-            self.canRate = res;
-        }, function (error) {
-            self.canRate = error;
-        });
-    };
-
-    self.qReactions = function () {
-        // Fetch Reactions
-        var reactionsQuery = new Parse.Query("Reaction");
-        reactionsQuery.equalTo('parent', self.film);
-        //commentsQuery.include("user");
-        reactionsQuery.find().then(function (result) {
-            //console.log("Comments: ", result);
-            self.reactions = result;
-            self.chartedReactions = _.countBy(result, function (r) {
-                return _.contains(result, r) ? r.attributes.emotion : undefined;
+        self.checkUserActions = function () {
+            UserActions.canReact(self.film.id).then(function (res) {
+                self.canReact = res;
+            }, function (error) {
+                self.canReact = error;
             });
-            self.reactionCountMax = _.max(self.chartedReactions, function (i) {
-                return i;
+
+            UserActions.canCritique(self.film.id).then(function (res) {
+                self.canCritique = res;
+            }, function (error) {
+                self.canCritique = error;
             });
-            console.log('Reactions');
-            console.log(result);
-        });
-    };
 
-    self.qCritiques = function () {
-        // Fetch Critiques
-        var critiqueQuery = new Parse.Query("Critique");
-        critiqueQuery.equalTo('parent', self.film);
-        critiqueQuery.include("author");
-        critiqueQuery.find().then(function (result) {
-            self.critiques = result;
-            console.log('Critique: ', result);
-            var total = 0;
-            _.each(result, function (a) {
-                total += a.attributes.overall;
+            UserActions.canRate(self.film.id).then(function (res) {
+                self.canRate = res;
+            }, function (error) {
+                self.canRate = error;
             });
-            self.critiqueAverage = total / result.length;
-        });
-    };
+        };
 
-    self.getEmoticonByEmotion = function (emotion) {
-        var reactions = $rootScope.generateReactions();
-        return _.findWhere(reactions, {emotion: emotion});
-    };
+        self.qComments = function () {
+            // Fetch Comments
+            var commentsQuery = new Parse.Query("Comment");
+            commentsQuery.equalTo('parentFilm', self.film);
+            commentsQuery.include("author");
+            commentsQuery.doesNotExist("parentComment");
+            commentsQuery.find().then(function (result) {
+                //console.log("Comments: ", result);
+                self.comments = result;
+            });
+        };
 
-    self.openMenu = function ($mdOpenMenu, ev) {
-        var originatorEv = ev;
-        $mdOpenMenu(ev);
-    };
+        self.qReactions = function () {
+            // Fetch Reactions
+            var reactionsQuery = new Parse.Query("Reaction");
+            reactionsQuery.equalTo('parent', self.film);
+            //commentsQuery.include("user");
+            reactionsQuery.find().then(function (result) {
+                //console.log("Comments: ", result);
+                self.reactions = result;
+                self.chartedReactions = _.countBy(result, function (r) {
+                    return _.contains(result, r) ? r.attributes.emotion : undefined;
+                });
+                self.reactionCountMax = _.max(self.chartedReactions, function (i) {
+                    return i;
+                });
+                console.log('Reactions');
+                console.log(result);
+            });
+        };
 
-    self.toggleShare = toggleShare;
-    self.toggleReactions = toggleReactions;
-    function toggleShare() {
-        self.displayShare = !self.displayShare;
-    }
+        self.qCritiques = function () {
+            // Fetch Critiques
+            var critiqueQuery = new Parse.Query("Critique");
+            critiqueQuery.equalTo('parent', self.film);
+            critiqueQuery.include("author");
+            critiqueQuery.find().then(function (result) {
+                self.critiques = result;
+                console.log('Critique: ', result);
+                var total = 0;
+                _.each(result, function (a) {
+                    total += a.attributes.overall;
+                });
+                self.critiqueAverage = total / result.length;
+            });
+        };
 
-    function toggleReactions() {
-        self.toggleReactionsList = !self.toggleReactionsList;
-        self.searchReactionsText = '';
-    }
+        self.getEmoticonByEmotion = function (emotion) {
+            var reactions = $rootScope.generateReactions();
+            return _.findWhere(reactions, {emotion: emotion});
+        };
 
-    // Handle Message and Comment Inputs
-    self.myMessage = null;
-    self.showMessageInput = false;
+        self.openMenu = function ($mdOpenMenu, ev) {
+            var originatorEv = ev;
+            $mdOpenMenu(ev);
+        };
 
-    self.toggleMessageInput = function () {
-        self.showMessageInput = !self.showMessageInput;
-    };
+        self.toggleShare = toggleShare;
+        self.toggleReactions = toggleReactions;
+        function toggleShare() {
+            self.displayShare = !self.displayShare;
+        }
 
-    self.rate = function (direction) {
-        UserActions.checkAuth().then(function (res) {
-            if (res) {
-                var actionVerb = 'like';
-                if (self.canRate === true) {
-                    var rating = new Parse.Object("Rating");
-                    rating.set('author', Parse.User.current());
-                    rating.set('parent', self.film);
-                    switch (direction) {
-                        case 'up':
-                            rating.set('up', true);
-                            rating.set('down', false);
-                            // Increment film rateUpCount
-                            self.film.increment('rateUpCount');
-                            self.film.save();
+        function toggleReactions() {
+            self.toggleReactionsList = !self.toggleReactionsList;
+            self.searchReactionsText = '';
+        }
 
-                            break;
-                        case 'down':
-                            rating.set('up', false);
-                            rating.set('down', true);
-                            // Increment film rateDownCount
-                            self.film.increment('rateDownCount');
-                            self.film.save();
-                            actionVerb = 'unlike';
+        // Handle Message and Comment Inputs
+        self.myMessage = null;
+        self.showMessageInput = false;
 
-                            break;
-                    }
+        self.toggleMessageInput = function () {
+            self.showMessageInput = !self.showMessageInput;
+        };
 
-                    rating.save().then(function (res) {
-                        UtilsService.recordActivity(res, actionVerb);
-                        self.checkUserActions();
-                    });
-                } else if (angular.isObject(self.canRate)) {
-                    if (!!self.canRate.attributes.up && direction === 'up') {
-                        self.canRate.destroy().then(function (res) {
-                            self.film.increment('rateUpCount', -1);
-                            self.film.save();
-                            UtilsService.recordActivity(res, 'like');
-                            self.checkUserActions();
-                        });
-                    } else if (!!self.canRate.attributes.down && direction === 'down') {
-                        self.canRate.destroy().then(function (res) {
-                            self.film.increment('rateDownCount', -1);
-                            self.film.save();
-                            UtilsService.recordActivity(res, 'unlike');
-                            self.checkUserActions();
-                        });
-                    } else if ((!!self.canRate.attributes.down && direction === 'up') || (!!self.canRate.attributes.up && direction === 'down')) {
+        self.rate = function (direction) {
+            UserActions.checkAuth().then(function (res) {
+                if (res) {
+                    var actionVerb = 'like';
+                    if (self.canRate === true) {
+                        var rating = new Parse.Object("Rating");
+                        rating.set('author', Parse.User.current());
+                        rating.set('parent', self.film);
                         switch (direction) {
                             case 'up':
-                                self.canRate.set('up', true);
-                                self.canRate.set('down', false);
-
+                                rating.set('up', true);
+                                rating.set('down', false);
                                 // Increment film rateUpCount
                                 self.film.increment('rateUpCount');
-                                // Decrement film rateDownCount
-                                self.film.increment('rateDownCount', -1);
-
                                 self.film.save();
 
                                 break;
                             case 'down':
-                                self.canRate.set('up', false);
-                                self.canRate.set('down', true);
-
-                                // Decrement film rateUpCount
-                                self.film.increment('rateUpCount', -1);
+                                rating.set('up', false);
+                                rating.set('down', true);
                                 // Increment film rateDownCount
                                 self.film.increment('rateDownCount');
-
                                 self.film.save();
                                 actionVerb = 'unlike';
+
                                 break;
                         }
-                        self.canRate.save().then(function (res) {
-                            self.checkUserActions();
-                            UtilsService.recordActivity(res, actionVerb);
-                        });
-                    }
-                }
-                //if (angular.isObject(self.canRate))
-            }
-        }, function (err) {
-            UserActions.loginModal();
-        });
-    };
 
-    self.react = function (emotion) {
-        if (angular.isDefined(emotion)) {
-            UserActions.checkAuth().then(function (res) {
-                if (res) {
-                    var actionVerb = 'react';
-                    if (self.canReact === true) {
-                        var reaction = new Parse.Object("Reaction");
-                        reaction.set('user', Parse.User.current());
-                        reaction.set('parent', self.film);
-                        reaction.set('emotion', emotion.emotion);
-                        reaction.save().then(function (res) {
-                            self.film.increment('reactionCount');
-                            self.film.save();
+                        rating.save().then(function (res) {
                             UtilsService.recordActivity(res, actionVerb);
                             self.checkUserActions();
-                            self.qReactions();
                         });
-                    } else if (angular.isObject(self.canReact)) {
-                        if (self.canReact.attributes.emotion !== emotion.emotion) {
-                            self.canReact.set('emotion', emotion.emotion);
-                            self.canReact.save().then(function () {
+                    } else if (angular.isObject(self.canRate)) {
+                        if (!!self.canRate.attributes.up && direction === 'up') {
+                            self.canRate.destroy().then(function (res) {
+                                self.film.increment('rateUpCount', -1);
+                                self.film.save();
+                                UtilsService.recordActivity(res, 'like');
                                 self.checkUserActions();
-                                self.qReactions();
+                            });
+                        } else if (!!self.canRate.attributes.down && direction === 'down') {
+                            self.canRate.destroy().then(function (res) {
+                                self.film.increment('rateDownCount', -1);
+                                self.film.save();
+                                UtilsService.recordActivity(res, 'unlike');
+                                self.checkUserActions();
+                            });
+                        } else if ((!!self.canRate.attributes.down && direction === 'up') || (!!self.canRate.attributes.up && direction === 'down')) {
+                            switch (direction) {
+                                case 'up':
+                                    self.canRate.set('up', true);
+                                    self.canRate.set('down', false);
+
+                                    // Increment film rateUpCount
+                                    self.film.increment('rateUpCount');
+                                    // Decrement film rateDownCount
+                                    self.film.increment('rateDownCount', -1);
+
+                                    self.film.save();
+
+                                    break;
+                                case 'down':
+                                    self.canRate.set('up', false);
+                                    self.canRate.set('down', true);
+
+                                    // Decrement film rateUpCount
+                                    self.film.increment('rateUpCount', -1);
+                                    // Increment film rateDownCount
+                                    self.film.increment('rateDownCount');
+
+                                    self.film.save();
+                                    actionVerb = 'unlike';
+                                    break;
+                            }
+                            self.canRate.save().then(function (res) {
+                                self.checkUserActions();
+                                UtilsService.recordActivity(res, actionVerb);
                             });
                         }
                     }
+                    //if (angular.isObject(self.canRate))
                 }
-                self.toggleReactions();
             }, function (err) {
                 UserActions.loginModal();
             });
-        }
-    };
+        };
 
-    self.canReactIcon = function () {
-        return _.where(self.emotions, {'emotion': self.canReact.emotion}).icon;
-    };
+        self.react = function (emotion) {
+            if (angular.isDefined(emotion)) {
+                UserActions.checkAuth().then(function (res) {
+                    if (res) {
+                        var actionVerb = 'react';
+                        if (self.canReact === true) {
+                            var reaction = new Parse.Object("Reaction");
+                            reaction.set('user', Parse.User.current());
+                            reaction.set('parent', self.film);
+                            reaction.set('emotion', emotion.emotion);
+                            reaction.save().then(function (res) {
+                                self.film.increment('reactionCount');
+                                self.film.save();
+                                UtilsService.recordActivity(res, actionVerb);
+                                self.checkUserActions();
+                                self.qReactions();
+                            });
+                        } else if (angular.isObject(self.canReact)) {
+                            if (self.canReact.attributes.emotion !== emotion.emotion) {
+                                self.canReact.set('emotion', emotion.emotion);
+                                self.canReact.save().then(function () {
+                                    self.checkUserActions();
+                                    self.qReactions();
+                                });
+                            }
+                        }
+                    }
+                    self.toggleReactions();
+                }, function (err) {
+                    UserActions.loginModal();
+                });
+            }
+        };
 
-    self.throttledRate = function (direction) {
-        return _.throttle(self.rate(direction), 2000);
-    };
+        self.canReactIcon = function () {
+            return _.where(self.emotions, {'emotion': self.canReact.emotion}).icon;
+        };
 
-    self.postMessage = function () {
-        UserActions.checkAuth().then(function (res) {
-            if (res) {
-                // create new conversation
-                var convo = new Parse.Object("Conversation");
-                var relation = convo.relation("participants");
-                relation.add([self.film.attributes.owner, Parse.User.current()]);
-                convo.save().then(function (res) {
-                    var message = new Parse.Object("Message");
-                    message.set('body', self.myMessage);
-                    message.set('parent', res);
-                    message.set('from', Parse.User.current());
-                    message.save().then(function (result) {
-                        self.toggleMessageInput();
-                        self.myMessage = null;
-                        $rootScope.toastMessage('Message sent!');
-                        // TODO: Send email notification
+        self.throttledRate = function (direction) {
+            return _.throttle(self.rate(direction), 2000);
+        };
 
-                        // register Action
-                        result.participants = self.film.attributes.owner;
-                        UtilsService.recordActivity(result);
+        self.postMessage = function () {
+            UserActions.checkAuth().then(function (res) {
+                if (res) {
+                    // create new conversation
+                    var convo = new Parse.Object("Conversation");
+                    var relation = convo.relation("participants");
+                    relation.add([self.film.attributes.owner, Parse.User.current()]);
+                    convo.save().then(function (res) {
+                        var message = new Parse.Object("Message");
+                        message.set('body', self.myMessage);
+                        message.set('parent', res);
+                        message.set('from', Parse.User.current());
+                        message.save().then(function (result) {
+                            self.toggleMessageInput();
+                            self.myMessage = null;
+                            $rootScope.toastMessage('Message sent!');
+                            // TODO: Send email notification
 
+                            // register Action
+                            result.participants = self.film.attributes.owner;
+                            UtilsService.recordActivity(result);
+
+                        });
                     });
+
+                    //message.set('to', {__type: "Pointer", className: "_User", objectId: self.film.attributes.owner.id});
+                    //message.set('from', Parse.User.current();
+                }
+            }, function (err) {
+                UserActions.loginModal();
+            });
+        };
+
+        self.deleteCritique = function (c, ev) {
+            UserActions.checkAuth().then(function (res) {
+                if (res) {
+                    var confirm = $mdDialog.confirm()
+                        .title('Would you like to delete your critique?')
+                        //.content('All of the banks have agreed to <span class="debt-be-gone">forgive</span> you your debts.')
+                        //.ariaLabel('Lucky day')
+                        .targetEvent(ev)
+                        .ok('Delete')
+                        .cancel('Cancel');
+                    $mdDialog.show(confirm).then(function () {
+                        var q1 = new Parse.Query("Nomination");
+                        q1.equalTo('critique', c);
+                        q1.first().then(function (nom) {
+                            if (nom)
+                                nom.destroy().then(function (res) {
+                                    // Decrement film critiqueCount
+                                    self.film.increment('nominationCount', -1);
+                                    self.film.save();
+                                });
+                        });
+                        c.destroy().then(function (res) {
+                            self.critiques = _.reject(self.critiques, function (a) {
+                                return a.id === c.id;
+                            });
+                            $rootScope.toastMessage('Your critique was deleted.');
+
+                            // Decrement film critiqueCount
+                            self.film.increment('critiqueCount', -1);
+                            self.film.save();
+                            self.checkUserActions();
+                        });
+                    }, function () {
+                        //$scope.status = 'You decided to keep your debt.';
+                    });
+                }
+            })
+        };
+
+        self.showCritiqueDialog = function ($event) {
+            function CritiqueDialogController($scope, $mdDialog, critique, $q) {
+                $scope.critique = critique;
+                $scope.dialogModel = {
+                    awardId: null
+                };
+                $scope.nominated = {
+                    awardPntr: {__type: "Pointer", className: "Award", objectId: $scope.dialogModel.awardId},
+                    nominator: Parse.User.current(),
+                    filmPntr: {__type: "Pointer", className: "Film", objectId: $rootScope.$stateParams.id},
+                    critique: undefined
+                    //nominatee: {__type: "Pointer", className: "Film", objectId: $rootScope.$stateParams.id}
+                };
+
+                $scope.calcOverall = function () {
+                    $scope.critique.overall = ($scope.critique.originality + $scope.critique.direction + $scope.critique.writing +
+                        $scope.critique.cinematography + $scope.critique.performances + $scope.critique.production +
+                        $scope.critique.pacing + $scope.critique.structure + $scope.critique.audio + $scope.critique.music) / 10;
+                };
+
+                $scope.$watchCollection('critique', function () {
+                    $scope.calcOverall();
                 });
 
-                //message.set('to', {__type: "Pointer", className: "_User", objectId: self.film.attributes.owner.id});
-                //message.set('from', Parse.User.current();
-            }
-        }, function (err) {
-            UserActions.loginModal();
-        });
-    };
+                $scope.closeDialog = function () {
+                    $mdDialog.hide();
+                };
 
-    self.deleteCritique = function (c, ev) {
-        UserActions.checkAuth().then(function (res) {
-            if (res) {
+                $scope.getAwards = function () {
+                    var deferred = $q.defer();
+                    var awardQuery = new Parse.Query("Award");
+                    awardQuery.find().then(function (result) {
+                        deferred.resolve(result);
+                        $scope.awardsList = result;
+                    });
+
+                    return deferred.promise;
+                };
+
+                $scope.postCritique = function () {
+                    var critiqueObj = new Parse.Object("Critique");
+                    critiqueObj.save($scope.critique).then(function (obj) {
+                        self.critiques.push(obj);
+
+                        // Increment film critiqueCount
+                        self.film.increment('critiqueCount');
+                        self.film.save();
+
+                        // if an award has been selected, create a nomination
+                        if (!!$scope.dialogModel.awardId && angular.isString($scope.dialogModel.awardId)) {
+                            $scope.nominated.critique = obj;
+                            $scope.nominated.awardPntr.objectId = $scope.dialogModel.awardId;
+                            var nomination = new Parse.Object("Nomination");
+                            nomination.save($scope.nominated).then(function (nom) {
+                                // Increment film commentCount
+                                self.film.increment('nominationCount');
+                                self.film.save();
+
+                                // register Action
+                                UtilsService.recordActivity(obj);
+                            }, function (error) {
+                                alert('Failed to create new nomination, with error code: ' + error.message);
+
+                            })
+                        } else {
+                            // register Action
+                            UtilsService.recordActivity(obj);
+                        }
+                    }, function (error) {
+                        alert('Failed to create new critique, with error code: ' + error.message);
+
+                    }).then(function () {
+                        self.checkUserActions();
+                        $scope.closeDialog();
+                    });
+                };
+            }
+
+            UserActions.checkAuth().then(function (res) {
+                if (res) {
+                    var parentEl = angular.element(document.body);
+                    $mdDialog.show({
+                        parent: parentEl,
+                        targetEvent: $event,
+                        templateUrl: './src/common/critiqueDialog.html',
+                        locals: {
+                            critique: self.critique
+                        },
+                        controller: CritiqueDialogController
+                    });
+                }
+            }, function (err) {
+                UserActions.loginModal();
+            });
+        };
+
+        $rootScope.getNewToken('comment', 'all').then(function (token) {
+            var feed2 = window.StreamClient.feed('comment', 'all', token);
+            $scope.commentSubscribe = feed2.subscribe(function (obj) {
+                var throttledWatch = _.throttle(self.qComments, 3000);
+                throttledWatch();
+                //console.log(obj);
+            }).then(function (obj) {
+                console.log(obj);
+            }, function (err) {
+                console.log(err);
+            });
+        });
+
+        $scope.$on('$destroy', function (event) {
+            $scope.commentSubscribe.cancel();
+        });
+
+        //Lets begin
+        init(self.film);
+    }
+
+    function VideoEditCtrl($rootScope, $state, $mdDialog, UserActions, Project, ParseService) {
+        var self = this;
+        self.project = Project;
+        self.editedProject = {
+            name: self.project.attributes.name,
+            name_lowercase: self.project.attributes.name_lowercase,
+            //runTime: self.project.attributes.runTime,
+            description: self.project.attributes.description,
+            type: self.project.attributes.type,
+            language: self.project.attributes.language,
+            filmingCountry: self.project.attributes.filmingCountry,
+            director: self.project.attributes.director,
+            writer: self.project.attributes.writer,
+            producers: self.project.attributes.producers,
+            synopsis: self.project.attributes.synopsis,
+            tags: self.project.attributes.tags,
+            keyCast: self.project.attributes.keyCast,
+            pastAwards: self.project.attributes.pastAwards,
+            completionDate: self.project.attributes.completionDate,
+            video_url: self.project.attributes.video_url,
+            thumbnail_url: self.project.attributes.thumbnail_url,
+            disableComments: self.project.attributes.disableComments,
+            disableCritique: self.project.attributes.disableCritique,
+            unlist: self.project.attributes.unlist,
+            genres: [],
+        };
+        self.projectGenres = [];
+        console.log(self);
+
+        // Fetch Genres
+        var relGenres = self.project.relation("genres");
+        relGenres.query().find().then(function (genres) {
+            self.editedProject.genres = self.projectGenres = _.pluck(genres, 'id');
+        });
+
+        if (self.project.attributes.runTime) {
+            var totalSeconds = self.project.attributes.runTime;
+            self.runtime = {};
+            self.runtime.hours = Math.floor(totalSeconds / 3600);
+            totalSeconds %= 3600;
+            self.runtime.mins = Math.floor(totalSeconds / 60);
+            self.runtime.secs = totalSeconds % 60;
+        }
+
+        if (angular.isString(self.project.attributes.video_url)) {
+            self.uploadType = 2;
+        }
+
+        self.getGenres = function () {
+            ParseService.genres();
+        };
+        self.getTypes = function () {
+            ParseService.types();
+        };
+        self.getCountries = function () {
+            if (!angular.isArray($rootScope.countryList))
+                ParseService.countries();
+        };
+        self.getLanguages = function () {
+            if (!angular.isArray($rootScope.languageList))
+                ParseService.languages();
+        };
+
+        self.runtimeToSeconds = function () {
+            self.editedProject.runTime = self.project.runTime = (self.runtime.hours * 3600) + (self.runtime.mins * 60) + self.runtime.secs;
+        };
+
+        self.isURL = function (str) {
+            var urlRegex = '[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)';
+            var url = new RegExp(urlRegex, 'i');
+            return str.length < 2083 && url.test(str);
+        };
+
+        self.getThumbnailUrl = function (url) {
+            if (url != null && url != '') {
+                if (url.indexOf('youtu') != -1) {
+                    var video_id = url.split('v=')[1].split('&')[0];
+                    return self.editedProject.thumbnail_url = self.project.thumbnail_url = 'http://img.youtube.com/vi/' + video_id + '/mqdefault.jpg';
+                } else if (url.indexOf('vimeo') != -1) {
+                    var video_id = url.split('.com/')[1];
+                    $http.jsonp('http://www.vimeo.com/api/v2/video/' + video_id + '.json?callback=JSON_CALLBACK').then(function (res) {
+                        return self.editedProject.thumbnail_url = self.project.thumbnail_url = res.data[0].thumbnail_large;
+                    });
+                } else if (url.indexOf('dailymotion') != -1) {
+                    var video_id = url.split('video/')[1].split('_')[0];
+                    $http.get('https://api.dailymotion.com/video/' + video_id + '?fields=thumbnail_large_url').then(function (res) {
+                        return self.editedProject.thumbnail_url = self.project.thumbnail_url = res.data.thumbnail_large_url;
+                    });
+                } else if (url.indexOf('youku') != -1) {
+
+                } else if (url.indexOf('vine') != -1) {
+                    $http.get('/alpha/utils/get-vine-data.php?url=' + url).then(function (res) {
+                        return self.editedProject.thumbnail_url = self.project.thumbnail_url = res.data;
+                    });
+                }
+            }
+        };
+
+        self.updateProject = function () {
+            self.project.set('name', self.editedProject.name);
+            self.project.set('name_lowercase', self.editedProject.name.toLowerCase());
+            self.project.set('runTime', self.editedProject.runTime);
+            self.project.set('description', self.editedProject.description);
+
+            self.project.set('type', {__type: "Pointer", className: "Type", objectId: self.editedProject.type.id} );
+            self.project.set('language', {__type: "Pointer", className: "Language", objectId: self.editedProject.language.id});
+            self.project.set('filmingCountry', {__type: "Pointer", className: "Country", objectId: self.editedProject.filmingCountry.id});
+            self.project.set('director', self.editedProject.director);
+            self.project.set('writer', self.editedProject.writer);
+            self.project.set('producers', self.editedProject.producers);
+            self.project.set('synopsis', self.editedProject.synopsis);
+            self.project.set('completionDate', self.editedProject.completionDate);
+            self.project.set('video_url', self.editedProject.video_url);
+            self.project.set('thumbnail_url', self.editedProject.thumbnailUrl);
+            self.project.set('disableComments', self.editedProject.disableComments || false);
+            self.project.set('disableCritique', self.editedProject.disableCritique || false);
+            self.project.set('unlist', self.editedProject.unlist || false);
+
+            // first remove current genres
+            var relation = self.project.relation("genres");
+            var relationQ = relation.query().find({
+                success: function (list) {
+                    // list contains the posts that the current user likes.
+                    relation.remove(list);
+                    _.each(self.projectGenres, function (a) {
+                        var Genre = Parse.Object.extend("Genre");
+                        relation.add(new Genre({id: a}));
+                    });
+
+                    self.project.save().then(function (res1) {
+                        $rootScope.toastMessage('Project Updated');
+                        $state.go('video', {id: self.project.id});
+                    });
+                }
+            });
+        };
+
+        self.deleteProject = function (ev) {
+            if ($rootScope.AppData.User && ($rootScope.AppData.User.id === self.project.attributes.owner.id)) {
                 var confirm = $mdDialog.confirm()
-                    .title('Would you like to delete your critique?')
+                    .title('Would you like to delete your project?')
                     //.content('All of the banks have agreed to <span class="debt-be-gone">forgive</span> you your debts.')
                     //.ariaLabel('Lucky day')
                     .targetEvent(ev)
-                    .ok('Delete')
-                    .cancel('Cancel');
+                    .ok('Delete it!')
+                    .cancel('Never mind');
                 $mdDialog.show(confirm).then(function () {
-                    var q1 = new Parse.Query("Nomination");
-                    q1.equalTo('critique', c);
-                    q1.first().then(function (nom) {
-                        if (nom)
-                            nom.destroy().then(function (res) {
-                                // Decrement film critiqueCount
-                                self.film.increment('nominationCount', -1);
-                                self.film.save();
-                            });
+                    //self.project.set('disableProject', true);
+                    self.project.destroy({
+                        success: function (myObject) {
+                            // The object was deleted from the Parse Cloud.
+                            $state.go('profile');
+                        },
+                        error: function (myObject, error) {
+                            // The delete failed.
+                            // error is a Parse.Error with an error code and message.
+                        }
                     });
-                    c.destroy().then(function (res) {
-                        self.critiques = _.reject(self.critiques, function (a) {
-                            return a.id === c.id;
-                        });
-                        $rootScope.toastMessage('Your critique was deleted.');
-
-                        // Decrement film critiqueCount
-                        self.film.increment('critiqueCount', -1);
-                        self.film.save();
-                        self.checkUserActions();
-                    });
+                    $state.go('profile');
                 }, function () {
                     //$scope.status = 'You decided to keep your debt.';
                 });
             }
-        })
-    };
+        }
 
-    self.showCritiqueDialog = function ($event) {
-        function CritiqueDialogController($scope, $mdDialog, critique, $q) {
-            $scope.critique = critique;
-            $scope.dialogModel = {
-                awardId: null
-            };
-            $scope.nominated = {
-                awardPntr: {__type: "Pointer", className: "Award", objectId: $scope.dialogModel.awardId},
-                nominator: Parse.User.current(),
-                filmPntr: {__type: "Pointer", className: "Film", objectId: $rootScope.$stateParams.id},
-                critique: undefined
-                //nominatee: {__type: "Pointer", className: "Film", objectId: $rootScope.$stateParams.id}
-            };
+    }
 
-            $scope.calcOverall = function () {
-                $scope.critique.overall = ($scope.critique.originality + $scope.critique.direction + $scope.critique.writing +
-                    $scope.critique.cinematography + $scope.critique.performances + $scope.critique.production +
-                    $scope.critique.pacing + $scope.critique.structure + $scope.critique.audio + $scope.critique.music) / 10;
-            };
+    function VideoCritiqueCtrl($rootScope, $scope, $mdDialog, UserActions, UtilsService) {
+        Parse.Object.extend({
+            className: "Comment",
+            attrs: ['body', 'parentFilm', 'parentCritique', 'parentComment', 'author', 'replyCount', 'repliedAt']
+        });
 
-            $scope.$watchCollection('critique', function () {
-                $scope.calcOverall();
+        var self = this;
+        // Fetch Critique
+        var critiqueQuery = new Parse.Query("Critique");
+        critiqueQuery.include(["author", "parent.owner", "parent.type"]);
+        critiqueQuery.get($rootScope.$stateParams.id).then(function (result) {
+            self.critique = result;
+            self.film = result.attributes.parent;
+            $scope.commentsParent = self.critique;
+            console.log('Critique: ', result);
+            //self.loaded = true;
+            //$scope.$broadcast('scroll.refreshComplete');
+
+            // Fetch Comments
+            var commentsQuery = new Parse.Query("Comment");
+            commentsQuery.equalTo('parentCritique', self.critique);
+            commentsQuery.include("author");
+            commentsQuery.doesNotExist("parentComment");
+            commentsQuery.find().then(function (result) {
+                console.log("Comments: ", result);
+                self.comments = result;
             });
-
-            $scope.closeDialog = function () {
-                $mdDialog.hide();
-            };
-
-            $scope.getAwards = function () {
-                var deferred = $q.defer();
-                var awardQuery = new Parse.Query("Award");
-                awardQuery.find().then(function (result) {
-                    deferred.resolve(result);
-                    $scope.awardsList = result;
-                });
-
-                return deferred.promise;
-            };
-
-            $scope.postCritique = function () {
-                var critiqueObj = new Parse.Object("Critique");
-                critiqueObj.save($scope.critique).then(function (obj) {
-                    self.critiques.push(obj);
-
-                    // Increment film critiqueCount
-                    self.film.increment('critiqueCount');
-                    self.film.save();
-
-                    // if an award has been selected, create a nomination
-                    if (!!$scope.dialogModel.awardId && angular.isString($scope.dialogModel.awardId)) {
-                        $scope.nominated.critique = obj;
-                        $scope.nominated.awardPntr.objectId = $scope.dialogModel.awardId;
-                        var nomination = new Parse.Object("Nomination");
-                        nomination.save($scope.nominated).then(function (nom) {
-                            // Increment film commentCount
-                            self.film.increment('nominationCount');
-                            self.film.save();
-
-                            // register Action
-                            UtilsService.recordActivity(obj);
-                        }, function (error) {
-                            alert('Failed to create new nomination, with error code: ' + error.message);
-
-                        })
-                    } else {
-                        // register Action
-                        UtilsService.recordActivity(obj);
-                    }
-                }, function (error) {
-                    alert('Failed to create new critique, with error code: ' + error.message);
-
-                }).then(function () {
-                    self.checkUserActions();
-                    $scope.closeDialog();
-                });
-            };
-        }
-
-        UserActions.checkAuth().then(function (res) {
-            if (res) {
-                var parentEl = angular.element(document.body);
-                $mdDialog.show({
-                    parent: parentEl,
-                    targetEvent: $event,
-                    templateUrl: './src/common/critiqueDialog.html',
-                    locals: {
-                        critique: self.critique
-                    },
-                    controller: CritiqueDialogController
-                });
-            }
-        }, function (err) {
-            UserActions.loginModal();
         });
-    };
 
-    //Lets begin
-    init(self.film);
-}
-function VideoEditCtrl($rootScope, $state, $mdDialog, UserActions, Project, ParseService) {
+        // Handle Message and Comment Inputs
+        self.myMessage = null;
+        self.showMessageInput = false;
 
-    var self = this;
-    self.project = Project;
-    self.projectGenres = [];
-    self.dateOfCompl = self.project.attributes.completionDate;
-    //angular.copy(self.project.attributes.completionDate, self.dateOfCompl);
-    console.log(self);
+        self.toggleCommentInput = function () {
+            self.showCommentInput = !self.showCommentInput;
+        };
 
-    // Fetch Genres
-    var relGenres = self.project.relation("genres");
-    relGenres.query().find().then(function (genres) {
-        self.projectGenres = _.pluck(genres, 'id');
-    });
+        self.toggleReplyInput = function (comment) {
+            $scope.showReplyInput = !$scope.showReplyInput;
+            $scope.targetComment = self.targetComment = comment;
+        };
 
-    if (self.project.attributes.runTime) {
-        var totalSeconds = self.project.attributes.runTime;
-        self.runtime = {};
-        self.runtime.hours = Math.floor(totalSeconds / 3600);
-        totalSeconds %= 3600;
-        self.runtime.mins = Math.floor(totalSeconds / 60);
-        self.runtime.secs = totalSeconds % 60;
-    }
-
-    if (angular.isString(self.project.attributes.video_url)) {
-        self.uploadType = 2;
-    }
-
-    self.getGenres = function () {
-        ParseService.genres();
-    };
-    self.getTypes = function () {
-        ParseService.types();
-    };
-    self.getCountries = function () {
-        if (!angular.isArray($rootScope.countryList))
-            ParseService.countries();
-    };
-    self.getLanguages = function () {
-        if (!angular.isArray($rootScope.languageList))
-            ParseService.languages();
-    };
-
-    self.runtimeToSeconds = function () {
-        self.project.runTime = (self.runtime.hours * 3600) + (self.runtime.mins * 60) + self.runtime.secs;
-    };
-
-    self.isURL = function (str) {
-        var urlRegex = '[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)';
-        var url = new RegExp(urlRegex, 'i');
-        return str.length < 2083 && url.test(str);
-    };
-
-    self.getThumbnailUrl = function (url) {
-        if (url != null && url != '') {
-            if (url.indexOf('youtu') != -1) {
-                var video_id = url.split('v=')[1].split('&')[0];
-                return self.project.thumbnail_url = 'http://img.youtube.com/vi/' + video_id + '/mqdefault.jpg';
-            } else if (url.indexOf('vimeo') != -1) {
-                var video_id = url.split('.com/')[1];
-                $http.jsonp('http://www.vimeo.com/api/v2/video/' + video_id + '.json?callback=JSON_CALLBACK').then(function (res) {
-                    return self.project.thumbnail_url = res.data[0].thumbnail_large;
-                });
-            } else if (url.indexOf('dailymotion') != -1) {
-                var video_id = url.split('video/')[1].split('_')[0];
-                $http.get('https://api.dailymotion.com/video/' + video_id + '?fields=thumbnail_large_url').then(function (res) {
-                    return self.project.thumbnail_url = res.data.thumbnail_large_url;
-                });
-            } else if (url.indexOf('youku') != -1) {
-
-            } else if (url.indexOf('vine') != -1) {
-                $http.get('/alpha/utils/get-vine-data.php?url=' + url).then(function (res) {
-                    return self.project.thumbnail_url = res.data;
-                });
-
-            }
-        }
-    };
-
-    self.updateProject = function () {
-        self.project.set('name', self.project.attributes.name);
-        self.project.set('name_lowercase', self.project.attributes.name.toLowerCase());
-        self.project.set('runTime', self.project.attributes.runTime);
-        self.project.set('description', self.project.attributes.description);
-        self.project.set('director', self.project.attributes.director);
-        self.project.set('writer', self.project.attributes.writer);
-        self.project.set('producers', self.project.attributes.producers);
-        self.project.set('synopsis', self.project.attributes.synopsis);
-        self.project.set('completionDate', self.dateOfCompl);
-        self.project.set('video_url', self.project.attributes.video_url);
-        self.project.set('thumbnail_url', self.project.attributes.thumbnailUrl);
-        self.project.set('disableComments', self.project.attributes.disableComments || false);
-        self.project.set('disableCritique', self.project.attributes.disableCritique || false);
-
-        // first remove current genres
-        var relation = self.project.relation("genres");
-        var relationQ = relation.query().find({
-            success: function (list) {
-                // list contains the posts that the current user likes.
-                relation.remove(list);
-                _.each(self.projectGenres, function (a) {
-                    var Genre = Parse.Object.extend("Genre");
-                    relation.add(new Genre({id: a}));
-                });
-
-                self.project.save().then(function (res1) {
-                    $rootScope.toastMessage('Project Updated');
-                    $state.go('video', {id: self.project.id});
-                });
-            }
-        });
-    };
-
-    self.deleteProject = function (ev) {
-        if ($rootScope.AppData.User && ($rootScope.AppData.User.id === self.project.attributes.owner.id)) {
-            var confirm = $mdDialog.confirm()
-                .title('Would you like to delete your project?')
-                //.content('All of the banks have agreed to <span class="debt-be-gone">forgive</span> you your debts.')
-                //.ariaLabel('Lucky day')
-                .targetEvent(ev)
-                .ok('Delete it!')
-                .cancel('Never mind');
-            $mdDialog.show(confirm).then(function () {
-                //self.project.set('disableProject', true);
-                self.project.destroy({
-                    success: function (myObject) {
-                        // The object was deleted from the Parse Cloud.
-                        $state.go('profile');
-                    },
-                    error: function (myObject, error) {
-                        // The delete failed.
-                        // error is a Parse.Error with an error code and message.
-                    }
-                });
-                $state.go('profile');
-            }, function () {
-                //$scope.status = 'You decided to keep your debt.';
-            });
-        }
-    }
-
-}
-function VideoCritiqueCtrl($rootScope, $scope, $mdDialog, UserActions, UtilsService) {
-    'use strict';
-
-    Parse.Object.extend({
-        className: "Comment",
-        attrs: ['body', 'parentFilm', 'parentCritique', 'parentComment', 'author', 'replyCount', 'repliedAt']
-    });
-
-    var self = this;
-    // Fetch Critique
-    var critiqueQuery = new Parse.Query("Critique");
-    critiqueQuery.include(["author", "parent.owner", "parent.type"]);
-    critiqueQuery.get($rootScope.$stateParams.id).then(function (result) {
-        self.critique = result;
-        self.film = result.attributes.parent;
-        $scope.commentsParent = self.critique;
-        console.log('Critique: ', result);
-        //self.loaded = true;
-        //$scope.$broadcast('scroll.refreshComplete');
-
-        // Fetch Comments
-        var commentsQuery = new Parse.Query("Comment");
-        commentsQuery.equalTo('parentCritique', self.critique);
-        commentsQuery.include("author");
-        commentsQuery.doesNotExist("parentComment");
-        commentsQuery.find().then(function (result) {
-            console.log("Comments: ", result);
-            self.comments = result;
-        });
-    });
-
-    // Handle Message and Comment Inputs
-    self.myMessage = null;
-    self.showMessageInput = false;
-
-    self.toggleCommentInput = function () {
-        self.showCommentInput = !self.showCommentInput;
-    };
-
-    self.toggleReplyInput = function (comment) {
-        $scope.showReplyInput = !$scope.showReplyInput;
-        $scope.targetComment = self.targetComment = comment;
-    };
-
-    self.postReply = function () {
-        UserActions.checkAuth().then(function (res) {
-            if (res) {
-                var comment = new Parse.Object("Comment");
-                comment.set('body', self.myReply);
-                comment.set('parentCritique', self.critique);
-                angular.isDefined(self.targetComment.attributes.parentComment)
-                    ? comment.set('parentComment', self.targetComment.attributes.parentComment)
-                    : comment.set('parentComment', {
-                    __type: "Pointer",
-                    className: "Comment",
-                    objectId: self.targetComment.id
-                });
-                comment.set('author', Parse.User.current());
-                comment.save(null).then(function (comment) {
-                    _.find(self.comments, function (a) {
-                        return a.id === self.targetComment.id
-                    }).replies.push(comment);
-                    //self.comments.push(comment);
-                    $rootScope.toastMessage('Reply posted!');
-                    self.myReply = null;
-
-                    // Increment original comment replyCount
-                    self.targetComment.increment('replyCount');
-                    self.targetComment.set('repliedAt', moment().toDate());
-                    self.targetComment.save().then(function (parentComment) {
-                        console.log(parentComment);
-                        self.toggleReplyInput(undefined);
+        self.postReply = function () {
+            UserActions.checkAuth().then(function (res) {
+                if (res) {
+                    var comment = new Parse.Object("Comment");
+                    comment.set('body', self.myReply);
+                    comment.set('parentCritique', self.critique);
+                    angular.isDefined(self.targetComment.attributes.parentComment)
+                        ? comment.set('parentComment', self.targetComment.attributes.parentComment)
+                        : comment.set('parentComment', {
+                        __type: "Pointer",
+                        className: "Comment",
+                        objectId: self.targetComment.id
                     });
+                    comment.set('author', Parse.User.current());
+                    comment.save(null).then(function (comment) {
+                        _.find(self.comments, function (a) {
+                            return a.id === self.targetComment.id
+                        }).replies.push(comment);
+                        //self.comments.push(comment);
+                        $rootScope.toastMessage('Reply posted!');
+                        self.myReply = null;
 
-                    // Increment film commentCount
-                    self.critique.increment('commentCount');
-                    self.critique.save();
+                        // Increment original comment replyCount
+                        self.targetComment.increment('replyCount');
+                        self.targetComment.set('repliedAt', moment().toDate());
+                        self.targetComment.save().then(function (parentComment) {
+                            console.log(parentComment);
+                            self.toggleReplyInput(undefined);
+                        });
 
-                }, function (error) {
-                    alert('Failed to create new reply, with error code: ' + error.message);
-                });
-            }
-        }, function (err) {
-            UserActions.loginModal();
-        });
-    };
-}
-function VideoCritiqueEditCtrl($rootScope, $scope, $state, Critique) {
-    var self = this;
-    self.critique = Critique;
-    self.editedCritique = {
-        originality: self.critique.attributes.originality,
-        direction: self.critique.attributes.direction,
-        writing: self.critique.attributes.writing,
-        cinematography: self.critique.attributes.cinematography,
-        performances: self.critique.attributes.performances,
-        production: self.critique.attributes.production,
-        pacing: self.critique.attributes.pacing,
-        structure: self.critique.attributes.structure,
-        audio: self.critique.attributes.audio,
-        music: self.critique.attributes.music,
-        overall: self.critique.attributes.overall,
-        private: self.critique.attributes.private,
-        author: self.critique.attributes.author,
-        body: self.critique.attributes.body,
-        parent: self.critique.attributes.parent
-    };
+                        // Increment film commentCount
+                        self.critique.increment('commentCount');
+                        self.critique.save();
 
-    self.update = function () {
-        self.critique.set("originality", self.editedCritique.originality);
-        self.critique.set("direction", self.editedCritique.direction);
-        self.critique.set("writing", self.editedCritique.writing);
-        self.critique.set("cinematography", self.editedCritique.cinematography);
-        self.critique.set("performances", self.editedCritique.performances);
-        self.critique.set("production", self.editedCritique.production);
-        self.critique.set("pacing", self.editedCritique.pacing);
-        self.critique.set("structure", self.editedCritique.structure);
-        self.critique.set("audio", self.editedCritique.audio);
-        self.critique.set("music", self.editedCritique.music);
-        self.critique.set("overall", self.editedCritique.overall);
-        self.critique.set("private", self.editedCritique.private);
-        //self.critique.set("author", self.editedCritique.author);
-        self.critique.set("body", self.editedCritique.body);
-        //self.critique.set("parent", self.editedCritique.parent);
-        self.critique.save().then(function (res) {
-            $rootScope.toastMessage('Critique Updated');
+                    }, function (error) {
+                        alert('Failed to create new reply, with error code: ' + error.message);
+                    });
+                }
+            }, function (err) {
+                UserActions.loginModal();
+            });
+        };
+    }
+
+    function VideoCritiqueEditCtrl($rootScope, $scope, $state, Critique) {
+        var self = this;
+        self.critique = Critique;
+        self.editedCritique = {
+            originality: self.critique.attributes.originality,
+            direction: self.critique.attributes.direction,
+            writing: self.critique.attributes.writing,
+            cinematography: self.critique.attributes.cinematography,
+            performances: self.critique.attributes.performances,
+            production: self.critique.attributes.production,
+            pacing: self.critique.attributes.pacing,
+            structure: self.critique.attributes.structure,
+            audio: self.critique.attributes.audio,
+            music: self.critique.attributes.music,
+            overall: self.critique.attributes.overall,
+            private: self.critique.attributes.private,
+            author: self.critique.attributes.author,
+            body: self.critique.attributes.body,
+            parent: self.critique.attributes.parent
+        };
+
+        self.update = function () {
+            self.critique.set("originality", self.editedCritique.originality);
+            self.critique.set("direction", self.editedCritique.direction);
+            self.critique.set("writing", self.editedCritique.writing);
+            self.critique.set("cinematography", self.editedCritique.cinematography);
+            self.critique.set("performances", self.editedCritique.performances);
+            self.critique.set("production", self.editedCritique.production);
+            self.critique.set("pacing", self.editedCritique.pacing);
+            self.critique.set("structure", self.editedCritique.structure);
+            self.critique.set("audio", self.editedCritique.audio);
+            self.critique.set("music", self.editedCritique.music);
+            self.critique.set("overall", self.editedCritique.overall);
+            self.critique.set("private", self.editedCritique.private);
+            //self.critique.set("author", self.editedCritique.author);
+            self.critique.set("body", self.editedCritique.body);
+            self.critique.set("editedAt", new Date());
+            //self.critique.set("parent", self.editedCritique.parent);
+            self.critique.save().then(function (res) {
+                $rootScope.toastMessage('Critique Updated');
+                if ($state.is('profile_critique-edit'))
+                    $state.go('profile_critique', {id: self.critique.id});
+                if ($state.is('video_critique-edit'))
+                    $state.go('video_critique', {video_id: $rootScope.$stateParams.video_id, id: self.critique.id});
+            }, function (err) {
+                console.log(err);
+                $rootScope.toastMessage('Something went wrong...')
+            })
+        };
+
+        self.cancelled = function () {
             if ($state.is('profile_critique-edit'))
                 $state.go('profile_critique', {id: self.critique.id});
             if ($state.is('video_critique-edit'))
                 $state.go('video_critique', {video_id: $rootScope.$stateParams.video_id, id: self.critique.id});
-        }, function (err) {
-            console.log(err);
-            $rootScope.toastMessage('Something went wrong...')
-        })
-    };
+        };
 
-    self.cancelled = function () {
-        if ($state.is('profile_critique-edit'))
-            $state.go('profile_critique', {id: self.critique.id});
-        if ($state.is('video_critique-edit'))
-            $state.go('video_critique', {video_id: $rootScope.$stateParams.video_id, id: self.critique.id});
-    };
+        self.calcOverall = function () {
+            self.editedCritique.overall = (self.editedCritique.originality + self.editedCritique.direction + self.editedCritique.writing +
+                self.editedCritique.cinematography + self.editedCritique.performances + self.editedCritique.production +
+                self.editedCritique.pacing + self.editedCritique.structure + self.editedCritique.audio + self.editedCritique.music) / 10;
+        };
+    }
 
-    self.calcOverall = function () {
-        self.editedCritique.overall = (self.editedCritique.originality + self.editedCritique.direction + self.editedCritique.writing +
-            self.editedCritique.cinematography + self.editedCritique.performances + self.editedCritique.production +
-            self.editedCritique.pacing + self.editedCritique.structure + self.editedCritique.audio + self.editedCritique.music) / 10;
-    };
-}
-function UploadCtrl($rootScope, ParseService, $state, $http, UtilsService) {
-    'use strict';
+    function UploadCtrl($rootScope, ParseService, $state, $http, UtilsService) {
+        Parse.Object.extend({
+            className: "Film",
+            attrs: ['name', 'description', 'director', 'writer', 'producers', 'synopsis', 'language', 'completionDate', 'filmingCountry', 'originCountry', 'owner', 'type',
+                'pastAwards', 'keyCast', 'runTime', 'thumbnailUrl', 'video_file', 'video_url', 'disableComments', 'disableCritique']
+        });
 
-    Parse.Object.extend({
-        className: "Film",
-        attrs: ['name', 'description', 'director', 'writer', 'producers', 'synopsis', 'language', 'completionDate', 'filmingCountry', 'originCountry', 'owner', 'type',
-            'pastAwards', 'keyCast', 'runTime', 'thumbnailUrl', 'video_file', 'video_url', 'disableComments', 'disableCritique']
-    });
+        Parse.Object.extend({
+            className: "Film_Genre",
+            attrs: ['film', 'genres', 'type']
+        });
 
-    Parse.Object.extend({
-        className: "Film_Genre",
-        attrs: ['film', 'genres', 'type']
-    });
+        var self = this;
 
-    var self = this;
+        self.newVideo = {
+            name: '',
+            description: '',
+            director: '',
+            writer: '',
+            producers: '',
+            synopsis: '',
+            keyCast: '',
+            language: '',
+            completionDate: undefined,
+            filmingCountry: undefined,
+            originCountry: undefined,
+            owner: Parse.User.current(),
+            genres: undefined,
+            type: undefined,
+            pastAwards: '',
+            runTime: 0,
+            thumbnailUrl: '',
+            video_file: undefined,
+            video_url: '',
+            tags: []
+        };
 
-    self.newVideo = {
-        name: '',
-        description: '',
-        director: '',
-        writer: '',
-        producers: '',
-        synopsis: '',
-        keyCast: '',
-        language: '',
-        completionDate: undefined,
-        filmingCountry: undefined,
-        originCountry: undefined,
-        owner: Parse.User.current(),
-        genres: undefined,
-        type: undefined,
-        pastAwards: '',
-        runTime: 0,
-        thumbnailUrl: '',
-        video_file: undefined,
-        video_url: '',
-        tags: []
-    };
+        self.runtime = {
+            hours: 0,
+            mins: 0,
+            secs: 0
+        };
 
-    self.runtime = {
-        hours: 0,
-        mins: 0,
-        secs: 0
-    };
+        self.maxDate = moment().toDate();
 
-    self.maxDate = moment().toDate();
+        self.selectedGenre = null;
 
-    self.selectedGenre = null;
+        self.getGenres = function () {
+            ParseService.genres();
+        };
 
-    self.getGenres = function () {
-        ParseService.genres();
-    };
+        self.getTypes = function () {
+            ParseService.types();
+        };
 
-    self.getTypes = function () {
-        ParseService.types();
-    };
+        self.getCountries = function () {
+            if (!angular.isArray($rootScope.countryList))
+                ParseService.countries();
+        };
 
-    self.getCountries = function () {
-        if (!angular.isArray($rootScope.countryList))
-            ParseService.countries();
-    };
+        self.getLanguages = function () {
+            if (!angular.isArray($rootScope.languageList))
+                ParseService.languages();
+        };
 
-    self.getLanguages = function () {
-        if (!angular.isArray($rootScope.languageList))
-            ParseService.languages();
-    };
+        self.runtimeToSeconds = function () {
+            self.newVideo.runTime = (self.runtime.hours * 3600) + (self.runtime.mins * 60) + self.runtime.secs;
+        };
 
-    self.runtimeToSeconds = function () {
-        self.newVideo.runTime = (self.runtime.hours * 3600) + (self.runtime.mins * 60) + self.runtime.secs;
-    };
+        self.isURL = function (str) {
+            var urlRegex = '[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)';
+            var url = new RegExp(urlRegex, 'i');
+            return str.length < 2083 && url.test(str);
+        };
 
-    self.isURL = function (str) {
-        var urlRegex = '[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)';
-        var url = new RegExp(urlRegex, 'i');
-        return str.length < 2083 && url.test(str);
-    };
-
-    self.getThumbnailUrl = function (url) {
-        if (url != null && url != '') {
-            if (url.indexOf('youtu') != -1) {
-                var video_id = url.split('v=')[1].split('&')[0];
-                return self.newVideo.thumbnailUrl = 'http://img.youtube.com/vi/' + video_id + '/mqdefault.jpg';
-            } else if (url.indexOf('vimeo') != -1) {
-                var video_id = url.split('.com/')[1];
-                $http.jsonp('http://www.vimeo.com/api/v2/video/' + video_id + '.json?callback=JSON_CALLBACK').then(function (res) {
-                    return self.newVideo.thumbnailUrl = res.data[0].thumbnail_large;
-                });
-            } else if (url.indexOf('dailymotion') != -1) {
-                var video_id = url.split('video/')[1].split('_')[0];
-                $http.get('https://api.dailymotion.com/video/' + video_id + '?fields=thumbnail_large_url').then(function (res) {
-                    return self.newVideo.thumbnailUrl = res.data.thumbnail_large_url;
-                });
-            } else if (url.indexOf('youku') != -1) {
-
-            } else if (url.indexOf('vine') != -1) {
-                $http.get('/alpha/utils/get-vine-data.php?url=' + url).then(function (res) {
-                    return self.newVideo.thumbnailUrl = res.data;
-                });
-
-            }
-        }
-    };
-
-    self.validateNewVideoForm = function () {
-        var test = true;
-        var msg = 'Your project is missing:';
-        if (!self.newVideo.name.length) {
-            msg += 'Project Title, ';
-            $rootScope.toastMessage();
-            test = false;
-        }
-        if (self.uploadType == 2 && !self.newVideo.video_url.length) {
-            msg += 'Video URL, ';
-            test = false;
-        }
-        if (angular.isUndefined(self.newVideo.genres) || (angular.isArray(self.newVideo.genres) && !self.newVideo.genres.length)) {
-            msg += 'Genres, ';
-            test = false;
-        }
-        if (angular.isUndefined(self.newVideo.type)) {
-            msg += 'Type, ';
-            test = false;
-        }
-        if (angular.isUndefined(self.newVideo.language)) {
-            msg += 'Language, ';
-            test = false;
-        }
-        if (self.newVideo.runTime == 0) {
-            msg += 'Duration';
-            test = false;
-        }
-        if (!test) $rootScope.toastMessage(msg);
-        return test;
-    };
-
-    self.submitNewVideo = function () {
-        if (!!self.validateNewVideoForm()) {
-            var film = new Parse.Object("Film");
-            film.set('name', self.newVideo.name);
-            film.set('name_lowercase', self.newVideo.name.toLowerCase());
-            film.set('description', self.newVideo.description);
-            film.set('director', self.newVideo.director);
-            film.set('writer', self.newVideo.writer);
-            film.set('producers', self.newVideo.producers);
-            film.set('synopsis', self.newVideo.synopsis);
-            film.set('completionDate', self.newVideo.completionDate);
-            film.set('owner', self.newVideo.owner);
-            film.set('runTime', self.newVideo.runTime);
-            film.set('video_url', self.newVideo.video_url);
-            film.set('thumbnail_url', self.newVideo.thumbnailUrl);
-            film.set('tags', self.newVideo.tags || []);
-            film.set('disableComments', self.newVideo.disableComments || false);
-            film.set('disableCritique', self.newVideo.disableCritique || false);
-            //film.set('disableProject', false);
-            film.set('unlist', false);
-
-            var relation = film.relation("genres");
-            _.each(self.newVideo.genres, function (a) {
-                var Genre = Parse.Object.extend("Genre");
-                relation.add(new Genre({id: a}));
-            });
-
-            // Must check so that new null objects are not created
-            if (angular.isString(self.newVideo.language))
-                film.set('language', {__type: "Pointer", className: "Language", objectId: self.newVideo.language});
-            if (angular.isString(self.newVideo.filmingCountry))
-                film.set('filmingCountry', {
-                    __type: "Pointer",
-                    className: "Country",
-                    objectId: self.newVideo.filmingCountry
-                });
-            if (angular.isString(self.newVideo.originCountry))
-                film.set('originCountry', {
-                    __type: "Pointer",
-                    className: "Country",
-                    objectId: self.newVideo.originCountry
-                });
-            if (angular.isString(self.newVideo.type))
-                film.set('type', {__type: "Pointer", className: "Type", objectId: self.newVideo.type});
-
-
-            film.save(null).then(
-                function (film) {
-                    //console.log('New film created with objectId: ' + film.id);
-                    //console.log(film);
-                    // create Film_Genre object
-                    var filmGenre = new Parse.Object("Film_Genre");
-                    filmGenre.set('film', {__type: "Pointer", className: "Film", objectId: film.id});
-                    filmGenre.set('type', {__type: "Pointer", className: "Type", objectId: self.newVideo.type});
-                    var relation = filmGenre.relation("genres");
-                    _.each(self.newVideo.genres, function (a) {
-                        var Genre = Parse.Object.extend("Genre");
-                        relation.add(new Genre({id: a}));
+        self.getThumbnailUrl = function (url) {
+            if (url != null && url != '') {
+                if (url.indexOf('youtu') != -1) {
+                    var video_id = url.split('v=')[1].split('&')[0];
+                    return self.newVideo.thumbnailUrl = 'http://img.youtube.com/vi/' + video_id + '/mqdefault.jpg';
+                } else if (url.indexOf('vimeo') != -1) {
+                    var video_id = url.split('.com/')[1];
+                    $http.jsonp('http://www.vimeo.com/api/v2/video/' + video_id + '.json?callback=JSON_CALLBACK').then(function (res) {
+                        return self.newVideo.thumbnailUrl = res.data[0].thumbnail_large;
                     });
-                    filmGenre.save(null).then(
-                        function (fg) {
-                            // the object was saved.
-                            //console.log('New filmGenre created with objectId: ' + fg.id);
-                            $rootScope.toastMessage('Video Uploaded Successfully');
-                            $state.go('video', {id: film.id});
-                        },
-                        function (error) {
-                            // saving the object failed.
-                            alert('Failed to create new film_genre, with error code: ' + error.message);
-                        });
+                } else if (url.indexOf('dailymotion') != -1) {
+                    var video_id = url.split('video/')[1].split('_')[0];
+                    $http.get('https://api.dailymotion.com/video/' + video_id + '?fields=thumbnail_large_url').then(function (res) {
+                        return self.newVideo.thumbnailUrl = res.data.thumbnail_large_url;
+                    });
+                } else if (url.indexOf('youku') != -1) {
 
-                    // register Action
-                    UtilsService.recordActivity(film, 'upload');
+                } else if (url.indexOf('vine') != -1) {
+                    $http.get('/alpha/utils/get-vine-data.php?url=' + url).then(function (res) {
+                        return self.newVideo.thumbnailUrl = res.data;
+                    });
 
-                },
-                function (error) {
-                    // saving the object failed.
-                    alert('Failed to create new film, with error code: ' + error.message);
+                }
+            }
+        };
+
+        self.validateNewVideoForm = function () {
+            var test = true;
+            var msg = 'Your project is missing:';
+            if (!self.newVideo.name.length) {
+                msg += 'Project Title, ';
+                $rootScope.toastMessage();
+                test = false;
+            }
+            if (self.uploadType == 2 && !self.newVideo.video_url.length) {
+                msg += 'Video URL, ';
+                test = false;
+            }
+            if (angular.isUndefined(self.newVideo.genres) || (angular.isArray(self.newVideo.genres) && !self.newVideo.genres.length)) {
+                msg += 'Genres, ';
+                test = false;
+            }
+            if (angular.isUndefined(self.newVideo.type)) {
+                msg += 'Type, ';
+                test = false;
+            }
+            if (angular.isUndefined(self.newVideo.language)) {
+                msg += 'Language, ';
+                test = false;
+            }
+            if (self.newVideo.runTime == 0) {
+                msg += 'Duration';
+                test = false;
+            }
+            if (!test) $rootScope.toastMessage(msg);
+            return test;
+        };
+
+        self.submitNewVideo = function () {
+            if (!!self.validateNewVideoForm()) {
+                var film = new Parse.Object("Film");
+                film.set('name', self.newVideo.name);
+                film.set('name_lowercase', self.newVideo.name.toLowerCase());
+                film.set('description', self.newVideo.description);
+                film.set('director', self.newVideo.director);
+                film.set('writer', self.newVideo.writer);
+                film.set('producers', self.newVideo.producers);
+                film.set('synopsis', self.newVideo.synopsis);
+                film.set('completionDate', self.newVideo.completionDate);
+                film.set('owner', self.newVideo.owner);
+                film.set('runTime', self.newVideo.runTime);
+                film.set('video_url', self.newVideo.video_url);
+                film.set('thumbnail_url', self.newVideo.thumbnailUrl);
+                film.set('tags', self.newVideo.tags || []);
+                film.set('disableComments', self.newVideo.disableComments || false);
+                film.set('disableCritique', self.newVideo.disableCritique || false);
+                //film.set('disableProject', false);
+                film.set('unlist', false);
+
+                var relation = film.relation("genres");
+                _.each(self.newVideo.genres, function (a) {
+                    var Genre = Parse.Object.extend("Genre");
+                    relation.add(new Genre({id: a}));
                 });
-        } else {
-            //$rootScope.toastMessage('Please check the form!');
-        }
-    };
-}
-function ProfileCtrl($rootScope, ParseService, $state, $mdDialog) {
-    'use strict';
 
-    var self = this;
-    console.log($rootScope.AppData.User);
-    console.log($rootScope.$state);
-    $rootScope.metadata.title = 'Profile';
-    // Fetch Projects
-    var innerQuery = new Parse.Query("Film");
-    innerQuery.equalTo("owner", Parse.User.current());
-    //innerQuery.notEqualTo("disableProject", true);
-    innerQuery.notEqualTo("unlist", true);
-    var query = new Parse.Query("Film_Genre");
-    query.matchesQuery("film", innerQuery);
-    query.include(["film.type", "film.owner"]);
-    query.descending("createdAt");
-    query.find().then(function (result) {
-        console.log(result);
-        self.projects = result;
-    });
+                // Must check so that new null objects are not created
+                if (angular.isString(self.newVideo.language))
+                    film.set('language', {__type: "Pointer", className: "Language", objectId: self.newVideo.language});
+                if (angular.isString(self.newVideo.filmingCountry))
+                    film.set('filmingCountry', {
+                        __type: "Pointer",
+                        className: "Country",
+                        objectId: self.newVideo.filmingCountry
+                    });
+                if (angular.isString(self.newVideo.originCountry))
+                    film.set('originCountry', {
+                        __type: "Pointer",
+                        className: "Country",
+                        objectId: self.newVideo.originCountry
+                    });
+                if (angular.isString(self.newVideo.type))
+                    film.set('type', {__type: "Pointer", className: "Type", objectId: self.newVideo.type});
 
-    // Fetch Favorites
-    var favoritesQuery = new Parse.Query("Favorites");
-    //query.matchesQuery("film", innerQuery);
-    favoritesQuery.equalTo("user", Parse.User.current());
-    favoritesQuery.include(["project.owner", "project.type"]);
-    favoritesQuery.descending("createdAt");
-    favoritesQuery.find().then(function (result) {
-        console.log(result);
-        self.favorites = result;
-    });
 
-    // Fetch WatchLater
-    var watchLaterQuery = new Parse.Query("WatchLater");
-    //query.matchesQuery("film", innerQuery);
-    watchLaterQuery.equalTo("user", Parse.User.current());
-    watchLaterQuery.include(["project.owner", "project.type"]);
-    watchLaterQuery.descending("createdAt");
-    watchLaterQuery.find().then(function (result) {
-        console.log(result);
-        self.watchlaters = result;
-    });
+                film.save(null).then(
+                    function (film) {
+                        //console.log('New film created with objectId: ' + film.id);
+                        //console.log(film);
+                        // create Film_Genre object
+                        var filmGenre = new Parse.Object("Film_Genre");
+                        filmGenre.set('film', {__type: "Pointer", className: "Film", objectId: film.id});
+                        filmGenre.set('type', {__type: "Pointer", className: "Type", objectId: self.newVideo.type});
+                        var relation = filmGenre.relation("genres");
+                        _.each(self.newVideo.genres, function (a) {
+                            var Genre = Parse.Object.extend("Genre");
+                            relation.add(new Genre({id: a}));
+                        });
+                        filmGenre.save(null).then(
+                            function (fg) {
+                                // the object was saved.
+                                //console.log('New filmGenre created with objectId: ' + fg.id);
+                                $rootScope.toastMessage('Video Uploaded Successfully');
+                                $state.go('video', {id: film.id});
+                            },
+                            function (error) {
+                                // saving the object failed.
+                                alert('Failed to create new film_genre, with error code: ' + error.message);
+                            });
 
-    // Fetch My Critiques
-    var critiqueQuery = new Parse.Query("Critique");
-    critiqueQuery.equalTo('author', Parse.User.current());
-    critiqueQuery.include(['parent', 'author']);
-    critiqueQuery.find().then(function (result) {
-        self.myCritiques = result;
-    });
+                        // register Action
+                        UtilsService.recordActivity(film, 'upload');
 
-    // Fetch My Critiqued
-    var critiquedQuery = new Parse.Query("Critique");
-    critiquedQuery.notEqualTo('author', Parse.User.current());
-    critiquedQuery.include(['parent', 'author']);
-    critiquedQuery.matchesQuery("parent", innerQuery);
-    critiquedQuery.find().then(function (result) {
-        self.myCritiqued = result;
-    });
+                    },
+                    function (error) {
+                        // saving the object failed.
+                        alert('Failed to create new film, with error code: ' + error.message);
+                    });
+            } else {
+                //$rootScope.toastMessage('Please check the form!');
+            }
+        };
+    }
 
-    // Fetch My Reactions
-    var reactionQuery = new Parse.Query("Reaction");
-    reactionQuery.equalTo('user', Parse.User.current());
-    reactionQuery.include(['parent', 'user']);
-    reactionQuery.find().then(function (result) {
-        self.myReactions = result;
-    });
-
-    // Fetch My Reacted
-    var reactedQuery = new Parse.Query("Reaction");
-    reactedQuery.notEqualTo('user', Parse.User.current());
-    reactedQuery.include(['parent', 'user']);
-    reactedQuery.matchesQuery("parent", innerQuery);
-    reactedQuery.find().then(function (result) {
-        self.myReacted = result;
-    });
-
-    var winQuery = new Parse.Query("AwardWin");
-    //winQuery.equalTo('user', self.user);
-    winQuery.include(['award', 'film']);
-    winQuery.matchesQuery("film", innerQuery);
-    winQuery.find().then(function (result) {
-        self.myWins = result;
-    });
-    self.getEmoticonByEmotion = function (emotion) {
-        var reactions = $rootScope.generateReactions();
-        return _.findWhere(reactions, {emotion: emotion});
-    };
-
-    self.openMenu = function ($mdOpenMenu, ev) {
-        var originatorEv = ev;
-        $mdOpenMenu(ev);
-    };
-
-    self.toggleFavorite = function (video) {
-
-    };
-
-    self.toggleWatchLater = function (video) {
-
-    };
-}
-function UserCtrl($rootScope, ParseService, $state) {
-    'use strict';
-
-    var self = this;
-
-    var userQuery = new Parse.Query("_User");
-    userQuery.get($rootScope.$stateParams.id).then(function (user) {
-        self.user = user;
-        $rootScope.metadata.title = 'Profile: ' + user.attributes.first_name + ' ' + user.attributes.last_name;
-
+    function ProfileCtrl($rootScope, ParseService, $state, $mdDialog) {
+        var self = this;
+        console.log($rootScope.AppData.User);
+        console.log($rootScope.$state);
+        $rootScope.metadata.title = 'Profile';
         // Fetch Projects
         var innerQuery = new Parse.Query("Film");
+        innerQuery.equalTo("owner", Parse.User.current());
         //innerQuery.notEqualTo("disableProject", true);
-        innerQuery.notEqualTo("unlist", true);
-        innerQuery.equalTo("owner", self.user);
+        //innerQuery.notEqualTo("unlist", true);
         var query = new Parse.Query("Film_Genre");
         query.matchesQuery("film", innerQuery);
         query.include(["film.type", "film.owner"]);
@@ -2071,9 +2022,31 @@ function UserCtrl($rootScope, ParseService, $state) {
             self.projects = result;
         });
 
+        // Fetch Favorites
+        var favoritesQuery = new Parse.Query("Favorites");
+        //query.matchesQuery("film", innerQuery);
+        favoritesQuery.equalTo("user", Parse.User.current());
+        favoritesQuery.include(["project.owner", "project.type"]);
+        favoritesQuery.descending("createdAt");
+        favoritesQuery.find().then(function (result) {
+            console.log(result);
+            self.favorites = result;
+        });
+
+        // Fetch WatchLater
+        var watchLaterQuery = new Parse.Query("WatchLater");
+        //query.matchesQuery("film", innerQuery);
+        watchLaterQuery.equalTo("user", Parse.User.current());
+        watchLaterQuery.include(["project.owner", "project.type"]);
+        watchLaterQuery.descending("createdAt");
+        watchLaterQuery.find().then(function (result) {
+            console.log(result);
+            self.watchlaters = result;
+        });
+
         // Fetch My Critiques
         var critiqueQuery = new Parse.Query("Critique");
-        critiqueQuery.equalTo('author', self.user);
+        critiqueQuery.equalTo('author', Parse.User.current());
         critiqueQuery.include(['parent', 'author']);
         critiqueQuery.find().then(function (result) {
             self.myCritiques = result;
@@ -2081,7 +2054,7 @@ function UserCtrl($rootScope, ParseService, $state) {
 
         // Fetch My Critiqued
         var critiquedQuery = new Parse.Query("Critique");
-        critiquedQuery.notEqualTo('author', self.user);
+        critiquedQuery.notEqualTo('author', Parse.User.current());
         critiquedQuery.include(['parent', 'author']);
         critiquedQuery.matchesQuery("parent", innerQuery);
         critiquedQuery.find().then(function (result) {
@@ -2090,7 +2063,7 @@ function UserCtrl($rootScope, ParseService, $state) {
 
         // Fetch My Reactions
         var reactionQuery = new Parse.Query("Reaction");
-        reactionQuery.equalTo('user', self.user);
+        reactionQuery.equalTo('user', Parse.User.current());
         reactionQuery.include(['parent', 'user']);
         reactionQuery.find().then(function (result) {
             self.myReactions = result;
@@ -2098,14 +2071,13 @@ function UserCtrl($rootScope, ParseService, $state) {
 
         // Fetch My Reacted
         var reactedQuery = new Parse.Query("Reaction");
-        reactedQuery.notEqualTo('user', self.user);
+        reactedQuery.notEqualTo('user', Parse.User.current());
         reactedQuery.include(['parent', 'user']);
         reactedQuery.matchesQuery("parent", innerQuery);
         reactedQuery.find().then(function (result) {
             self.myReacted = result;
         });
 
-        //Fetch My Wins
         var winQuery = new Parse.Query("AwardWin");
         //winQuery.equalTo('user', self.user);
         winQuery.include(['award', 'film']);
@@ -2113,193 +2085,280 @@ function UserCtrl($rootScope, ParseService, $state) {
         winQuery.find().then(function (result) {
             self.myWins = result;
         });
+        self.getEmoticonByEmotion = function (emotion) {
+            var reactions = $rootScope.generateReactions();
+            return _.findWhere(reactions, {emotion: emotion});
+        };
 
+        self.openMenu = function ($mdOpenMenu, ev) {
+            var originatorEv = ev;
+            $mdOpenMenu(ev);
+        };
 
-    });
+        self.toggleFavorite = function (video) {
 
-    self.getEmoticonByEmotion = function (emotion) {
-        var reactions = $rootScope.generateReactions();
-        return _.findWhere(reactions, {emotion: emotion});
-    };
+        };
 
+        self.toggleWatchLater = function (video) {
 
-}
-function EditProfileCtrl($rootScope, $scope, AuthService, ParseService, $state) {
-    'use strict';
-    $rootScope.metadata.title = 'Edit Profile';
-
-    var self = this;
-    self.user = {
-        email: $rootScope.AppData.User.attributes.email,
-        usertag: $rootScope.AppData.User.attributes.usertag,
-        first_name: $rootScope.AppData.User.attributes.first_name,
-        last_name: $rootScope.AppData.User.attributes.last_name,
-        bio: $rootScope.AppData.User.attributes.bio,
-        avatar: $rootScope.AppData.User.attributes.avatar,
-    };
-    self.socials = {
-        facebook: Parse.FacebookUtils.isLinked($rootScope.AppData.User),
-        twitter: false,
-        google: false,
-        instagram: false
-    };
-
-    self.getGenres = function () {
-        ParseService.genres();
-    };
-
-    self.doLink = function (social) {
-        switch (social) {
-            case 'facebook':
-                AuthService.linkWithFB().then(function (res) {
-                    self.socials.facebook = Parse.FacebookUtils.isLinked($rootScope.AppData.User);
-                });
-                break;
-            default :
-                break;
-        }
-    };
-    self.doUnlink = function (social) {
-        switch (social) {
-            case 'facebook':
-                AuthService.unlinkWithFB().then(function (res) {
-                    self.socials.facebook = Parse.FacebookUtils.isLinked($rootScope.AppData.User);
-                });
-                break;
-            default :
-                break;
-        }
-    };
-
-    self.updateUser = function () {
-        AuthService.updateUser(self.user).then(function (res) {
-            console.log(res);
-            $rootScope.toastMessage('Profile Updated');
-        });
-    };
-
-    self.updateAvatar = function (flow) {
-        self.user.avatar = 'http://getindiewise.com/alpha/utils/files/' + flow.files[0].file.name;
-        self.updateUser();
+        };
     }
 
-}
-function MessagesCtrl($rootScope, $mdSidenav, UserActions, UtilsService) {
-    "use strict";
-    $rootScope.metadata.title = 'Messages';
+    function UserCtrl($rootScope, ParseService, $state) {
+        var self = this;
 
-    Parse.Object.extend({
-        className: "Conversation",
-        attrs: ['name', 'participants']
-    });
+        var userQuery = new Parse.Query("_User");
+        userQuery.get($rootScope.$stateParams.id).then(function (user) {
+            self.user = user;
+            $rootScope.metadata.title = 'Profile: ' + user.attributes.first_name + ' ' + user.attributes.last_name;
 
-    Parse.Object.extend({
-        className: "Message",
-        attrs: ['body', 'from', 'parent']
-    });
-
-    var self = this;
-    self.newMode = false;
-    self.myReply = null;
-    // Fetch Conversations, Participants, and Messages
-
-    // Fetch Conversations
-    var msgsQuery = new Parse.Query("Conversation");
-    msgsQuery.equalTo("participants", Parse.User.current());
-    msgsQuery.descending("createdAt");
-    msgsQuery.find().then(function (convos) {
-        _.each(convos, function (a) {
-            var relParticipants = a.relation("participants");
-            relParticipants.query().find().then(function (participants) {
-                var msgQuery = new Parse.Query("Message");
-                msgQuery.equalTo("parent", a);
-                msgQuery.include(['from']);
-                msgQuery.descending("createdAt");
-                msgQuery.first().then(function (msg) {
-                    //console.log('Messages: ', msg);
-                    a.latest = msg;
-                });
-                a.participants = participants;
-                //console.log('list: ', a);
+            // Fetch Projects
+            var innerQuery = new Parse.Query("Film");
+            //innerQuery.notEqualTo("disableProject", true);
+            innerQuery.notEqualTo("unlist", true);
+            innerQuery.equalTo("owner", self.user);
+            var query = new Parse.Query("Film_Genre");
+            query.matchesQuery("film", innerQuery);
+            query.include(["film.type", "film.owner"]);
+            query.descending("createdAt");
+            query.find().then(function (result) {
+                console.log(result);
+                self.projects = result;
             });
+
+            // Fetch My Critiques
+            var critiqueQuery = new Parse.Query("Critique");
+            critiqueQuery.equalTo('author', self.user);
+            critiqueQuery.include(['parent', 'author']);
+            critiqueQuery.find().then(function (result) {
+                self.myCritiques = result;
+            });
+
+            // Fetch My Critiqued
+            var critiquedQuery = new Parse.Query("Critique");
+            critiquedQuery.notEqualTo('author', self.user);
+            critiquedQuery.include(['parent', 'author']);
+            critiquedQuery.matchesQuery("parent", innerQuery);
+            critiquedQuery.find().then(function (result) {
+                self.myCritiqued = result;
+            });
+
+            // Fetch My Reactions
+            var reactionQuery = new Parse.Query("Reaction");
+            reactionQuery.equalTo('user', self.user);
+            reactionQuery.include(['parent', 'user']);
+            reactionQuery.find().then(function (result) {
+                self.myReactions = result;
+            });
+
+            // Fetch My Reacted
+            var reactedQuery = new Parse.Query("Reaction");
+            reactedQuery.notEqualTo('user', self.user);
+            reactedQuery.include(['parent', 'user']);
+            reactedQuery.matchesQuery("parent", innerQuery);
+            reactedQuery.find().then(function (result) {
+                self.myReacted = result;
+            });
+
+            //Fetch My Wins
+            var winQuery = new Parse.Query("AwardWin");
+            //winQuery.equalTo('user', self.user);
+            winQuery.include(['award', 'film']);
+            winQuery.matchesQuery("film", innerQuery);
+            winQuery.find().then(function (result) {
+                self.myWins = result;
+            });
+
+
         });
 
-        self.convos = convos;
-    });
+        self.getEmoticonByEmotion = function (emotion) {
+            var reactions = $rootScope.generateReactions();
+            return _.findWhere(reactions, {emotion: emotion});
+        };
 
-    self.toggleConvoNav = function () {
-        $mdSidenav('ConvoNav').toggle();
-    };
 
-    self.selectConvo = function (convo) {
-        self.selectedConvo = convo;
-        self.currentParticipants = convo.participants;
-        var msgsQuery = new Parse.Query("Message");
-        msgsQuery.equalTo("parent", convo);
-        msgsQuery.include(['from']);
-        msgsQuery.find().then(function (msgs) {
-            //console.log('Messages: ', msgs);
-            self.messages = msgs;
-        });
-    };
+    }
 
-    self.postReply = function () {
-        UserActions.checkAuth().then(function (res) {
-            if (res) {
-                var message = new Parse.Object("Message");
-                message.set('body', self.myReply);
-                message.set('parent', {__type: "Pointer", className: "Conversation", objectId: self.selectedConvo.id});
-                message.set('from', Parse.User.current());
-                message.save().then(function (result) {
-                    self.myReply = null;
-                    self.messages.push(result);
-                    // TODO: Send email notification
-                    result.participants
-                    UtilsService.recordActivity(result);
-                });
+    function EditProfileCtrl($rootScope, $scope, AuthService, ParseService, $state) {
+        $rootScope.metadata.title = 'Edit Profile';
 
-                self.selectedConvo.set('updatedAt', moment().toDate());
-                self.selectedConvo.save();
+        var self = this;
+        self.user = {
+            email: $rootScope.AppData.User.attributes.email,
+            usertag: $rootScope.AppData.User.attributes.usertag,
+            first_name: $rootScope.AppData.User.attributes.first_name,
+            last_name: $rootScope.AppData.User.attributes.last_name,
+            bio: $rootScope.AppData.User.attributes.bio,
+            avatar: $rootScope.AppData.User.attributes.avatar,
+        };
+        self.socials = {
+            facebook: Parse.FacebookUtils.isLinked($rootScope.AppData.User),
+            twitter: false,
+            google: false,
+            instagram: false
+        };
 
-                //message.set('to', {__type: "Pointer", className: "_User", objectId: self.film.attributes.owner.id});
-                //message.set('from', Parse.User.current();
+        self.getGenres = function () {
+            ParseService.genres();
+        };
+
+        self.doLink = function (social) {
+            switch (social) {
+                case 'facebook':
+                    AuthService.linkWithFB().then(function (res) {
+                        self.socials.facebook = Parse.FacebookUtils.isLinked($rootScope.AppData.User);
+                    });
+                    break;
+                default :
+                    break;
             }
-        }, function (err) {
-            UserActions.loginModal();
-        });
-    };
-}
-function NotificationsCtrl($rootScope, UserActions, UtilsService) {
-    "use strict";
-    var self = this;
-    self.refresh = function () {
-        $rootScope.getFlatNotificationsFeed();
-    };
+        };
+        self.doUnlink = function (social) {
+            switch (social) {
+                case 'facebook':
+                    AuthService.unlinkWithFB().then(function (res) {
+                        self.socials.facebook = Parse.FacebookUtils.isLinked($rootScope.AppData.User);
+                    });
+                    break;
+                default :
+                    break;
+            }
+        };
 
-    self.markAllAsRead = function () {
-        $rootScope.getNewToken('flat', $rootScope.AppData.User.id).then(function (token) {
-            var feed = window.StreamClient.feed('flat_notifications', $rootScope.AppData.User.id, token);
-            feed.get({limit: 20, mark_read: true}, function (a) {
-                _.each($rootScope.AppData.NotificationsFeed.list, function (n) {
-                    n.is_read = true;
+        self.updateUser = function () {
+            AuthService.updateUser(self.user).then(function (res) {
+                console.log(res);
+                $rootScope.toastMessage('Profile Updated');
+            });
+        };
+
+        self.updateAvatar = function (flow) {
+            self.user.avatar = 'http://getindiewise.com/alpha/utils/files/' + flow.files[0].file.name;
+            self.updateUser();
+        }
+
+    }
+
+    function MessagesCtrl($rootScope, $mdSidenav, UserActions, UtilsService) {
+        $rootScope.metadata.title = 'Messages';
+
+        Parse.Object.extend({
+            className: "Conversation",
+            attrs: ['name', 'participants']
+        });
+
+        Parse.Object.extend({
+            className: "Message",
+            attrs: ['body', 'from', 'parent']
+        });
+
+        var self = this;
+        self.newMode = false;
+        self.myReply = null;
+        // Fetch Conversations, Participants, and Messages
+
+        // Fetch Conversations
+        var msgsQuery = new Parse.Query("Conversation");
+        msgsQuery.equalTo("participants", Parse.User.current());
+        msgsQuery.descending("createdAt");
+        msgsQuery.find().then(function (convos) {
+            _.each(convos, function (a) {
+                var relParticipants = a.relation("participants");
+                relParticipants.query().find().then(function (participants) {
+                    var msgQuery = new Parse.Query("Message");
+                    msgQuery.equalTo("parent", a);
+                    msgQuery.include(['from']);
+                    msgQuery.descending("createdAt");
+                    msgQuery.first().then(function (msg) {
+                        //console.log('Messages: ', msg);
+                        a.latest = msg;
+                    });
+                    a.participants = participants;
+                    //console.log('list: ', a);
                 });
-                $rootScope.AppData.NotificationsFeed.unread = 0;
-            })
-        });
-    };
+            });
 
-    self.markAsRead = function (n) {
-        $rootScope.getNewToken('flat', $rootScope.AppData.User.id).then(function (token) {
-            var feed = window.StreamClient.feed('flat_notifications', $rootScope.AppData.User.id, token);
-            feed.get({limit: 5, mark_read: [n.id]}, function (a) {
-                n.is_read = true;
-                --$rootScope.AppData.NotificationsFeed.unseen;
-                --$rootScope.AppData.NotificationsFeed.unread;
-                return n;
-            })
+            self.convos = convos;
         });
-    };
 
-    self.refresh();
-}
+        self.toggleConvoNav = function () {
+            $mdSidenav('ConvoNav').toggle();
+        };
+
+        self.selectConvo = function (convo) {
+            self.selectedConvo = convo;
+            self.currentParticipants = convo.participants;
+            var msgsQuery = new Parse.Query("Message");
+            msgsQuery.equalTo("parent", convo);
+            msgsQuery.include(['from']);
+            msgsQuery.find().then(function (msgs) {
+                //console.log('Messages: ', msgs);
+                self.messages = msgs;
+            });
+        };
+
+        self.postReply = function () {
+            UserActions.checkAuth().then(function (res) {
+                if (res) {
+                    var message = new Parse.Object("Message");
+                    message.set('body', self.myReply);
+                    message.set('parent', {
+                        __type: "Pointer",
+                        className: "Conversation",
+                        objectId: self.selectedConvo.id
+                    });
+                    message.set('from', Parse.User.current());
+                    message.save().then(function (result) {
+                        self.myReply = null;
+                        self.messages.push(result);
+                        // TODO: Send email notification
+                        result.participants
+                        UtilsService.recordActivity(result);
+                    });
+
+                    self.selectedConvo.set('updatedAt', moment().toDate());
+                    self.selectedConvo.save();
+
+                    //message.set('to', {__type: "Pointer", className: "_User", objectId: self.film.attributes.owner.id});
+                    //message.set('from', Parse.User.current();
+                }
+            }, function (err) {
+                UserActions.loginModal();
+            });
+        };
+    }
+
+    function NotificationsCtrl($rootScope, UserActions, UtilsService) {
+        var self = this;
+        self.refresh = function () {
+            $rootScope.getFlatNotificationsFeed();
+        };
+
+        self.markAllAsRead = function () {
+            $rootScope.getNewToken('flat', $rootScope.AppData.User.id).then(function (token) {
+                var feed = window.StreamClient.feed('flat_notifications', $rootScope.AppData.User.id, token);
+                feed.get({limit: 20, mark_read: true}, function (a) {
+                    _.each($rootScope.AppData.NotificationsFeed.list, function (n) {
+                        n.is_read = true;
+                    });
+                    $rootScope.AppData.NotificationsFeed.unread = 0;
+                })
+            });
+        };
+
+        self.markAsRead = function (n) {
+            $rootScope.getNewToken('flat', $rootScope.AppData.User.id).then(function (token) {
+                var feed = window.StreamClient.feed('flat_notifications', $rootScope.AppData.User.id, token);
+                feed.get({limit: 5, mark_read: [n.id]}, function (a) {
+                    n.is_read = true;
+                    --$rootScope.AppData.NotificationsFeed.unseen;
+                    --$rootScope.AppData.NotificationsFeed.unread;
+                    return n;
+                })
+            });
+        };
+
+        self.refresh();
+    }
 })();

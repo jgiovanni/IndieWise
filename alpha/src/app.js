@@ -49,6 +49,7 @@
                 .icon("arrow_back", "./assets/svg/arrow_back.svg", 24)
                 .icon("chevron-right", "./assets/svg/chevron-right.svg", 24)
                 .icon("view_module", "./assets/svg/view_module.svg", 24)
+                .icon("invisibility", "./assets/svg/in  visibility.svg", 24)
                 .icon("visibility", "./assets/svg/visibility.svg", 24)
                 .icon("more_horiz", "./assets/svg/more_horiz.svg", 24)
                 .icon("more_vert", "./assets/svg/dots-vertical.svg", 24)
@@ -161,7 +162,7 @@
                             var filmQuery = new Parse.Query("Film");
                             filmQuery.include(["owner", "type"]);
                             //filmQuery.notEqualTo("disableProject", true);
-                            filmQuery.notEqualTo("unlist", true);
+                            //filmQuery.notEqualTo("unlist", true);
                             filmQuery.get($stateParams.id).then(function (result) {
                                 deferred.resolve(result);
                             });
@@ -453,8 +454,8 @@
                         $rootScope.AppData.RawNotifications = {
                             loaded: '',
                             list: data.data,
-                            unseen: data.unseen,
-                            unread: data.unread
+                            unseen: body.unseen,
+                            unread: body.unread
                         };
                     } catch (e) {
                         console.log(e);

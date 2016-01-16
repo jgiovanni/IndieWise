@@ -1,6 +1,7 @@
-<md-content layout="row" layout-lt-md="column" layout-wrap layout-padding layout-align="start top" id="content">
+<div class="grey lighten-3">
+    <md-content layout="row" layout-lt-md="column" layout-wrap layout-padding layout-align="flex-start top" id="content">
         <div flex="100">
-            <h3 class="md-title">Info & Settings - {{VEC.project.attributes.name}}</h3>
+            <h3 class="md-title">Info & Settings - {{VEC.editedProject.name}}</h3>
             <hr>
         </div>
         <div flex-gt-sm="33">
@@ -13,7 +14,7 @@
 
                 <tbody>
                 <tr>
-                    <td>Name</td>
+                    <td>Current Name</td>
                     <td>{{VEC.project.attributes.name}}</td>
                 </tr>
                 <tr>
@@ -45,19 +46,19 @@
                 <div layout layout-lt-md="column">
                     <md-input-container flex>
                         <label>Project Title</label>
-                        <input type="text" ng-model="VEC.project.attributes.name" ng-required="true">
+                        <input type="text" ng-model="VEC.editedProject.name" ng-required="true">
                     </md-input-container>
                     <!--<md-datepicker flex md-placeholder="Date Completion" ng-model="VEC.project.completionDate"
                                    md-max-date="VEC.maxDate"></md-datepicker>-->
                     <md-input-container flex>
                         <label>Date of Completion (Month, Year)</label>
-                        <input type="month" ng-model="VEC.dateOfCompl" max="VEC.maxDate" required/>
+                        <input type="month" ng-model="VEC.editedProject.completionDate" max="VEC.maxDate" required/>
                     </md-input-container>
                 </div>
                 <div layout layout-lt-md="column">
                     <md-input-container flex>
                         <label>Description</label>
-                        <textarea ng-model="VEC.project.attributes.description" columns="1"
+                        <textarea ng-model="VEC.editedProject.description" columns="1"
                                   md-maxlength="1000"></textarea>
                     </md-input-container>
 
@@ -72,7 +73,7 @@
                     </md-select>
                 </div>
                 <div layout layout-lt-md="column">
-                    <md-select flex placeholder="Type" ng-model="VEC.project.attributes.type.id"
+                    <md-select flex placeholder="Type" ng-model="VEC.editedProject.type.id"
                                md-on-open="VEC.getTypes()"
                                style="min-width: 200px;" ng-required="true" required>
                         <md-option ng-value="t.id" ng-repeat="t in typesList|orderBy:'attributes.slug'"
@@ -80,7 +81,7 @@
                             {{t.attributes.name}}
                         </md-option>
                     </md-select>
-                    <md-select flex placeholder="Language" ng-model="VEC.project.attributes.language.id"
+                    <md-select flex placeholder="Language" ng-model="VEC.editedProject.language.id"
                                md-on-open="VEC.getLanguages()"
                                style="min-width: 200px;" ng-required="true" required>
                         <md-option value="knCq0SDd4Q" class="md-accent" tabindex="0" role="option" aria-hidden="false">
@@ -94,7 +95,7 @@
                         </md-option>
                     </md-select>
 
-                    <md-select flex placeholder="Country of Filming" ng-model="VEC.project.attributes.filmingCountry.id"
+                    <md-select flex placeholder="Country of Filming" ng-model="VEC.editedProject.filmingCountry.id"
                                md-on-open="VEC.getCountries()" style="min-width: 200px;" ng-required="true" required>
                         <md-option ng-value="c.id" ng-repeat="c in countryList|orderBy:'attributes.name.common'"
                                    class="md-accent">
@@ -105,15 +106,15 @@
                 <div layout layout-lt-md="column">
                     <md-input-container flex>
                         <label>Director</label>
-                        <input type="text" ng-model="VEC.project.attributes.director" ng-required="true">
+                        <input type="text" ng-model="VEC.editedProject.director" ng-required="true">
                     </md-input-container>
                     <md-input-container flex>
                         <label>Writer</label>
-                        <input type="text" ng-model="VEC.project.attributes.writer" ng-required="true">
+                        <input type="text" ng-model="VEC.editedProject.writer" ng-required="true">
                     </md-input-container>
                     <md-input-container flex>
                         <label>Producers</label>
-                        <input type="text" ng-model="VEC.project.attributes.producers" ng-required="true">
+                        <input type="text" ng-model="VEC.editedProject.producers" ng-required="true">
                     </md-input-container>
                 </div>
                 <br>
@@ -151,24 +152,24 @@
                         <div flex layout="column">
                             <md-input-container flex>
                                 <label>Video URL</label>
-                                <input type="url" ng-model="VEC.project.attributes.video_url"
+                                <input type="url" ng-model="VEC.editedProject.video_url"
                                        ng-required="VEC.uploadType == 2"
-                                       ng-change="VEC.getThumbnailUrl(VEC.project.attributes.video_url)">
+                                       ng-change="VEC.getThumbnailUrl(VEC.editedProject.video_url)">
                             </md-input-container>
                             <div flex>
-                                <embed-video ng-if="VEC.project.attributes.video_url != ''"
-                                             ng-href="{{VEC.project.attributes.video_url}}"
+                                <embed-video ng-if="VEC.editedProject.video_url != ''"
+                                             ng-href="{{VEC.editedProject.video_url}}"
                                              width="100%" height="200"></embed-video>
                             </div>
                         </div>
                         <div flex layout="column" layout-align="center top">
                             <md-input-container flex>
                                 <label>Poster Artwork/Video Thumbnail URL</label>
-                                <input type="url" ng-model="VEC.project.attributes.thumbnail_url">
+                                <input type="url" ng-model="VEC.editedProject.thumbnail_url">
                             </md-input-container>
                             <div flex>
-                                <img ng-if="VEC.project.attributes.thumbnail_url != ''"
-                                     ng-src="{{VEC.project.attributes.thumbnail_url}}"
+                                <img ng-if="VEC.editedProject.thumbnail_url != ''"
+                                     ng-src="{{VEC.editedProject.thumbnail_url}}"
                                      alt="Video Thumbnail URL">
                             </div>
 
@@ -190,7 +191,7 @@
                     <div layout layout-lt-md="column">
                         <md-input-container flex>
                             <label>Synopsis</label>
-                            <textarea ng-model="VEC.project.attributes.synopsis" columns="1"
+                            <textarea ng-model="VEC.editedProject.synopsis" columns="1"
                                       md-maxlength="1000"></textarea>
                         </md-input-container>
 
@@ -198,7 +199,7 @@
                     <div layout layout-lt-md="column">
                         <md-input-container flex>
                             <label>Key Cast</label>
-                            <textarea ng-model="VEC.project.attributes.keyCast" columns="1"
+                            <textarea ng-model="VEC.editedProject.keyCast" columns="1"
                                       md-maxlength="1000"></textarea>
                         </md-input-container>
 
@@ -206,19 +207,19 @@
                     <div layout layout-lt-md="column">
                         <md-input-container flex>
                             <label>Past Festivals/Awards</label>
-                            <input type="text" ng-model="VEC.project.attributes.pastAwards">
+                            <input type="text" ng-model="VEC.editedProject.pastAwards">
                         </md-input-container>
                     </div>
                     <div layout layout-lt-md="column">
-                        <md-checkbox flex ng-model="VEC.project.attributes.disableComments"
+                        <md-checkbox flex ng-model="VEC.editedProject.disableComments"
                                      aria-label="Disable Comments">
                             Disable Comments
                         </md-checkbox>
-                        <md-checkbox flex ng-model="VEC.project.attributes.disableCritique"
+                        <md-checkbox flex ng-model="VEC.editedProject.disableCritique"
                                      aria-label="Disable Critiques">
                             Disable Critiques
                         </md-checkbox>
-                        <md-checkbox flex ng-model="VEC.project.attributes.unlist"
+                        <md-checkbox flex ng-model="VEC.editedProject.unlist"
                                      aria-label="Un-list Video">
                             Un-list Video
                         </md-checkbox>
@@ -240,3 +241,4 @@
 
         </div>
     </md-content>
+</div>

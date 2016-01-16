@@ -15,9 +15,8 @@
 
             window.fbPromise.then(function () {
                 Parse.FacebookUtils.init({
-                    // pro-tip: swap App ID out for PROD App ID automatically on deploy using grunt-replace
                     appId: 150687055270744, // Facebook App ID
-                    //channelUrl: 'http://brandid.github.io/parse-angular-demo/channel.html', // Channel File
+                    //status: true,
                     cookie: true, // enable cookies to allow Parse to access the session
                     xfbml: true, // parse XFBML
                     frictionlessRequests: true // recommended
@@ -191,12 +190,109 @@
                      *
                      * @returns {Promise}
                      */
+                    registerWithFB: function () {
+                        Parse.FacebookUtils.init({
+                            appId: 150687055270744, // Facebook App ID
+                            //status: true,
+                            cookie: true, // enable cookies to allow Parse to access the session
+                            xfbml: true, // parse XFBML
+                            frictionlessRequests: true // recommended
+
+                        });
+
+                        return Parse.FacebookUtils.logIn("public_profile,email,user_friends", {
+                            success: function (user) {
+                                // Handle successful login
+                                var d = $q.defer();
+                                FB.api('/me', {fields: 'first_name,last_name,gender'}, function(response) {
+                                    var needSave = false;
+                                    if (angular.isUndefined(user.attributes.first_name)) {
+                                        user.set("first_name", response.first_name);
+                                        needSave = true;
+                                    }
+                                    if (angular.isUndefined(user.attributes.last_name)) {
+                                        user.set("last_name", response.last_name);
+                                        needSave = true;
+                                    }
+                                    if (angular.isUndefined(user.attributes.gender)) {
+                                        user.set("gender", response.gender);
+                                        needSave = true;
+                                    }
+                                    /*if (angular.isUndefined(user.attributes.birthday)) {
+                                        user.set("birthday", response.birthday);
+                                        needSave = true;
+                                    }*/
+                                    if (needSave) {
+                                        user.save().then(function (user) {
+                                            d.resolve($rootScope.AppData.User = user);
+                                        });
+                                    } else {
+                                        d.resolve($rootScope.AppData.User = user);
+                                    }
+                                });
+                                return d.promise;
+                            },
+                            error: function (user, error) {
+                                console.log(user);
+                                console.log(error);
+                                // Handle errors and cancellation
+                            }
+                        });
+
+                        // STEP 1 - LOGIN TO FACEBOOK
+                        //return $cordovaFacebook.login(["public_profile", "email", "user_friends"])
+                        //    .then(function (success) {
+                        //        // save access_token
+                        //        var accessToken = success.authResponse.accessToken;
+                        //        var userID = success.authResponse.userID;
+                        //        var expiresIn = success.authResponse.expiresIn;
+                        //
+                        //        console.log("Login Success" + JSON.stringify(success));
+                        //
+                        //        // STEP - 2 CONVERTING DATE FORMAT
+                        //        var expDate = new Date(
+                        //            new Date().getTime() + expiresIn * 1000
+                        //        ).toISOString();
+                        //
+                        //        // STEP - 3 LOGIN TO PARSE
+                        //        return Parse.FacebookUtils.logIn({
+                        //            id: userID,
+                        //            access_token: accessToken,
+                        //            expiration_date: expDate
+                        //        });
+                        //    }).then(function (_parseResult) {
+                        //
+                        //        // STEP - 4 GET ADDITIONAL USER INFORMATION FROM FACEBOOK
+                        //        // get the user information to add to the Parse Object
+                        //        var fbValues = "&fields=id,name,location,website,picture,email";
+                        //        var fbPermission = ["public_profile"];
+                        //
+                        //        return $cordovaFacebook.api("me?access_token=" + accessToken + fbValues, fbPermission);
+                        //    }).then(function (_fbUserInfo) {
+                        //
+                        //        // use the information to update the object
+                        //        // STEP - 5 UPDATE THE USER OBJECT
+                        //        var username = _fbUserInfo.name.toLocaleLowerCase().replace(" ", "");
+                        //        var email = _fbUserInfo.email;
+                        //
+                        //        Parse.User.current().set("username", username);
+                        //        Parse.User.current().set("email", email);
+                        //
+                        //        return Parse.User.current().save();
+                        //    }).then(function (_updatedUser) {
+                        //        $localForage.setItem('User', _updatedUser);
+                        //        return _updatedUser;
+                        //    });
+
+                    },
+                    /**
+                     *
+                     * @returns {Promise}
+                     */
                     loginWithFB: function () {
                         Parse.FacebookUtils.init({
-
-                            // pro-tip: swap App ID out for PROD App ID automatically on deploy using grunt-replace
                             appId: 150687055270744, // Facebook App ID
-                            //channelUrl: 'http://brandid.github.io/parse-angular-demo/channel.html', // Channel File
+                            //status: true,
                             cookie: true, // enable cookies to allow Parse to access the session
                             xfbml: true, // parse XFBML
                             frictionlessRequests: true // recommended
@@ -207,7 +303,6 @@
                             success: function (user) {
                                 // Handle successful login
                                 $rootScope.AppData.User = user;
-                                console.log(user);
                                 return user;
                             },
                             error: function (user, error) {
@@ -710,7 +805,7 @@
         };
 
         self.doLoginFacebook = function () {
-            AuthService.loginWithFB().then(function (res) {
+            AuthService.registerWithFB().then(function (res) {
                 //$state.go('home');
                 //window.location.reload();
             });

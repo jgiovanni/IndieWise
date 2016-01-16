@@ -1,0 +1,7 @@
+<form ng-submit="updateComment()" layout="row" layout-lt-md="column" class="md-padding" layout-align="center center">
+    <md-input-container flex>
+        <!--<label for="myReply">Reply to {{targetComment.attributes.author.attributes.first_name}}</label>-->
+        <textarea aria-label="Edit Comment" id="myReply" linkify ng-model="editedBody" ng-minlength="1" focus-on="!!showReplyInput"></textarea>
+    </md-input-container>
+    <md-button flex="5" flex-sm type="submit" class="md-primary">Done</md-button>
+</form>

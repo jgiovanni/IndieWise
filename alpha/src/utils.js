@@ -87,6 +87,7 @@ angular.module('IndieWise.utilities', [])
                             };
                         }
                         objData.body = object.attributes.body;
+                        action.addUnique('to', 'comment:all');
                         break;
                     case 'Film':
                         verb = verb || 'watch';

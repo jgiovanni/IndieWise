@@ -1,26 +1,18 @@
 <style>
-    body {
-        background-color: #eee !important;
-        /*background-image: url("../../media/img.jpg");*/
-        /*background-size: cover;*/
-        /*background-position: center center;*/
-    }
     md-input-container {
         margin: 0;
     }
 </style>
-<div class="">
+<div class="hero-bg stretch">
     <div class="">
         <div class="container transparent" layout="row" layout-lt-md="column" layout-align="center center">
-            <div flex>
-                <hgroup>
-                    <!--<img src="./assets/img/Logo_alt2_web_87x45.png" alt="IndieWise"/>-->
-                    <h1 class="md-display-2">Register</h1>
-                </hgroup>
+            <div flex hide-sm hide-xs>
+                <img src="./assets/img/Logo_alt2_white.png" alt="IndieWise" width="70%"/>
             </div>
 
             <md-whiteframe flex class="md-whiteframe-5dp">
-                <md-content layout-padding align="center" style="padding: 40px">
+                <md-content layout-padding align="center" style="padding: 20px 40px">
+                    <h4>Register</h4>
                     <md-button class="indigo md-fab" ng-click="RC.doLoginFacebook()" aria-label="Register with Facebook">
                         <md-tooltip md-direction="top">Register with Facebook</md-tooltip>
                         <md-icon md-svg-icon="facebook" class="white-text"></md-icon>
@@ -39,7 +31,7 @@
                     </md-button>
 
                     <!--<md-divider></md-divider>-->
-                    <h4>or create an account</h4>
+                    <h5>or create an account</h5>
 
                     <form ng-submit="RC.doRegister()">
                         <div layout="row">

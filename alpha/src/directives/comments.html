@@ -32,14 +32,19 @@
                 </a>
                 <abbr title="{{::comment.createdAt|date:'fullDate'}}"
                       am-time-ago="::comment.createdAt" class="md-caption"></abbr>
+                <span class="grey-text md-caption" ng-if="comment.attributes.editedAt">&middot;&nbsp;Edited:
+                    <abbr title="{{comment.attributes.editedAt|date:'medium'}}"
+                          am-time-ago="comment.attributes.editedAt" class=""></abbr>
+                </span>
             </h3>
 
-            <p ng-bind="::comment.attributes.body"></p>
+            <p ng-show="editComment.id!=comment.id" ng-bind="comment.attributes.body"></p>
+            <edit-comment-block ng-if="comment.attributes.author.id === isLoggedIn.id&&!!editCommentMode&&editComment.id===comment.id"></edit-comment-block>
 
-            <p>
-                <!--<a ng-if="comment.attributes.author.id === isLoggedIn.id"
-                   ng-click="editComment(comment)"
-                   class="md-warn md-caption action-link">Edit</a>-->
+            <p ng-show="editComment.id!=comment.id">
+                <a ng-if="comment.attributes.author.id === isLoggedIn.id"
+                   ng-click="toggleEditCommentMode(comment)"
+                   class="md-warn md-caption action-link">Edit</a>
                 <span ng-if="comment.attributes.author.id === isLoggedIn.id">&nbsp;&middot;&nbsp;</span>
                 <a ng-if="comment.attributes.author.id === isLoggedIn.id"
                    ng-click="deleteComment(comment)"
@@ -48,6 +53,11 @@
                 <a ng-click="toggleReplyInput(comment)"
                    class="md-warn md-caption action-link">Reply</a>
             </p>
+
+            <p class="hint" ng-if="comment.attributes.author.id===isLoggedIn.id&&editComment.id===comment.id" ng-show="editCommentMode">
+                <a ng-click="toggleEditCommentMode(comment)" class="md-warn md-caption action-link">Cancel Edit</a>
+            </p>
+
         </div>
     </md-list-item>
     <reply-block target-comment="targetComment" parent="commentsParent"

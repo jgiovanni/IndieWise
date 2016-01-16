@@ -41,8 +41,8 @@
         </md-list>
     </md-content>
 </md-sidenav>
-<md-content layout="row" layout-padding id="content" layout-align="center start">
-    <div flex flex-lg="20" flex-gt-lg="20" hide-sm hide-md layout="column" layout-align="start top">
+<md-content layout="row" layout-padding id="content" layout-align="center flex-start">
+    <div flex flex-lg="20" flex-gt-lg="20" hide-sm hide-md layout="column" layout-align="flex-start top">
         <h1 class="md-headline">Filter</h1>
         <md-list>
             <md-subheader class="md-no-sticky">Sort By</md-subheader>
@@ -87,7 +87,7 @@
                 </md-button>
                 <span ng-show="Browse.films">{{Browse.films.length}} projects</span>
             </h1>
-            <section layout="row" layout-sm="column" layout-wrap layout-align="center start" style="width:100%;">
+            <section layout="row" layout-sm="column" layout-wrap layout-align="center flex-start" style="width:100%;">
                 <project-card class="no-shadow animated" flex flex-sm="100" flex-md="40" flex-lg="30" flex-gt-lg="20"
                               ng-repeat="video in Browse.films" video="video"></project-card>
             </section>

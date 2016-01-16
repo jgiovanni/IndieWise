@@ -1,4 +1,5 @@
-<section class="container">
+<div class="grey lighten-3">
+    <section class="container">
     <md-content id="content" layout="column" layout-fill layout-padding>
         <h1 class="md-headline">
             <md-button ng-click="Results.toggleFilterNav()" class="md-accent" hide-gt-md>
@@ -7,7 +8,7 @@
             </md-button>
             <span ng-show="Results.results">{{Results.results.length}} results</span>
         </h1>
-        <section layout="row" layout-wrap layout-align="center start">
+        <section layout="row" layout-wrap layout-align="center flex-start">
             <div class="collection" flex>
                 <div class="collection-item" ng-repeat="result in Results.results" layout="row" layout-padding>
                     <div flex="25">
@@ -33,3 +34,4 @@
         </section>
     </md-content>
 </section>
+    </div>

@@ -1,387 +1,466 @@
-<!--<div class="video-container">-->
-<embed-video ng-if="VC.loaded" ng-href="{{VC.film.attributes.video_url}}" width="100%" height="500" embed-watcher></embed-video>
-<!--</div>-->
-<section class="container" layout="row" layout-align="center center">
-    <md-content flex id="content" class="grey lighten-3">
-        <md-card>
-            <md-card-header>
-                <md-card-avatar>
-                    <img ng-src="{{::VC.film.attributes.owner.attributes.avatar || './assets/img/avatar-1.png'}}" class="md-user-avatar"
-                         alt="{{::VC.film.attributes.owner.attributes.first_name}} {{::VC.film.attributes.owner.attributes.last_name}}">
-                </md-card-avatar>
-                <md-card-header-text>
-                    <span class="md-title" ng-bind="::VC.film.attributes.name"></span>
+<div class="grey lighten-3">
+    <embed-video ng-if="VC.loaded && Body.checkContains(['other'], VC.type)" ng-href="{{VC.film.attributes.video_url}}"
+                 width="100%" height="500" embed-watcher></embed-video>
+    <div style="display:flex;position:relative;width: 100%;height: 500px;">
+        <elite-player ng-if="VC.loaded && Body.checkContains(['youtube', 'vimeo', 'hosted'], VC.type)"
+                      film="{{::VC.film}}" type="{{::VC.type}}"></elite-player>
+    </div>
+    <section id="content" class="container" layout="row" layout-align="center center">
+        <md-content flex id="content" class="grey lighten-3">
+            <md-card class="red-text" ng-if="::VC.film.attributes.unlist">
+                <md-card-content>
+                    This video is Unlisted, please be mindful not to share without owner's permission.
+                </md-card-content>
+            </md-card>
+            <md-card>
+                <md-card-header>
+                    <md-card-avatar>
+                        <img ng-src="{{::VC.film.attributes.owner.attributes.avatar || './assets/img/avatar-1.png'}}"
+                             class="md-user-avatar"
+                             alt="{{::VC.film.attributes.owner.attributes.first_name}} {{::VC.film.attributes.owner.attributes.last_name}}">
+                    </md-card-avatar>
+                    <md-card-header-text>
+                        <span class="md-title" ng-bind="::VC.film.attributes.name"></span>
                     <span class="md-subhead">
-                        by <a ui-sref="user({id:VC.film.attributes.owner.id})">{{::VC.film.attributes.owner.attributes.first_name}} {{::VC.film.attributes.owner.attributes.last_name}}</a>
+                        by <a ui-sref="user({id:VC.film.attributes.owner.id})">{{::VC.film.attributes.owner.attributes.first_name}}
+                        {{::VC.film.attributes.owner.attributes.last_name}}</a>
                         &middot; <span class="md-caption" am-time-ago="VC.film.createdAt"></span>
                     </span>
-                </md-card-header-text>
-                <md-icon ng-if="AppData.User.id !== VC.film.attributes.owner.id"
-                         class="md-secondary active-link md-accent md-fab" ng-click="VC.toggleMessageInput()"
-                         aria-label="Message Author" md-svg-icon="email"></md-icon>
-            </md-card-header>
-            <md-divider></md-divider>
-            <md-card-actions ng-if="AppData.User.id === VC.film.attributes.owner.id" layout="row" layout-align="start center">
-                <md-button ui-sref="video-edit({id: VC.film.id})">
-                    <md-icon md-svg-icon="mode_edit"></md-icon>
-                    Edit
-                </md-button>
-            </md-card-actions>
-            <md-card-content ng-if="!!VC.showMessageInput">
-                <form layout="row" layout-lt-md="column" class="md-padding" ng-submit="VC.postMessage()">
-                    <md-input-container flex>
-                        <label>Message Author</label>
-                        <textarea ng-model="VC.myMessage" focus-on="!!VC.showMessageInput" columns="1" md-maxlength="3000" required></textarea>
-                    </md-input-container>
-                    <md-button flex="5" flex-sm type="submit" class="md-primary" style="text-align: center;">
-                        Send
+                    </md-card-header-text>
+                    <md-icon ng-if="AppData.User.id !== VC.film.attributes.owner.id"
+                             class="md-secondary active-link md-accent md-fab" ng-click="VC.toggleMessageInput()"
+                             aria-label="Message Author" md-svg-icon="email"></md-icon>
+                </md-card-header>
+                <md-divider></md-divider>
+                <md-card-actions ng-if="AppData.User.id === VC.film.attributes.owner.id" layout="row"
+                                 layout-align="flex-start center">
+                    <md-button ui-sref="video-edit({id: VC.film.id})">
+                        <md-icon md-svg-icon="mode_edit"></md-icon>
+                        Edit
                     </md-button>
-                </form>
+                </md-card-actions>
+                <md-card-content ng-if="!!VC.showMessageInput">
+                    <form layout="row" layout-lt-md="column" class="md-padding" ng-submit="VC.postMessage()">
+                        <md-input-container flex>
+                            <label>Message Author</label>
+                            <textarea ng-model="VC.myMessage" focus-on="!!VC.showMessageInput" columns="1"
+                                      md-maxlength="3000" required></textarea>
+                        </md-input-container>
+                        <md-button flex="5" flex-sm type="submit" class="md-primary" style="text-align: center;">
+                            Send
+                        </md-button>
+                    </form>
 
-            </md-card-content>
+                </md-card-content>
 
-        </md-card>
-        <md-card>
-            <md-card-content style="padding:16px 8px 0;">
-                <p class="md-caption">
-                    <b ng-repeat="g in VC.filmGenres" ng-bind="::' '+g.attributes.name"></b>
-                    <!--<span class="subdued text-right"> &middot; 14 <md-icon md-svg-icon="visibility"></md-icon></span>-->
-                </p>
-                <div ng-show="!!toggleDetails">
-                    <p class="md-caption">
-                        <b>Description</b><br>
-                        <span ng-bind="::VC.film.attributes.description"></span>
-                    </p>
-                </div>
-            </md-card-content>
-            <md-divider></md-divider>
-            <md-card-actions layout="row" layout-align="start center">
-                <md-button flex ng-click="toggleDetails = !toggleDetails">
-                    <span class="md-caption" ng-if="!!toggleDetails">Less Details</span>
-                    <span class="md-caption" ng-if="!toggleDetails">More Details</span>
-                </md-button>
-            </md-card-actions>
-            <md-divider></md-divider>
-            <md-card-content style="padding:0 8px;">
-                <div layout="row">
-                    <md-button class="" aria-label="Two thumbs up!" ng-click="VC.throttledRate('up')"
-                               ng-class="{'md-primary':VC.canRate.attributes.up}">
-                        {{VC.film.attributes.rateUpCount || 0}}
-                        <md-icon md-svg-icon="two_thumbs_up" style="width: 48px;" class=""></md-icon>
-                        <md-tooltip md-direction="top">Two thumbs up!</md-tooltip>
+            </md-card>
+            <md-card>
+                <md-card-content style="padding:16px 8px 0;">
+                    <div ng-show="!toggleDetails">
+                    <span class="md-caption">
+                        <span ng-bind="::(VC.film.attributes.description|limitTo:200)+'...'"></span>
+                    </span>
+                    </div>
+                    <div ng-show="!!toggleDetails">
+                        <p class="md-caption">
+                            <b>Description</b><br>
+                            <span ng-bind="::VC.film.attributes.description"></span>
+                            <br>
+                            <b>Genres</b><br>
+                        <span ng-repeat="g in VC.filmGenres">
+                            {{::g.attributes.name}}<span ng-if="!$last&&VC.filmGenres.length>1">, </span>
+                        </span>
+                        <span layout="row" layout-xs="column">
+                            <span flex="50">
+                                <span>
+                                    <b>Director</b><br>
+                                    <span ng-bind="::VC.film.attributes.director"></span>
+                                </span><br>
+                                <span>
+                                    <b>Writer</b><br>
+                                    <span ng-bind="::VC.film.attributes.writer"></span>
+                                </span><br>
+                                <span>
+                                    <b>Producer(s)</b><br>
+                                    <span ng-bind="::VC.film.attributes.producers"></span>
+                                </span><br>
+                            </span>
+                            <span flex="50">
+                                <span flex>
+                                    <b>Synopsis</b><br>
+                                    <span ng-bind="::VC.film.attributes.synopsis"></span>
+                                </span><br>
+                                <span flex>
+                                    <b>Key Cast</b><br>
+                                    <span ng-bind="::VC.film.attributes.keyCast"></span>
+                                </span><br>
+                                <span flex>
+                                    <b>Past Festivals/Awards</b><br>
+                                    <span ng-bind="::VC.film.attributes.pastAwards"></span>
+                                </span>
+                            </span>
+                        </span>
+                        </p>
+                    </div>
+                </md-card-content>
+                <md-divider></md-divider>
+                <md-card-actions layout="row" layout-align="flex-start center">
+                    <md-button flex ng-click="toggleDetails = !toggleDetails" md-no-ink>
+                        <span class="md-caption" ng-if="!!toggleDetails">Less Details</span>
+                        <span class="md-caption" ng-if="!toggleDetails">More Details</span>
                     </md-button>
-                    &nbsp;&nbsp;
+                </md-card-actions>
+                <md-divider></md-divider>
+                <md-card-content style="padding:0 8px;">
+                    <div layout="row">
+                        <md-button class="" aria-label="Two thumbs up!" ng-click="VC.throttledRate('up')"
+                                   ng-class="{'md-primary':VC.canRate.attributes.up}">
+                            {{VC.film.attributes.rateUpCount || 0}}
+                            <md-icon md-svg-icon="two_thumbs_up" style="width: 48px;" class=""></md-icon>
+                            <md-tooltip md-direction="top">Two thumbs up!</md-tooltip>
+                        </md-button>
+                        &nbsp;&nbsp;
 
-                    <md-button class="" aria-label="Two thumbs down!" ng-click="VC.throttledRate('down')"
-                               ng-class="{'md-primary':VC.canRate.attributes.down}">
-                        {{VC.film.attributes.rateDownCount || 0}}
-                        <md-icon md-svg-icon="two_thumbs_down" style="width: 48px;"></md-icon>
-                        <md-tooltip md-direction="top">Two thumbs down!</md-tooltip>
-                    </md-button>
-                    <md-button aria-label="Display share card" class="" ng-click="VC.toggleShare()">
-                        <md-icon md-menu-origin md-svg-icon="share"></md-icon> Share
-                    </md-button>
-                    <span flex></span>
-                </div>
-                <div layout="row" ng-show="VC.displayShare">
-                    <md-button socialshare socialshare-provider="facebook" socialshare-url="{{::window.location.href}}"
-                               socialshare-via="150687055270744" socialshare-media="{{::VC.film.attributes.thumbnail_url}}">
-                        <!--<md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>-->
-                        Facebook
-                    </md-button>
-                    <md-button socialshare socialshare-provider="twitter" socialshare-url="{{::window.location.href}}">
-                        <!--<md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>-->
-                        Twitter
-                    </md-button>
-                    <md-button socialshare socialshare-provider="google+" socialshare-url="{{::window.location.href}}">
-                        <!--<md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>-->
-                        Google+
-                    </md-button>
-                    <md-button socialshare socialshare-provider="reddit" socialshare-url="{{::window.location.href}}">
-                        <!--<md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>-->
-                        Reddit
-                    </md-button>
-                    <md-button socialshare socialshare-provider="pinterest" socialshare-url="{{::window.location.href}}">
-                        <!--<md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>-->
-                        Pinterest
-                    </md-button>
+                        <md-button class="" aria-label="Two thumbs down!" ng-click="VC.throttledRate('down')"
+                                   ng-class="{'md-primary':VC.canRate.attributes.down}">
+                            {{VC.film.attributes.rateDownCount || 0}}
+                            <md-icon md-svg-icon="two_thumbs_down" style="width: 48px;"></md-icon>
+                            <md-tooltip md-direction="top">Two thumbs down!</md-tooltip>
+                        </md-button>
+                        <md-button aria-label="Display share card" class="" ng-click="VC.toggleShare()">
+                            <md-icon md-menu-origin md-svg-icon="share"></md-icon>
+                            Share
+                        </md-button>
+                        <span flex></span>
+                    </div>
+                    <div layout="row" ng-show="VC.displayShare">
+                        <md-button socialshare socialshare-provider="facebook"
+                                   socialshare-url="{{::window.location.href}}"
+                                   socialshare-via="150687055270744"
+                                   socialshare-media="{{::VC.film.attributes.thumbnail_url}}">
+                            <!--<md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>-->
+                            Facebook
+                        </md-button>
+                        <md-button socialshare socialshare-provider="twitter"
+                                   socialshare-url="{{::window.location.href}}">
+                            <!--<md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>-->
+                            Twitter
+                        </md-button>
+                        <md-button socialshare socialshare-provider="google+"
+                                   socialshare-url="{{::window.location.href}}">
+                            <!--<md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>-->
+                            Google+
+                        </md-button>
+                        <md-button socialshare socialshare-provider="reddit"
+                                   socialshare-url="{{::window.location.href}}">
+                            <!--<md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>-->
+                            Reddit
+                        </md-button>
+                        <md-button socialshare socialshare-provider="pinterest"
+                                   socialshare-url="{{::window.location.href}}">
+                            <!--<md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>-->
+                            Pinterest
+                        </md-button>
 
-                </div>
-            </md-card-content>
-        </md-card>
-        <md-card>
-            <md-card-content style="padding:2px 8px;">
-                <div layout="row">
-                    <md-button  ng-show="!VC.toggleReactionsList" class="md-accent md-hue-2" aria-label="Reaction" ng-click="VC.toggleReactions()">
-                        <span ng-show="VC.canReact===true">How'd this make you feel?</span>
+                    </div>
+                </md-card-content>
+            </md-card>
+            <md-card>
+                <md-card-content style="padding:2px 8px;">
+                    <div layout="row">
+                        <md-button ng-show="!VC.toggleReactionsList" class="md-accent md-hue-2" aria-label="Reaction"
+                                   ng-click="VC.toggleReactions()">
+                            <span ng-show="VC.canReact===true">How'd this make you feel?</span>
                         <span ng-show="VC.canReact!==true&&VC.canReact != 'login'">
                             <!--<md-icon md-svg-icon="{{VC.canReactIcon()}}" style="width:24px;height:24px;"></md-icon>-->
                             <span class="black-text">I Feel:</span> {{VC.canReact.attributes.emotion}}
                         </span>
 
-                    </md-button>
-                    <div ng-show="VC.toggleReactionsList" layout="row">
-                        <md-autocomplete flex focus-on="!!VC.toggleReactionsList" md-selected-item="VC.selectedReaction" md-selected-item-change="VC.react(item)" md-search-text="VC.searchReactionsText"
-                                         md-items="item in VC.emotions|filter:VC.searchReactionsText|orderBy:'name'" md-item-text="item.name" md-no-cache="true"
-                                         placeholder="Search a feeling" md-min-length="0" md-autofocus="true">
-                            <md-item-template>
-                                <md-icon md-svg-icon="{{item.icon}}" style="width:24px;height:24px;"></md-icon>
-                                <span md-highlight-text="VC.searchReactionsText" md-highlight-flags="^i">{{item.name}}</span>
-                            </md-item-template>
-                            <md-not-found>
-                                No matches found.
-                            </md-not-found>
-                        </md-autocomplete>
-                        <md-button flex class="md-icon-button" ng-click="VC.toggleReactions()">
-                            <md-icon md-svg-icon="close"></md-icon>
                         </md-button>
+                        <div ng-show="VC.toggleReactionsList" layout="row">
+                            <md-autocomplete flex focus-on="!!VC.toggleReactionsList"
+                                             md-selected-item="VC.selectedReaction"
+                                             md-selected-item-change="VC.react(item)"
+                                             md-search-text="VC.searchReactionsText"
+                                             md-items="item in VC.emotions|filter:VC.searchReactionsText|orderBy:'name'"
+                                             md-item-text="item.name" md-no-cache="true"
+                                             placeholder="Search a feeling" md-min-length="0" md-autofocus="true">
+                                <md-item-template>
+                                    <md-icon md-svg-icon="{{item.icon}}" style="width:24px;height:24px;"></md-icon>
+                                    <span md-highlight-text="VC.searchReactionsText" md-highlight-flags="^i">{{item.name}}</span>
+                                </md-item-template>
+                                <md-not-found>
+                                    No matches found.
+                                </md-not-found>
+                            </md-autocomplete>
+                            <md-button flex class="md-icon-button" ng-click="VC.toggleReactions()">
+                                <md-icon md-svg-icon="close"></md-icon>
+                            </md-button>
+                        </div>
+                        <span flex></span>
+
+                        <md-button class="md-primary" aria-label="Judge it" ng-if="VC.film && VC.canCritique"
+                                   ng-disabled="VC.canCritique!==true" ng-click="VC.showCritiqueDialog()">
+                            <md-icon md-svg-icon="grade"></md-icon>
+                            <span ng-show="VC.canCritique===true">Judge it</span>
+                            <span ng-show="VC.canCritique!==true&&VC.canCritique != 'login'">Judged <span
+                                    class="orange-text">{{VC.canCritique.attributes.overall}}</span></span>
+                        </md-button>
+
                     </div>
-                    <span flex></span>
+                </md-card-content>
+            </md-card>
+            <div layout="column" layout-gt-sm="row">
+                <div flex-gt-sm="70" flex-gt-sm="60" flex-order="2" flex-order-gt-sm="1">
+                    <md-card>
+                        <md-tabs md-dynamic-height="true" md-border-bottom class="md-padding" md-stretch-tabs="always">
+                            <md-tab label="Comments &middot; {{VC.film.attributes.commentCount||0}}">
+                                <comments-block comments="VC.comments" disable="VC.film.attributes.disableComments"
+                                                parent="commentsParent"></comments-block>
+                            </md-tab>
+                            <md-tab label="Critiques &middot; {{VC.film.attributes.critiqueCount||0}}">
+                                <md-content class="md-padding" ng-if="!VC.film.attributes.disableCritique">
+                                    <md-card ng-repeat="c in VC.critiques|orderBy:'createdAt'">
+                                        <md-card-content>
+                                            <section layout="row" class="md-padding">
+                                                <div flex="60">
+                                                    <h6>Critique by
+                                                        <a ui-sref="user({id: c.attributes.author.id})"
+                                                           ng-bind="::c.attributes.author.attributes.first_name+' '+c.attributes.author.attributes.last_name"></a>
+                                                    </h6>
 
-                    <md-button class="md-primary" aria-label="Judge it" ng-if="VC.film && VC.canCritique"
-                               ng-disabled="VC.canCritique!==true" ng-click="VC.showCritiqueDialog()">
-                        <md-icon md-svg-icon="grade"></md-icon>
-                        <span ng-show="VC.canCritique===true">Judge it</span>
-                        <span ng-show="VC.canCritique!==true&&VC.canCritique != 'login'">Judged <span class="orange-text">{{VC.canCritique.attributes.overall}}</span></span>
-                    </md-button>
+                                                    <abbr title="{{::c.createdAt|date:'medium'}}" class="md-caption"
+                                                          ng-bind="::c.createdAt|date:'short'"></abbr> <span
+                                                        class="grey-text"
+                                                        ng-if="c.attributes.editedAt && !Body.isSame(c.createdAt, c.attributes.editedAt)">Edited:
+                                                <abbr title="{{::c.attributes.editedAt|date:'medium'}}"
+                                                      class="md-caption"
+                                                      ng-bind="::c.attributes.editedAt|date:'short'"></abbr></span>
 
-                </div>
-            </md-card-content>
-        </md-card>
-        <div layout="column" layout-gt-sm="row">
-            <div flex-gt-sm="70" flex-gt-sm="60" flex-order="2" flex-order-gt-sm="1">
-                <md-card>
-                    <md-tabs md-dynamic-height="true" md-border-bottom class="md-padding" md-stretch-tabs="always">
-                        <md-tab label="Comments &middot; {{VC.film.attributes.commentCount||0}}">
-                            <comments-block comments="VC.comments" disable="VC.film.attributes.disableComments" parent="commentsParent"></comments-block>
-                        </md-tab>
-                        <md-tab label="Critiques &middot; {{VC.film.attributes.critiqueCount||0}}">
-                            <md-content class="md-padding" ng-if="!VC.film.attributes.disableCritique">
-                                <md-card ng-repeat="c in VC.critiques|orderBy:'createdAt'">
-                                    <md-card-content>
-                                        <section layout="row" class="md-padding">
-                                            <div flex="60">
-                                                <h6>Critique by
-                                                    <a ui-sref="user({id: c.attributes.author.id})" ng-bind="::c.attributes.author.attributes.first_name+' '+c.attributes.author.attributes.last_name"></a>
-                                                </h6>
+                                                    <p class="md-body-1" ng-bind="::c.attributes.body"></p>
+                                                </div>
+                                                <div flex="40">
+                                                    <div flex
+                                                         ng-if="::c.attributes.private && AppData.User.id != c.attributes.author.id">
+                                                        <h3 class="text-center">Private</h3>
 
-                                                <abbr title="{{::c.createdAt|date:'medium'}}" class="md-caption"
-                                                      ng-bind="::c.createdAt|date:'short'"></abbr> <span class="grey-text" ng-if="!Body.isSame(c.createdAt, c.updatedAt)">Edited:
-                                                <abbr title="{{::c.updatedAt|date:'medium'}}" class="md-caption"
-                                                      ng-bind="::c.updatedAt|date:'short'"></abbr></span>
-
-                                                <p class="md-body-1" ng-bind="::c.attributes.body"></p>
-                                            </div>
-                                            <div flex="40">
-                                                <div flex ng-if="::c.attributes.private && AppData.User.id != c.attributes.author.id">
-                                                    <h3 class="text-center">Private</h3>
-
-                                                    <div layout class="md-accent md-hue-2">
-                                                        <div flex layout layout-align="center center">
-                                                            <span class="md-body-1">IndieWise Rating</span>
-                                                        </div>
-                                                        <div flex layout layout-align="center center">
-                                                            <span class="md-body-2">{{::c.attributes.overall|number:1}}</span>
+                                                        <div layout class="md-accent md-hue-2">
+                                                            <div flex layout layout-align="center center">
+                                                                <span class="md-body-1">IndieWise Rating</span>
+                                                            </div>
+                                                            <div flex layout layout-align="center center">
+                                                                <span class="md-body-2">{{::c.attributes.overall|number:1}}</span>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div flex ng-if="::!c.attributes.private||AppData.User.id == c.attributes.author.id">
-                                                <div layout>
-                                                    <div flex layout layout-align="center center">
-                                                        <span class="md-body-1">Originality</span>
-                                                    </div>
-                                                    <span flex class="md-body-1 text-center">{{::c.attributes.originality}}</span>
-                                                </div>
-                                                <div layout>
-                                                    <div flex layout layout-align="center center">
-                                                        <span class="md-body-1">Direction</span>
-                                                    </div>
+                                                    <div flex
+                                                         ng-if="::!c.attributes.private||AppData.User.id == c.attributes.author.id">
+                                                        <div layout>
+                                                            <div flex layout layout-align="center center">
+                                                                <span class="md-body-1">Originality</span>
+                                                            </div>
+                                                            <span flex class="md-body-1 text-center">{{::c.attributes.originality}}</span>
+                                                        </div>
+                                                        <div layout>
+                                                            <div flex layout layout-align="center center">
+                                                                <span class="md-body-1">Direction</span>
+                                                            </div>
                                                 <span flex
                                                       class="md-body-1 text-center">{{::c.attributes.direction}}</span>
-                                                </div>
-                                                <div layout>
-                                                    <div flex layout layout-align="center center">
-                                                        <span class="md-body-1">Writing</span>
-                                                    </div>
+                                                        </div>
+                                                        <div layout>
+                                                            <div flex layout layout-align="center center">
+                                                                <span class="md-body-1">Writing</span>
+                                                            </div>
                                                 <span flex
                                                       class="md-body-1 text-center">{{::c.attributes.writing}}</span>
-                                                </div>
-                                                <div layout>
-                                                    <div flex layout layout-align="center center">
-                                                        <span class="md-body-1">Cinematography</span>
-                                                    </div>
-                                                    <span flex class="md-body-1 text-center">{{::c.attributes.cinematography}}</span>
-                                                </div>
-                                                <div layout>
-                                                    <div flex layout layout-align="center center">
-                                                        <span class="md-body-1">Acting</span>
-                                                    </div>
-                                                    <span flex class="md-body-1 text-center">{{::c.attributes.performances}}</span>
-                                                </div>
-                                                <div layout>
-                                                    <div flex layout layout-align="center center">
-                                                        <span class="md-body-1">Production Value</span>
-                                                    </div>
-                                                    <span flex class="md-body-1 text-center">{{::c.attributes.production}}</span>
-                                                </div>
-                                                <div layout>
-                                                    <div flex layout layout-align="center center">
-                                                        <span class="md-body-1">Pacing</span>
-                                                    </div>
+                                                        </div>
+                                                        <div layout>
+                                                            <div flex layout layout-align="center center">
+                                                                <span class="md-body-1">Cinematography</span>
+                                                            </div>
+                                                            <span flex class="md-body-1 text-center">{{::c.attributes.cinematography}}</span>
+                                                        </div>
+                                                        <div layout>
+                                                            <div flex layout layout-align="center center">
+                                                                <span class="md-body-1">Acting</span>
+                                                            </div>
+                                                            <span flex class="md-body-1 text-center">{{::c.attributes.performances}}</span>
+                                                        </div>
+                                                        <div layout>
+                                                            <div flex layout layout-align="center center">
+                                                                <span class="md-body-1">Production Value</span>
+                                                            </div>
+                                                            <span flex class="md-body-1 text-center">{{::c.attributes.production}}</span>
+                                                        </div>
+                                                        <div layout>
+                                                            <div flex layout layout-align="center center">
+                                                                <span class="md-body-1">Pacing</span>
+                                                            </div>
                                                 <span flex
                                                       class="md-body-1 text-center">{{::c.attributes.pacing}}</span>
-                                                </div>
-                                                <div layout>
-                                                    <div flex layout layout-align="center center">
-                                                        <span class="md-body-1">Editing</span>
-                                                    </div>
+                                                        </div>
+                                                        <div layout>
+                                                            <div flex layout layout-align="center center">
+                                                                <span class="md-body-1">Editing</span>
+                                                            </div>
                                                 <span flex
                                                       class="md-body-1 text-center">{{::c.attributes.structure}}</span>
-                                                </div>
-                                                <div layout>
-                                                    <div flex layout layout-align="center center">
-                                                        <span class="md-body-1">Sound Quality</span>
-                                                    </div>
+                                                        </div>
+                                                        <div layout>
+                                                            <div flex layout layout-align="center center">
+                                                                <span class="md-body-1">Sound Quality</span>
+                                                            </div>
                                                 <span flex
                                                       class="md-body-1 text-center">{{::c.attributes.audio}}</span>
-                                                </div>
-                                                <div layout>
-                                                    <div flex layout layout-align="center center">
-                                                        <span class="md-body-1">Music</span>
-                                                    </div>
+                                                        </div>
+                                                        <div layout>
+                                                            <div flex layout layout-align="center center">
+                                                                <span class="md-body-1">Music</span>
+                                                            </div>
                                                 <span flex
                                                       class="md-body-1 text-center">{{::c.attributes.music}}</span>
-                                                </div>
-                                                <md-divider></md-divider>
-                                                <div layout class="md-accent md-hue-2">
-                                                    <div flex layout layout-align="center center">
-                                                        <span class="md-body-1">IndieWise Rating</span>
-                                                    </div>
-                                                    <div flex layout layout-align="center center">
-                                                        <span class="md-body-2">{{::c.attributes.overall|number:1}}</span>
-                                                    </div>
-                                                </div>
-                                                    <md-divider></md-divider>
-                                                    </div>
-
-                                            </div>
-                                        </section>
-                                        <md-divider></md-divider>
-                                        <p>{{::c.attributes.commentCount||0}} comments</p>
-
-                                    </md-card-content>
-                                    <div class="md-actions" layout="row" layout-align="end center">
-                                        <md-button class="md-warn" ng-if="::c.attributes.author.id === AppData.User.id"
-                                                   ng-click="VC.deleteCritique(c, $event)">Delete
-                                        </md-button>
-                                        <span flex></span>
-                                        <md-button class="md-accent md-hue-2" ng-if="::c.attributes.author.id === AppData.User.id"
-                                                   ng-click="Body.toPage('video_critique-edit', {video_id:VC.film.id, id:c.id})">
-                                            Edit
-                                        </md-button>
-                                        <md-button class="md-primary md-raised md-hue-2" ui-sref="video_critique({video_id:VC.film.id, id:c.id})">
-                                            View
-                                        </md-button>
-                                    </div>
-                                </md-card>
-                            </md-content>
-                            <md-content class="md-padding" ng-if="VC.film.attributes.disableCritique">
-                                <h3 class="md-subhead">Critiques are disabled by Uploader</h3>
-                            </md-content>
-
-                        </md-tab>
-                        <md-tab label="Awards">
-                            <md-tab-label>
-                                Awards
-                                <!--<help-info text="'Toward the right, Click \'Judge It\'. On this page, near the bottom you may \'Nominate\' a Project for an Award. If a Project receives at least 3 Nominations for the same Award, this results in a Win for that Project.'"></help-info>-->
-                            </md-tab-label>
-                            <md-tab-body>
-                                <md-content class="md-padding">
-                                    <md-tabs md-dynamic-height md-border-bottom class="md-padding">
-                                        <md-tab label="Nominations &middot; {{VC.film.attributes.nominationCount||0}}">
-                                            <md-content class="md-padding">
-                                                <md-list>
-                                                    <md-list-item class="md-2-line" ng-repeat="nom in VC.nominations">
-                                                        <!--<img ng-src="{{::nom.attributes.author.attributes.avatar}}" class="md-avatar" ng-if="::nom.attributes.author.attributes.avatar">-->
-                                                        <md-icon class="md-avatar" md-svg-icon="stars"></md-icon>
-                                                        <div class="md-list-item-text">
-                                                            <h3>
-                                                                Nominated for <a ui-sref="browse({awards: nom.attributes.awardPntr.attributes.slug})" ng-bind="::nom.attributes.awardPntr.attributes.name"></a> by
-                                                                <a ui-sref="user({id: c.attributes.author.id})" ng-bind="::nom.attributes.nominator.attributes.first_name+' '+nom.attributes.nominator.attributes.last_name"></a>
-                                                            </h3>
-                                                            <!--<p ng-bind="::nom.attributes.body"></p>-->
-                                                            <time ng-bind="::nom.createdAt|date:'short'"></time>
                                                         </div>
-                                                    </md-list-item>
-                                                </md-list>
-                                            </md-content>
-                                        </md-tab>
-                                        <md-tab label="Wins &middot; {{VC.wins.length||0}}">
-                                            <md-content class="md-padding">
-                                                <md-list>
-                                                    <md-list-item class="" ng-repeat="win in VC.wins">
-                                                        <!--<img ng-src="{{::nom.attributes.author.attributes.avatar}}" class="md-avatar" ng-if="::nom.attributes.author.attributes.avatar">-->
-                                                        <md-icon class="md-avatar-icon" md-svg-icon="stars"></md-icon>
-                                                        <p ng-bind="::win.attributes.award.attributes.name"></p>
-                                                    </md-list-item>
-                                                </md-list>
+                                                        <md-divider></md-divider>
+                                                        <div layout class="md-accent md-hue-2">
+                                                            <div flex layout layout-align="center center">
+                                                                <span class="md-body-1">IndieWise Rating</span>
+                                                            </div>
+                                                            <div flex layout layout-align="center center">
+                                                                <span class="md-body-2">{{::c.attributes.overall|number:1}}</span>
+                                                            </div>
+                                                        </div>
+                                                        <md-divider></md-divider>
+                                                    </div>
 
-                                            </md-content>
-                                        </md-tab>
-                                    </md-tabs>
+                                                </div>
+                                            </section>
+                                            <md-divider></md-divider>
+                                            <p>{{::c.attributes.commentCount||0}} comments</p>
+
+                                        </md-card-content>
+                                        <div class="md-actions" layout="row" layout-align="end center">
+                                            <md-button class="md-warn"
+                                                       ng-if="::c.attributes.author.id === AppData.User.id"
+                                                       ng-click="VC.deleteCritique(c, $event)">Delete
+                                            </md-button>
+                                            <span flex></span>
+                                            <md-button class="md-accent md-hue-2"
+                                                       ng-if="::c.attributes.author.id === AppData.User.id"
+                                                       ng-click="Body.toPage('video_critique-edit', {video_id:VC.film.id, id:c.id})">
+                                                Edit
+                                            </md-button>
+                                            <md-button class="md-primary md-raised md-hue-2"
+                                                       ui-sref="video_critique({video_id:VC.film.id, id:c.id})">
+                                                View
+                                            </md-button>
+                                        </div>
+                                    </md-card>
+                                </md-content>
+                                <md-content class="md-padding" ng-if="VC.film.attributes.disableCritique">
+                                    <h3 class="md-subhead">Critiques are disabled by Uploader</h3>
                                 </md-content>
 
-                            </md-tab-body>
-                        </md-tab>
-                    </md-tabs>
-                </md-card>
-            </div>
-            <div flex-gt-sm="30" flex-gt-sm="40" flex-order="1" flex-order-gt-sm="2">
-                <md-card ng-hide="true">
-                    <md-card-header>
-                        <md-card-header-text>
-                            <span class="md-subhead">Details</span>
-                        </md-card-header-text>
-                    </md-card-header>
+                            </md-tab>
+                            <md-tab label="Awards">
+                                <md-tab-label>
+                                    Awards
+                                    <!--<help-info text="'Toward the right, Click \'Judge It\'. On this page, near the bottom you may \'Nominate\' a Project for an Award. If a Project receives at least 3 Nominations for the same Award, this results in a Win for that Project.'"></help-info>-->
+                                </md-tab-label>
+                                <md-tab-body>
+                                    <md-content class="md-padding">
+                                        <md-tabs md-dynamic-height md-border-bottom class="md-padding">
+                                            <md-tab label="Nominations &middot; {{VC.film.attributes.nominationCount||0}}">
+                                                <md-content class="md-padding">
+                                                    <md-list>
+                                                        <md-list-item class="md-2-line"
+                                                                      ng-repeat="nom in VC.nominations">
+                                                            <!--<img ng-src="{{::nom.attributes.author.attributes.avatar}}" class="md-avatar" ng-if="::nom.attributes.author.attributes.avatar">-->
+                                                            <md-icon class="md-avatar" md-svg-icon="stars"></md-icon>
+                                                            <div class="md-list-item-text">
+                                                                <h3>
+                                                                    Nominated for <a
+                                                                        ui-sref="browse({awards: nom.attributes.awardPntr.attributes.slug})"
+                                                                        ng-bind="::nom.attributes.awardPntr.attributes.name"></a>
+                                                                    by
+                                                                    <a ui-sref="user({id: c.attributes.author.id})"
+                                                                       ng-bind="::nom.attributes.nominator.attributes.first_name+' '+nom.attributes.nominator.attributes.last_name"></a>
+                                                                </h3>
+                                                                <!--<p ng-bind="::nom.attributes.body"></p>-->
+                                                                <time ng-bind="::nom.createdAt|date:'short'"></time>
+                                                            </div>
+                                                        </md-list-item>
+                                                    </md-list>
+                                                </md-content>
+                                            </md-tab>
+                                            <md-tab label="Wins &middot; {{VC.wins.length||0}}">
+                                                <md-content class="md-padding">
+                                                    <md-list>
+                                                        <md-list-item class="" ng-repeat="win in VC.wins">
+                                                            <!--<img ng-src="{{::nom.attributes.author.attributes.avatar}}" class="md-avatar" ng-if="::nom.attributes.author.attributes.avatar">-->
+                                                            <md-icon class="md-avatar-icon"
+                                                                     md-svg-icon="stars"></md-icon>
+                                                            <p ng-bind="::win.attributes.award.attributes.name"></p>
+                                                        </md-list-item>
+                                                    </md-list>
 
-                    <md-card-content>
-                        <table>
-                            <tbody>
-                            <tr ng-show="VC.film.attributes.type.attributes.name">
-                                <td>Type</td>
-                                <td ng-bind="::VC.film.attributes.type.attributes.name"></td>
-                            </tr>
-                            <tr ng-show="VC.film.attributes.producers">
-                                <td>Producers</td>
-                                <td ng-bind="::VC.film.attributes.producers"></td>
-                            </tr>
-                            <tr ng-show="VC.film.attributes.director">
-                                <td>Director</td>
-                                <td ng-bind="::VC.film.attributes.director"></td>
-                            </tr>
-                            <tr ng-show="VC.film.attributes.writer">
-                                <td>Writer</td>
-                                <td ng-bind="::VC.film.attributes.writer"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </md-card-content>
-                </md-card>
+                                                </md-content>
+                                            </md-tab>
+                                        </md-tabs>
+                                    </md-content>
 
-                <md-card>
-                    <md-list>
-                        <md-list-item>
-                            <p class="md-subhead">
-                                IndieWise Avg.
-                                <help-info text="'This is the Average of all Ratings you\'ve received on this Video.'"></help-info>
-                                <span ng-if="VC.critiqueAverage" class="badge indigo white-text">{{VC.critiqueAverage|number:1}}</span>
-                                <span ng-if="!VC.critiqueAverage" class="badge indigo white-text">N/A</span>
-                            </p>
-                        </md-list-item>
-                    </md-list>
-                </md-card>
+                                </md-tab-body>
+                            </md-tab>
+                        </md-tabs>
+                    </md-card>
+                </div>
+                <div flex-gt-sm="30" flex-gt-sm="40" flex-order="1" flex-order-gt-sm="2">
+                    <md-card ng-hide="true">
+                        <md-card-header>
+                            <md-card-header-text>
+                                <span class="md-subhead">Details</span>
+                            </md-card-header-text>
+                        </md-card-header>
 
-                <md-card ng-if="VC.wins.length"
+                        <md-card-content>
+                            <table>
+                                <tbody>
+                                <tr ng-show="VC.film.attributes.type.attributes.name">
+                                    <td>Type</td>
+                                    <td ng-bind="::VC.film.attributes.type.attributes.name"></td>
+                                </tr>
+                                <tr ng-show="VC.film.attributes.producers">
+                                    <td>Producers</td>
+                                    <td ng-bind="::VC.film.attributes.producers"></td>
+                                </tr>
+                                <tr ng-show="VC.film.attributes.director">
+                                    <td>Director</td>
+                                    <td ng-bind="::VC.film.attributes.director"></td>
+                                </tr>
+                                <tr ng-show="VC.film.attributes.writer">
+                                    <td>Writer</td>
+                                    <td ng-bind="::VC.film.attributes.writer"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </md-card-content>
+                    </md-card>
+
+                    <md-card>
+                        <md-list>
+                            <md-list-item>
+                                <p class="md-subhead">
+                                    IndieWise Avg.
+                                    <help-info
+                                            text="'This is the Average of all Ratings you\'ve received on this Video.'"></help-info>
+                                    <span ng-if="VC.critiqueAverage" class="badge indigo white-text">{{VC.critiqueAverage|number:1}}</span>
+                                    <span ng-if="!VC.critiqueAverage" class="badge indigo white-text">N/A</span>
+                                </p>
+                            </md-list-item>
+                        </md-list>
+                    </md-card>
+
+                    <md-card ng-if="VC.wins.length"
                     <md-list>
                         <md-list-item ng-repeat="win in VC.wins">
                             <md-icon class="md-avatar-icon blue-text" md-svg-icon="stars"></md-icon>
@@ -390,37 +469,41 @@
                             </p>
                         </md-list-item>
                     </md-list>
-                </md-card>
+                    </md-card>
 
-                <md-card ng-if="VC.film.attributes.reactionCount">
-                    <md-list>
-                        <md-list-item>
-                            <md-icon class="md-avatar-icon white" md-svg-icon="emotion"></md-icon>
-                            <p class="md-subhead">Reactions &middot; {{VC.film.attributes.reactionCount}}</p>
-                            <!--<md-icon ng-if="AppData.User.id !== VC.film.attributes.owner.id"
-                                     class="md-secondary md-accent md-hue-2" ng-click="VC.toggleMessageInput()"
-                                     aria-label="Message Author" md-svg-icon="email"></md-icon>-->
-                        </md-list-item>
-                        <md-list-item  ng-repeat="(key, count) in VC.chartedReactions">
-                            <md-icon aria-label="{{::VC.getEmoticonByEmotion(key).name}}" md-svg-icon="{{::VC.getEmoticonByEmotion(key).icon}}"></md-icon>
-                            <md-progress-linear md-mode="determinate" value="{{(count/VC.reactions.length)*100}}"></md-progress-linear>
-                            <md-tooltip md-direction="top">{{count}} {{::VC.getEmoticonByEmotion(key).name}}</md-tooltip>
-                        </md-list-item>
-                        <!--<form layout="row" layout-lt-md="column" class="md-padding" ng-submit="VC.postMessage()"
-                              ng-if="!!VC.showMessageInput">
-                            <md-input-container flex>
-                                <label>Message Author</label>
-                                <textarea ng-model="VC.myMessage" columns="1" md-maxlength="500" required></textarea>
-                            </md-input-container>
-                            <md-button flex="5" flex-sm type="submit" class="md-primary" style="text-align: center;">
-                                Send
-                            </md-button>
-                        </form>-->
-                    </md-list>
+                    <md-card ng-if="VC.film.attributes.reactionCount">
+                        <md-list>
+                            <md-list-item>
+                                <md-icon class="md-avatar-icon white" md-svg-icon="emotion"></md-icon>
+                                <p class="md-subhead">Reactions &middot; {{VC.film.attributes.reactionCount}}</p>
+                                <!--<md-icon ng-if="AppData.User.id !== VC.film.attributes.owner.id"
+                                         class="md-secondary md-accent md-hue-2" ng-click="VC.toggleMessageInput()"
+                                         aria-label="Message Author" md-svg-icon="email"></md-icon>-->
+                            </md-list-item>
+                            <md-list-item ng-repeat="(key, count) in VC.chartedReactions">
+                                <md-icon aria-label="{{::VC.getEmoticonByEmotion(key).name}}"
+                                         md-svg-icon="{{::VC.getEmoticonByEmotion(key).icon}}"></md-icon>
+                                <md-progress-linear md-mode="determinate"
+                                                    value="{{(count/VC.reactions.length)*100}}"></md-progress-linear>
+                                <md-tooltip md-direction="top">{{count}} {{::VC.getEmoticonByEmotion(key).name}}
+                                </md-tooltip>
+                            </md-list-item>
+                            <!--<form layout="row" layout-lt-md="column" class="md-padding" ng-submit="VC.postMessage()"
+                                  ng-if="!!VC.showMessageInput">
+                                <md-input-container flex>
+                                    <label>Message Author</label>
+                                    <textarea ng-model="VC.myMessage" columns="1" md-maxlength="500" required></textarea>
+                                </md-input-container>
+                                <md-button flex="5" flex-sm type="submit" class="md-primary" style="text-align: center;">
+                                    Send
+                                </md-button>
+                            </form>-->
+                        </md-list>
 
-                </md-card>
+                    </md-card>
 
+                </div>
             </div>
-        </div>
-    </md-content>
-</section>
+        </md-content>
+    </section>
+</div>

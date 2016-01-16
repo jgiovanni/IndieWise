@@ -1,0 +1,37 @@
+<div class="grid">
+    <ul class="items clearfix">
+        <li class="smallGrid" ng-repeat="f in featuredFilms|limitTo:5">
+            <div class="frame">
+                <div class="slide_element">
+                    <div class="slide" data-mightyslider="cover: '{{::f.attributes.thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}', icon:  'video'"></div>
+                </div>
+            </div>
+            <a class="details white-text">
+                <div class="image-link" ui-sref="video({id: f.id})">
+                    <div>
+                        <span class="md-caption white-text lighten-2" layout-align="flex-start center" style="padding-top: 10px">
+                            <span flex>
+                                <md-icon md-svg-icon="grade" class="red-text" style="width: 16px;height: 16px;"></md-icon> {{::(f.attributes.iwRating|number:1)||'N/A'}}
+                                <md-tooltip md-direction="top">IndieWise Average</md-tooltip>
+                            </span>
+                            &middot;
+                            <span flex>
+                                <md-icon md-svg-icon="trophy" class="orange-text" style="width: 16px;height: 16px;"></md-icon> {{::(f.attributes.awardCount)||0}}
+                                <md-tooltip md-direction="top">Awards</md-tooltip>
+                            </span>
+                            &middot;
+                            <span flex>
+                                <md-icon md-svg-icon="emotion" class="blue-text lighten-2" style="width: 16px;height: 16px;"></md-icon> {{::(f.attributes.reactionCount)||0}}
+                                <md-tooltip md-direction="top">Reactions</md-tooltip>
+                            </span>
+                        </span>
+                        <h6 ng-bind="::f.attributes.name"></h6>
+                        <span class="md-caption">
+                            by <span ui-sref="user({id: f.attributes.owner.id})" class="blue-text">{{::f.attributes.owner.attributes.first_name+' '+f.attributes.owner.attributes.last_name}}</span>
+                        </span>
+                    </div>
+                </div>
+            </a>
+        </li>
+    </ul>
+</div>

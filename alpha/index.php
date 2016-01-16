@@ -18,7 +18,7 @@ $user_feed_all = $client->feed('user', 'all');
 <!DOCTYPE html>
 <html lang="en" ng-app="IndieWise">
 <head>
-    <title>IndieWise: {{metadata.title}}</title>
+    <title ng-cloak>IndieWise: {{metadata.title}}</title>
 
     <!--Favicon-->
     <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
@@ -62,6 +62,24 @@ $user_feed_all = $client->feed('user', 'all');
 
     <link rel="stylesheet" href="./assets/app.css"/>
     <link rel="stylesheet" href="./app/bower_components/animate.css/animate.min.css"/>
+
+    <!-- MightySlider -->
+    <script type="text/javascript" src="./app/mightyslider/src/js/mightyslider.min.js"></script>
+    <script src="./app/mightyslider/assets/js/freewall.min.js"></script>
+    <link href="./app/mightyslider/src/css/mightyslider.css" rel="stylesheet">
+
+    <!-- Elite Video Player -->
+    <link rel="stylesheet" href="./app/eliteplayer/deploy/css/elite.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="./app/eliteplayer/deploy/css/elite-font-awesome.css" type="text/css">
+    <link rel="stylesheet" href="./app/eliteplayer/deploy/css/jquery.mCustomScrollbar.css" type="text/css">
+    <script src="./app/eliteplayer/deploy/js/froogaloop.js" type="text/javascript"></script>
+    <script src="./app/eliteplayer/deploy/js/jquery.mCustomScrollbar.js" type="text/javascript"></script>
+    <script src="./app/eliteplayer/deploy/js/THREEx.FullScreen.js"></script>
+    <script type="text/javascript" src="./app/eliteplayer/deploy/js/videoPlayer.js"></script>
+    <script type="text/javascript" src="./app/eliteplayer/deploy/js/Playlist.js"></script>
+    <script type="text/javascript" src="./app/eliteplayer/deploy/js/ZeroClipboard.js"></script>
+
+
 </head>
 
 <body layout="row" ng-controller="BodyCtrl as Body" ng-cloak>
@@ -171,7 +189,7 @@ $user_feed_all = $client->feed('user', 'all');
         </md-toolbar>
     </header>
     <main>
-        <div class="grey lighten-3">
+        <div>
             <md-sidenav md-component-id="left" class="md-sidenav-left">
                 <md-toolbar class="md-theme-light">
                     <h1 class="md-toolbar-tools">Menu</h1>

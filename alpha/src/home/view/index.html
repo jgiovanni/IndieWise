@@ -1,32 +1,159 @@
-<md-content layout="row" layout-align="space-around start" id="content" class="grey lighten-3" layout-padding
-            layout-wrap>
+<style>
+    md-input-container {
+        margin: 0;
+    }
 
+    div.grid {
+        /*margin: 30px auto;*/
+    }
+    ul.items {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+    }
+    ul.items li {
+        position: relative;
+        float: left;
+        padding: 0;
+        border-radius: 10px;
+    }
+    ul.items li.bigGrid {
+        width: 40%;
+    }
+    ul.items li.wideGrid {
+        width: 40%;
+    }
+    ul.items li.largeGrid {
+        width: 20%;
+    }
+    ul.items li.smallGrid {
+        width: 20%;
+    }
+    ul.items li .details {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        opacity: 0;
+        border-radius: 5px;
+        background: -moz-linear-gradient(top,  rgba(0,0,0,0) 0%, rgba(0,0,0,0.85) 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.85))); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.85) 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.85) 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.85) 100%); /* IE10+ */
+        background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.85) 100%); /* W3C */
+        text-shadow: 0 1px 0 #000;
+
+        -webkit-transition: opacity 0.3s;
+        transition: opacity 0.3s;
+    }
+    ul.items li:hover .details {
+        opacity: 1;
+    }
+    ul.items li .details > div {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+    ul.items li .details > div > div {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+    }
+    ul.items li .details h3 {
+        text-transform: uppercase;
+    }
+
+    /* Sliders Styles */
+    ul.items li .frame {
+        width: 100%;
+        height: 100%;
+    }
+    ul.items li .frame .slide_element {
+        height: 100%;
+    }
+    ul.items li .frame .slide_element > div {
+        float: left;
+        height: 100%;
+    }
+    ul.items li .frame .mSCover img {
+        max-width: none;
+    }
+    .frame .mSCover, .frame .mSLayerCover {
+        border-radius: 5px;
+    }
+
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+        ul.items li.bigGrid,
+        ul.items li.wideGrid {
+            width: 50%;
+        }
+        ul.items li.largeGrid,
+        ul.items li.smallGrid {
+            width: 25%;
+        }
+    }
+    @media (max-width: 979px) {
+        ul.items li.bigGrid,
+        ul.items li.wideGrid {
+            width: 66.66%;
+        }
+        ul.items li.largeGrid,
+        ul.items li.smallGrid {
+            width: 33.33%;
+        }
+    }
+    @media (max-width: 767px) {
+        ul.items li.bigGrid,
+        ul.items li.wideGrid {
+            width: 100%;
+        }
+        ul.items li.largeGrid,
+        ul.items li.smallGrid {
+            width: 50%;
+        }
+    }
+    @media (max-width: 480px) {
+        ul.items li.bigGrid,
+        ul.items li.wideGrid,
+        ul.items li.largeGrid,
+        ul.items li.smallGrid {
+            width: 100%;
+        }
+    }
+</style>
+<md-content id="content" class="" layout-wrap>
+    <!--<md-grid-list md-cols="5" md-row-height="16:9" md-gutter-gt-md="16px" md-gutter-gt-sm="8px" md-gutter="4px">
+      <md-grid-tile ng-repeat="tile in Home.featuredProjects" ng-style="{'background': tile.color}"
+                    md-colspan-gt-sm="1" md-rowspan-gt-sm="1">
+          <md-icon md-svg-icon="{{tile.icon}}"></md-icon>
+          <md-grid-tile-footer><h3>{{tile.title}}</h3></md-grid-tile-footer>
+      </md-grid-tile>
+  </md-grid-list>-->
     <!-- Featured Area -->
-    <section flex="100" class="md-padding">
-        <md-grid-list md-cols="5" md-row-height="16:9" md-gutter-gt-md="16px" md-gutter-gt-sm="8px" md-gutter="4px">
-            <md-grid-tile ng-repeat="tile in Home.featuredProjects" ng-style="{'background': tile.color}"
-                          md-colspan-gt-sm="1" md-rowspan-gt-sm="1">
-                <md-icon md-svg-icon="{{tile.icon}}"></md-icon>
-                <md-grid-tile-footer><h3>{{tile.title}}</h3></md-grid-tile-footer>
-            </md-grid-tile>
-        </md-grid-list>
+    <section flex="100" class="hero-bg stretch md-padding" style="">
+        <mighty-slider class="mightySlider mightyslider_windows8_skins"></mighty-slider>
     </section>
 
-    <section flex="100" class="md-padding">
-        <md-card>
-            <div class="card-content" layout="row" layout-sm="column" layout-wrap layout-align="space-around start">
+    <section flex="100" class="white">
+        <div class="container">
+            <div class="" layout="row" layout-sm="column" layout-wrap layout-align="space-around flex-start">
 
                 <!-- Latest Watched -->
                 <div class="md-padding" flex="33" flex-sm="100">
                     <h3 class="md-display-1 card-title grey-text text-darken-4">
                         People Are Watching
-                        <md-progress-linear md-mode="{{Home.latest.watchedLoaded}}"
-                                            class="md-accent"></md-progress-linear>
+                        <md-progress-linear md-mode="{{Home.latest.watchedLoaded}}" class="md-accent"></md-progress-linear>
                     </h3>
                     <md-list>
                         <md-list-item class="md-2-lines wrap-text" ng-repeat-start="w in Home.latest.watched"
                                       ui-sref="video({id: w.attributes.film.id})">
-                            <img ng-src="{{::w.attributes.film.attributes.thumbnail_url}}" class="md-avatar"
+                            <img ng-src="{{::w.attributes.film.attributes.thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}" class="md-avatar"
                                  style="border-radius: 0;">
                             <a ui-sref="video({id: w.attributes.film.id})">{{::w.attributes.film.attributes.name}}</a>
                         </md-list-item>
@@ -123,14 +250,14 @@
                     </md-content>
                 </div>
             </div>
-        </md-card>
+        </div>
     </section>
-
-    <section flex="100" class="md-padding">
-        <md-card>
-            <div class="card-content" layout="row" layout-wrap layout-align="space-around start">
+    <md-divider></md-divider>
+    <section flex="100" class="white">
+        <div class="container">
+            <div class="" layout="row" layout-wrap layout-align="space-around flex-start">
                 <section flex="100" class="container">
-                    <div class="" layout="row" layout-wrap layout-padding layout-align="space-around start">
+                    <div class="" layout="row" layout-wrap layout-padding layout-align="space-around flex-start">
                         <div flex="100" class="md-toolbar-tools">
                             <h6 class="md-display-1">Trending</h6>
                             <span flex></span>
@@ -144,14 +271,14 @@
                     </div>
                 </section>
             </div>
-        </md-card>
+        </div>
     </section>
-
-    <section flex="100" class="md-padding">
-        <md-card>
-            <div class="card-content" layout="row" layout-wrap layout-align="space-around start">
+    <md-divider></md-divider>
+    <section flex="100" class="white">
+        <div class="container">
+            <div class="" layout="row" layout-wrap layout-align="space-around flex-start">
                 <section flex="100" class="container">
-                    <div layout="row" layout-wrap layout-padding layout-align="space-around start">
+                    <div layout="row" layout-wrap layout-padding layout-align="space-around flex-start">
                         <div flex="100" class="md-toolbar-tools">
                             <h6 class="md-display-1">Highest Rated</h6>
                             <span flex></span>
@@ -167,14 +294,14 @@
                     </div>
                 </section>
             </div>
-        </md-card>
+        </div>
     </section>
-
-    <section flex="100" class="md-padding">
-        <md-card>
-            <div class="card-content" layout="row" layout-wrap layout-align="space-around start">
+    <md-divider></md-divider>
+    <section flex="100" class="white">
+        <div class="container">
+            <div class="" layout="row" layout-wrap layout-align="space-around flex-start">
                 <section flex="100" class="container">
-                    <div layout="row" layout-wrap layout-padding layout-align="space-around start">
+                    <div layout="row" layout-wrap layout-padding layout-align="space-around flex-start">
                         <div flex="100" class="md-toolbar-tools">
                             <h6 class="md-display-1">Award Winning</h6>
                             <span flex></span>
@@ -190,14 +317,14 @@
                     </div>
                 </section>
             </div>
-        </md-card>
+        </div>
     </section>
-
-    <section flex="100" class="md-padding">
-        <md-card>
-            <div class="card-content" layout="row" layout-wrap layout-align="space-around start">
+    <md-divider></md-divider>
+    <section flex="100" class="white">
+        <div class="container">
+            <div class="" layout="row" layout-wrap layout-align="space-around flex-start">
                 <section flex="100" class="container">
-                    <div layout="row" layout-wrap layout-padding layout-align="space-around start">
+                    <div layout="row" layout-wrap layout-padding layout-align="space-around flex-start">
                         <div flex="100" class="md-toolbar-tools">
                             <h6 class="md-display-1">Recently Added</h6>
                             <span flex></span>
@@ -212,10 +339,10 @@
                     </div>
                 </section>
             </div>
-        </md-card>
+        </div>
     </section>
 
-    <!--<aside flex="100" flex-gt-sm="30" layout="row" layout-wrap hide-sm layout-align="center start">
+    <!--<aside flex="100" flex-gt-sm="30" layout="row" layout-wrap hide-sm layout-align="center flex-start">
         <div class="flex">
             &lt;!&ndash; Latest Watched &ndash;&gt;
             <div class="card">

@@ -81,7 +81,7 @@ md-sidenav md-list {
 #content {
     /*padding-left: 40px;*/
     /*padding-right: 40px;*/
-    padding-top: 5px;
+    /*padding-top: 5px;*/
     /*max-width: 992px;*/
 }
 
@@ -283,6 +283,17 @@ md-list-item.short .md-ripple-container  {
 .no-shadow md-card md-card-title {
     padding: 16px 0 !important;
 }
+.hero-bg {
+    background-image: url("../../media/img.jpg");
+    background-size: contain;
+    background-repeat: repeat-y;
+    background-position: top center;
+}
+.hero-bg.stretch {
+    background-size: cover;
+    background-position: center center;
+}
+
 .no-video .video-container video,
 .touch .video-container video {
     display: none;
