@@ -13,22 +13,22 @@
             <md-divider></md-divider>
             <span class="md-caption grey-text lighten-2" layout-align="flex-start center" style="padding-top: 10px">
                 <span flex>
-                    <md-icon md-svg-icon="grade" class="orange-text" style="width: 16px;height: 16px;"></md-icon> {{::(video.attributes.iwRating|number:1)||'N/A'}}
+                    <md-icon md-svg-icon="grade" class="indigo-text" style="width: 16px;height: 16px;"></md-icon> {{::(video.attributes.iwRating|number:1)||'N/A'}}
                     <md-tooltip>IndieWise Average</md-tooltip>
                 </span>
                 &middot;
                 <span flex>
-                    <md-icon md-svg-icon="trophy" class="orange-text"style="width: 16px;height: 16px;"></md-icon> {{::(video.attributes.awardCount)||0}}
+                    <md-icon md-svg-icon="trophy" class="orange-text" style="width: 16px;height: 16px;"></md-icon> {{::(video.attributes.awardCount)||0}}
                     <md-tooltip>Awards</md-tooltip>
                 </span>
                 &middot;
                 <span flex>
-                    <md-icon md-svg-icon="emotion" class="orange-text" style="width: 16px;height: 16px;"></md-icon> {{::(video.attributes.reactionCount)||0}}
+                    <md-icon md-svg-icon="emotion" class="deep-orange-text" style="width: 16px;height: 16px;"></md-icon> {{::(video.attributes.reactionCount)||0}}
                     <md-tooltip>Reactions</md-tooltip>
                 </span>
                 <span ng-if="::video.attributes.unlist">&middot;</span>
                 <span flex ng-if="::video.attributes.unlist" class="red-text">
-                    <md-icon md-svg-icon="invisibility" class="red-text"></md-icon>
+                    <md-icon md-svg-icon="invisibility" class="red-text" style="width: 16px;height: 16px;"></md-icon>
                     <md-tooltip md-direction="top">This video is not searchable by others.</md-tooltip>
                 </span>
             </span>
@@ -41,13 +41,13 @@
             </md-button>
         </md-fab-trigger>
         <md-fab-actions>
-            <!--<md-button aria-label="Share" class="md-fab md-raised md-mini" ng-if="!$state.is('profile')"
-                       ng-click="share(video)">
+            <md-button aria-label="Share" class="md-fab md-raised md-mini" ng-if="!$state.is('profile')"
+                       ng-click="openShareDialog(video)">
                 <md-tooltip md-direction="left" md-visible="tooltipVisible">Share</md-tooltip>
                 <md-icon md-svg-icon="share" aria-label="Share"></md-icon>
-            </md-button>-->
+            </md-button>
             <md-button aria-label="Favorite" class="md-fab md-raised md-mini" ng-if="::!$state.is('profile')"
-                       ng-click="toFavorites(video)">
+                       ng-click="toFavorites(video, $event)">
                 <md-tooltip ng-if="faved==='blue-text'" md-direction="left" md-visible="tooltipVisible">Add to Favorites</md-tooltip>
                 <md-tooltip ng-if="faved==='red-text'" md-direction="left" md-visible="tooltipVisible">Remove from Favorites</md-tooltip>
                 <md-icon md-svg-icon="favorite" aria-label="Share" ng-class="faved"></md-icon>

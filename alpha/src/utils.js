@@ -67,7 +67,7 @@ angular.module('IndieWise.utilities', [])
                             action.addUnique('to', 'notification:' + object.attributes.parentFilm.attributes.owner.id);
                             action.addUnique('to', 'flat_notifications:' + object.attributes.parentFilm.attributes.owner.id);
                             objData.targets.film = {
-                                id: object.attributes.parentFilm.attributes.owner.id,
+                                id: object.attributes.parentFilm.id,
                                 owner: {
                                     id: object.attributes.parentFilm.attributes.owner.id,
                                     name: object.attributes.parentFilm.attributes.owner.attributes.first_name+' '+object.attributes.parentFilm.attributes.owner.attributes.last_name
@@ -132,8 +132,7 @@ angular.module('IndieWise.utilities', [])
                         objectOwner = object.attributes.from;
                         _.each(object.participants, function (a) {
                             if (a.id !== me.id)
-                                action.addUnique('to', 'notification:'+a.id);
-                                action.addUnique('to', 'flat_notifications:'+a.id);
+                                action.addUnique('to', 'message:'+a.id);
                         });
                         objData.body = object.attributes.body;
                         break;
@@ -242,6 +241,7 @@ angular.module('IndieWise.utilities', [])
                                 obj.name = a.object_data.targets.film.name;
                                 break;
                             case 'comment':
+                            case 'reply':
                                 a.icon = 'comment';
                                 if (angular.isDefined(a.object_parse.attributes.parentComment)) {
                                     a.verb = 'reply';
@@ -323,6 +323,7 @@ angular.module('IndieWise.utilities', [])
                                     obj.name = a.object_data.targets.film.name;
                                     break;
                                 case 'comment':
+                                case 'reply':
                                     n.icon = 'comment';
                                     if (angular.isDefined(a.object_data.targets.comment)) {
                                         n.verb = 'reply';

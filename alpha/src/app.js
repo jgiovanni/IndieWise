@@ -49,7 +49,7 @@
                 .icon("arrow_back", "./assets/svg/arrow_back.svg", 24)
                 .icon("chevron-right", "./assets/svg/chevron-right.svg", 24)
                 .icon("view_module", "./assets/svg/view_module.svg", 24)
-                .icon("invisibility", "./assets/svg/in  visibility.svg", 24)
+                .icon("invisibility", "./assets/svg/invisibility.svg", 24)
                 .icon("visibility", "./assets/svg/visibility.svg", 24)
                 .icon("more_horiz", "./assets/svg/more_horiz.svg", 24)
                 .icon("more_vert", "./assets/svg/dots-vertical.svg", 24)
@@ -70,6 +70,9 @@
                 .icon("security", "./assets/svg/security.svg", 24)
                 .icon("comment", "./assets/svg/comment.svg", 24)
                 .icon("menu", "./assets/svg/menu.svg", 24)
+                .icon("message-outline", "./assets/svg/message-outline.svg", 24)
+                .icon("message-processing", "./assets/svg/message-processing.svg", 24)
+                .icon("message-text", "./assets/svg/message-text.svg", 24)
                 .icon("notifications", "./assets/svg/notifications.svg", 24)
                 .icon("notifications_active", "./assets/svg/notifications_active.svg", 24)
                 .icon("notifications_off", "./assets/svg/notifications_off.svg", 24)
@@ -126,11 +129,14 @@
                 .icon("woah", "./assets/svg/emoticons/woah.svg", 120)
 
                 // Social
-                .icon("facebook", "./assets/svg/social/facebook.svg", 120)
-                .icon("google-plus", "./assets/svg/social/google-plus.svg", 120)
-                .icon("twitter", "./assets/svg/social/twitter.svg", 120)
-
-                .icon("instagram", "./assets/svg/social/instagram.svg", 120)
+                .icon("facebook", "./assets/svg/social/facebook.svg", 24)
+                .icon("google-plus", "./assets/svg/social/google-plus.svg", 24)
+                .icon("twitter", "./assets/svg/social/twitter.svg", 24)
+                .icon("reddit", "./assets/svg/social/reddit.svg", 24)
+                .icon("vimeo", "./assets/svg/social/vimeo.svg", 24)
+                .icon("youtube", "./assets/svg/social/youtube-play.svg", 24)
+                .icon("instagram", "./assets/svg/social/instagram.svg", 24)
+                .icon("pinterest", "./assets/svg/social/pinterest.svg", 24)
 
             $mdThemingProvider.theme('default')
                 .primaryPalette('indigo')
@@ -160,7 +166,7 @@
                         Project: ['$stateParams', '$q', function ($stateParams, $q) {
                             var deferred = $q.defer();
                             var filmQuery = new Parse.Query("Film");
-                            filmQuery.include(["owner", "type"]);
+                            filmQuery.include(["owner", "type", "filmingCountry", "language"]);
                             //filmQuery.notEqualTo("disableProject", true);
                             //filmQuery.notEqualTo("unlist", true);
                             filmQuery.get($stateParams.id).then(function (result) {
@@ -405,6 +411,9 @@
                 NotificationsFeed: {
                     loaded: 'indeterminate',
                 },
+                MessageNotifications: {
+                    loaded: 'indeterminate',
+                },
                 searchText: ''
             };
             $rootScope.today = moment().toDate();
@@ -426,6 +435,7 @@
             };
 
             $rootScope.subscribeUserFeeds = function () {
+                // Notifications Feed
                 $rootScope.getNewToken('notification', $rootScope.AppData.User.id).then(function (token) {
                     var feed = window.StreamClient.feed('notification', $rootScope.AppData.User.id, token);
                     feed.subscribe(function (obj) {
@@ -433,6 +443,16 @@
                         $rootScope.getNotificationsFeed(feed);
                     }).then(function () {
                         $rootScope.getNotificationsFeed(feed);
+                    });
+                });
+                // Messages Feed
+                $rootScope.getNewToken('message', $rootScope.AppData.User.id).then(function (token) {
+                    var feed = window.StreamClient.feed('message', $rootScope.AppData.User.id, token);
+                    feed.subscribe(function (obj) {
+                        console.log('Messages: ', obj);
+                        $rootScope.getMessagesFeed(feed);
+                    }).then(function () {
+                        $rootScope.getMessagesFeed(feed);
                     });
                 });
             };
@@ -454,6 +474,24 @@
                         $rootScope.AppData.RawNotifications = {
                             loaded: '',
                             list: data.data,
+                            unseen: body.unseen,
+                            unread: body.unread
+                        };
+                    } catch (e) {
+                        console.log(e);
+                    }
+                });
+            };
+
+            $rootScope.getMessagesFeed = function (feed) {
+                feed.get({limit: 10}, function (error, response, body) {
+                    console.log('Messages: ', body);
+                    try {
+                        //var data = UtilsService.enrichRawNotifications(body.results);
+                        //console.log(data);
+                        $rootScope.AppData.MessageNotifications = {
+                            loaded: '',
+                            list: body.results,
                             unseen: body.unseen,
                             unread: body.unread
                         };

@@ -94,7 +94,7 @@ if (!isset($data->oauth_token) || !isset($data->oauth_verifier)) {
 
                 if (isset($twitterUser->name)) {
                     $names = explode(' ', $twitterUser->name);
-                    $user->set("first_name", current($names));
+                    $user->set("first_name", current($names)||$twitterUser->screen_name);
                     $user->set("last_name", end($names));
                 }
 

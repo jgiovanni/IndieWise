@@ -10,21 +10,20 @@
                 <md-card-header-text>
                     <span class="md-title">Your Notifications</span>
                 </md-card-header-text>
-                <md-button class="md-icon-button" ng-click="NC.markAllAsRead()" aria-label="Mark all as read">
+                <!--<md-button class="md-icon-button" ng-click="NC.markAllAsRead()" aria-label="Mark all as read">
                     <md-icon md-svg-icon="eye"></md-icon>
                     <md-tooltip md-direction="left">Mark all as read</md-tooltip>
+                </md-button>-->
+                <md-button class="md-icon-button" ng-click="NC.refresh()" aria-label="Refresh">
+                    <md-icon md-svg-icon="refresh"></md-icon>
                 </md-button>
-                <md-icon class="md-secondary active-link md-accent md-fab" ng-click="NC.refresh()"
-                         aria-label="Refresh" md-svg-icon="refresh">
-                </md-icon>
             </md-card-header>
         </md-card>
         <md-card>
             <div class="card-content">
                 <md-progress-linear md-mode="{{AppData.NotificationsFeed.loaded}}" class="md-accent"></md-progress-linear>
                 <md-list>
-                    <md-list-item ng-repeat="n in AppData.NotificationsFeed.list" ng-click="NC.markAsRead(n);" aria-label="Notification"
-                                  ng-class="{'': !n.is_seen, 'indigo lighten-4': !n.is_read}" class="md-2-line">
+                    <md-list-item ng-repeat="n in AppData.NotificationsFeed.list" aria-label="Notification" class="md-2-line">
                         <md-icon md-svg-icon="{{::n.icon}}"></md-icon>
                         <div class="md-list-item-text">
                             <p ng-show="!(Body.checkContains(['like','unlike'], n.verb))">
@@ -46,6 +45,13 @@
                                     <span ng-if="$last && n.actiList.length > 2">, and </span>
                                 </span>
                                 <a ui-sref="video({id: obj.url.args.id})" ng-repeat-end ng-bind="::obj.name"></a>
+
+                                <a ng-if="::Body.checkContains(['reply','comment'], n.verb)&&n.object_data.targets.critique" ui-sref="user_critique({id: n.object_data.targets.critique.id})">
+                                    {{::n.object_data.targets.critique.owner.name}}'s ctitique
+                                </a>
+                                <a ng-if="::Body.checkContains(['reply'], n.verb)&&n.object_data.targets.film" ui-sref="video({id: n.object_data.targets.film.id})">
+                                    {{::n.object_data.targets.film.name}}
+                                </a>
                             </p>
 
                             <p ng-show="n.verb==='like'">
@@ -85,8 +91,8 @@
                             </p>
 
                             <p>
-                                <abbr title="{{::n.created_at+'Z'|date:'fullDate'}}" class="md-caption"
-                                      am-time-ago="::n.created_at+'Z'"></abbr>
+                                <abbr title="{{n.time+'Z'|date:'fullDate'}}" class="md-caption"
+                                      am-time-ago="n.time+'Z'"></abbr>
                             </p>
                         </div>
                         <md-divider ng-if="!$last"></md-divider>

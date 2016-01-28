@@ -4,6 +4,7 @@
         <p>{{comment.attributes.replyCount}} replies</p>
     </md-list-item>
     <md-list-item flex="95" ng-if="comment.repliesLoaded" class="md-3-line"
+                  ng-class="{'secondary-button-padding': reply.attributes.author.id === model.isLoggedIn.id&&!!editCommentMode&&editComment.id===reply.id}"
                   ng-repeat-start="reply in comment.replies|orderBy:'createdAt'">
         <img ng-src="{{::reply.attributes.author.attributes.avatar || './assets/img/avatar-1.png'}}" class="md-avatar">
 
@@ -21,22 +22,22 @@
             </h3>
 
             <p ng-show="editComment.id!=reply.id" ng-bind="reply.attributes.body"></p>
-            <edit-comment-block ng-if="reply.attributes.author.id === isLoggedIn.id && !!editCommentMode"></edit-comment-block>
+            <edit-comment-block ng-if="reply.attributes.author.id === model.isLoggedIn.id && !!editCommentMode"></edit-comment-block>
 
             <p ng-show="editComment.id!=reply.id">
-                <a ng-if="reply.attributes.author.id === isLoggedIn.id"
+                <a ng-if="reply.attributes.author.id === model.isLoggedIn.id"
                    ng-click="toggleEditCommentMode(reply)"
                    class="md-warn md-caption action-link">Edit</a>
-                <span ng-if="reply.attributes.author.id === isLoggedIn.id">&nbsp;&middot;&nbsp;</span>
-                <a ng-if="reply.attributes.author.id === isLoggedIn.id"
+                <span ng-if="reply.attributes.author.id === model.isLoggedIn.id">&nbsp;&middot;&nbsp;</span>
+                <a ng-if="reply.attributes.author.id === model.isLoggedIn.id"
                    ng-click="deleteComment(reply)"
                    class="md-warn md-caption action-link">Delete</a>
-                <span ng-if="reply.attributes.author.id === isLoggedIn.id">&nbsp;&middot;&nbsp;</span>
+                <span ng-if="reply.attributes.author.id === model.isLoggedIn.id">&nbsp;&middot;&nbsp;</span>
                 <a ng-click="toggleReplyInput(reply)"
                    class="md-warn md-caption action-link">Reply</a>
             </p>
 
-            <p class="hint" ng-if="reply.attributes.author.id === isLoggedIn.id" ng-show="editCommentMode">
+            <p class="hint" ng-if="reply.attributes.author.id === model.isLoggedIn.id" ng-show="editCommentMode">
                 <a ng-click="toggleEditCommentMode(reply)" class="md-warn md-caption action-link">Cancel Edit</a>
             </p>
         </div>

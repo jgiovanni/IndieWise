@@ -204,7 +204,7 @@
                             success: function (user) {
                                 // Handle successful login
                                 var d = $q.defer();
-                                FB.api('/me', {fields: 'first_name,last_name,gender'}, function(response) {
+                                FB.api('/me', {fields: 'first_name,last_name,gender,email'}, function(response) {
                                     var needSave = false;
                                     if (angular.isUndefined(user.attributes.first_name)) {
                                         user.set("first_name", response.first_name);
@@ -216,6 +216,10 @@
                                     }
                                     if (angular.isUndefined(user.attributes.gender)) {
                                         user.set("gender", response.gender);
+                                        needSave = true;
+                                    }
+                                    if (angular.isUndefined(user.attributes.email)) {
+                                        user.set("email", response.email);
                                         needSave = true;
                                     }
                                     /*if (angular.isUndefined(user.attributes.birthday)) {
@@ -779,7 +783,6 @@
         }]);
 
     function SignInModalCtrl($rootScope, $localForage, $q, $state, AuthService, $mdDialog) {
-        'use strict';
         $rootScope.metadata.title = 'Sign In';
         var self = this;
         self.user = {

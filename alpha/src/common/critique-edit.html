@@ -8,102 +8,141 @@
                 </md-card-avatar>-->
                 <md-card-header-text>
                     <span class="md-title">
-                        <a ui-sref="video({id:VCEC.critique.attributes.parent.id})" class="md-primary">{{::VCEC.critique.attributes.parent.attributes.name}}</a>
+                        <a ui-sref="video({id:VCEC.VCEC.editedCritique.attributes.parent.id})" class="md-primary">{{::VCEC.VCEC.editedCritique.attributes.parent.attributes.name}}</a>
                         by
-                        <a ui-sref="user({id:VCEC.critique.attributes.parent.attributes.owner.id})">
-                            {{::VCEC.critique.attributes.parent.attributes.owner.attributes.first_name}} {{::VCEC.critique.attributes.parent.attributes.owner.attributes.last_name}}
+                        <a ui-sref="user({id:VCEC.VCEC.editedCritique.attributes.parent.attributes.owner.id})">
+                            {{::VCEC.VCEC.editedCritique.attributes.parent.attributes.owner.attributes.first_name}} {{::VCEC.VCEC.editedCritique.attributes.parent.attributes.owner.attributes.last_name}}
                         </a>
                     </span>
                     <span class="md-subhead">
                         Critique by
-                        <a ui-sref="user({id:VCEC.critique.attributes.author.id})">
-                            {{::VCEC.critique.attributes.author.attributes.first_name}} {{::VCEC.critique.attributes.author.attributes.last_name}}
+                        <a ui-sref="user({id:VCEC.VCEC.editedCritique.attributes.author.id})">
+                            {{::VCEC.VCEC.editedCritique.attributes.author.attributes.first_name}} {{::VCEC.VCEC.editedCritique.attributes.author.attributes.last_name}}
                         </a>
                     </span>
                 </md-card-header-text>
             </md-card-header>
             <md-card-content>
                 <section layout="column" class="md-padding">
-                    <div layout layout-padding></div>
-                    <div layout>
+                    <div layout="column" layout-gt-sm="row">
                         <div flex layout layout-align="center center">
                             <span class="md-body-1">Originality</span>
                         </div>
-                        <md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.originality" ng-change="VCEC.calcOverall()" step="1" min="0" max="10"
+                        <div class="stars" flex layout="row">
+                            <input class="star star-{{$index}}" id="ori{{$index}}" type="radio" ng-model="VCEC.editedCritique.originality" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
+                            <label flex class="star material-icons star-{{$index}}" for="ori{{$index}}" ng-repeat-end></label>
+                        </div>
+                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.originality" step="1" min="0" max="10"
                                    aria-label="Originality/Creativity">
-                        </md-slider>
+                        </md-slider>-->
                     </div>
-                    <div layout>
+                    <div layout="column" layout-gt-sm="row">
                         <div flex layout layout-align="center center">
                             <span class="md-body-1">Direction</span>
                         </div>
-                        <md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.direction" ng-change="VCEC.calcOverall()" step="1" min="0" max="10"
-                                   aria-label="Direction">
-                        </md-slider>
+                        <div class="stars" flex layout="row">
+                            <input class="star star-{{$index}}" id="dir{{$index}}" type="radio" ng-model="VCEC.editedCritique.direction" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
+                            <label flex class="star material-icons star-{{$index}}" for="dir{{$index}}" ng-repeat-end></label>
+                        </div>
+                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.direction" step="1" min="0" max="10"-->
+                        <!--aria-label="Direction">-->
+                        <!--</md-slider>-->
                     </div>
-                    <div layout>
+                    <div layout="column" layout-gt-sm="row">
                         <div flex layout layout-align="center center">
                             <span class="md-body-1">Writing</span>
                         </div>
-                        <md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.writing" ng-change="VCEC.calcOverall()" step="1" min="0" max="10"
-                                   aria-label="Writing">
-                        </md-slider>
+                        <div class="stars" flex layout="row">
+                            <input class="star star-{{$index}}" id="wri{{$index}}" type="radio" ng-model="VCEC.editedCritique.writing" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
+                            <label flex class="star material-icons star-{{$index}}" for="wri{{$index}}" ng-repeat-end></label>
+                        </div>
+                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.writing" step="1" min="0" max="10"-->
+                        <!--aria-label="Writing">-->
+                        <!--</md-slider>-->
                     </div>
-                    <div layout>
+                    <div layout="column" layout-gt-sm="row">
                         <div flex layout layout-align="center center">
                             <span class="md-body-1">Cinematography</span>
                         </div>
-                        <md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.cinematography" ng-change="VCEC.calcOverall()" step="1" min="0"
+                        <div class="stars" flex layout="row">
+                            <input class="star star-{{$index}}" id="cinema{{$index}}" type="radio" ng-model="VCEC.editedCritique.cinematography" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
+                            <label flex class="star material-icons star-{{$index}}" for="cinema{{$index}}" ng-repeat-end></label>
+                        </div>
+                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.cinematography" step="1" min="0"
                                    max="10" aria-label="Cinematography">
-                        </md-slider>
+                        </md-slider>-->
                     </div>
-                    <div layout>
+                    <div layout="column" layout-gt-sm="row">
                         <div flex layout layout-align="center center">
                             <span class="md-body-1">Acting</span>
                         </div>
-                        <md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.performances" ng-change="VCEC.calcOverall()" step="1" min="0" max="10"
+                        <div class="stars" flex layout="row">
+                            <input class="star star-{{$index}}" id="perf{{$index}}" type="radio" ng-model="VCEC.editedCritique.performances" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
+                            <label flex class="star material-icons star-{{$index}}" for="perf{{$index}}" ng-repeat-end></label>
+                        </div>
+                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.performances" step="1" min="0" max="10"
                                    aria-label="Performances">
-                        </md-slider>
+                        </md-slider>-->
                     </div>
-                    <div layout>
+                    <div layout="column" layout-gt-sm="row">
                         <div flex layout layout-align="center center">
                             <span class="md-body-1">Production Value</span>
                         </div>
-                        <md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.production" ng-change="VCEC.calcOverall()" step="1" min="0" max="10"
+                        <div class="stars" flex layout="row">
+                            <input class="star star-{{$index}}" id="prod{{$index}}" type="radio" ng-model="VCEC.editedCritique.production" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
+                            <label flex class="star material-icons star-{{$index}}" for="prod{{$index}}" ng-repeat-end></label>
+                        </div>
+                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.production" step="1" min="0" max="10"
                                    aria-label="Production Value">
-                        </md-slider>
+                        </md-slider>-->
                     </div>
-                    <div layout>
+                    <div layout="column" layout-gt-sm="row">
                         <div flex layout layout-align="center center">
                             <span class="md-body-1">Pacing</span>
                         </div>
-                        <md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.pacing" ng-change="VCEC.calcOverall()" step="1" min="0" max="10"
+                        <div class="stars" flex layout="row">
+                            <input class="star star-{{$index}}" id="pace{{$index}}" type="radio" ng-model="VCEC.editedCritique.pacing" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
+                            <label flex class="star material-icons star-{{$index}}" for="pace{{$index}}" ng-repeat-end></label>
+                        </div>
+                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.pacing" step="1" min="0" max="10"
                                    aria-label="Pacing">
-                        </md-slider>
+                        </md-slider>-->
                     </div>
-                    <div layout>
+                    <div layout="column" layout-gt-sm="row">
                         <div flex layout layout-align="center center">
                             <span class="md-body-1">Editing</span>
                         </div>
-                        <md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.structure" ng-change="VCEC.calcOverall()" step="1" min="0" max="10"
+                        <div class="stars" flex layout="row">
+                            <input class="star star-{{$index}}" id="struc{{$index}}" type="radio" ng-model="VCEC.editedCritique.structure" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
+                            <label flex class="star material-icons star-{{$index}}" for="struc{{$index}}" ng-repeat-end></label>
+                        </div>
+                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.structure" step="1" min="0" max="10"
                                    aria-label="Editing">
-                        </md-slider>
+                        </md-slider>-->
                     </div>
-                    <div layout>
+                    <div layout="column" layout-gt-sm="row">
                         <div flex layout layout-align="center center">
                             <span class="md-body-1">Sound Quality</span>
                         </div>
-                        <md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.audio" ng-change="VCEC.calcOverall()" step="1" min="0" max="10"
+                        <div class="stars" flex layout="row">
+                            <input class="star star-{{$index}}" id="audio{{$index}}" type="radio" ng-model="VCEC.editedCritique.audio" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
+                            <label flex class="star material-icons star-{{$index}}" for="audio{{$index}}" ng-repeat-end></label>
+                        </div>
+                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.audio" step="1" min="0" max="10"
                                    aria-label="Sound Quality">
-                        </md-slider>
+                        </md-slider>-->
                     </div>
-                    <div layout>
+                    <div layout="column" layout-gt-sm="row">
                         <div flex layout layout-align="center center">
                             <span class="md-body-1">Music</span>
                         </div>
-                        <md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.music" ng-change="VCEC.calcOverall()" step="1" min="0" max="10"
+                        <div class="stars" flex layout="row">
+                            <input class="star star-{{$index}}" id="music{{$index}}" type="radio" ng-model="VCEC.editedCritique.music" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
+                            <label flex class="star material-icons star-{{$index}}" for="music{{$index}}" ng-repeat-end></label>
+                        </div>
+                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.music" step="1" min="0" max="10"
                                    aria-label="Music">
-                        </md-slider>
+                        </md-slider>-->
                     </div>
                     <md-divider></md-divider>
                     <div layout class="md-accent md-hue-2">

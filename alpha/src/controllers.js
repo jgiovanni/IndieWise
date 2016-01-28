@@ -1,7 +1,6 @@
 (function () {
     'use strict';
-    angular
-        .module('IndieWise.controllers', [])
+    angular.module('IndieWise.controllers', [])
         // Auth Controllers
         .controller('SignInCtrl', ['$rootScope', '$localForage', '$q', '$state', 'AuthService', '$mdDialog', SignInCtrl])
         .controller('ForgotPasswordCtrl', ['$rootScope', '$state', 'AuthService', ForgotPasswordCtrl])
@@ -12,7 +11,7 @@
         .controller('EditProfileCtrl', ['$rootScope', '$scope', 'AuthService', 'ParseService', '$state', EditProfileCtrl])
         .controller('MessagesCtrl', ['$rootScope', '$mdSidenav', 'UserActions', 'UtilsService', MessagesCtrl])
         .controller('NotificationsCtrl', ['$rootScope', 'UserActions', 'UtilsService', NotificationsCtrl])
-        // App Controllers
+        // Other App Controllers
         .controller('BodyCtrl', ['$rootScope', '$localForage', '$mdSidenav', '$mdBottomSheet', '$log', '$q', '$state', 'AuthService', '$mdToast', 'UserActions', '$sce', BodyCtrl])
         .controller('HomeCtrl', ['$rootScope', '$scope', '$q', '$mdDialog', '$timeout', '$interval', HomeCtrl])
         .controller('BrowseCtrl', ['$scope', '$rootScope', '$state', '$localForage', '$q', '$timeout', '$mdSidenav', '$mdDialog', BrowseCtrl])
@@ -21,9 +20,60 @@
         .controller('VideoEditCtrl', ['$rootScope', '$state', '$mdDialog', 'UserActions', 'Project', 'ParseService', VideoEditCtrl])
         .controller('VideoCritiqueCtrl', ['$rootScope', '$scope', '$mdDialog', 'UserActions', 'UtilsService', VideoCritiqueCtrl])
         .controller('VideoCritiqueEditCtrl', ['$rootScope', '$scope', '$state', 'Critique', VideoCritiqueEditCtrl])
-        //.controller('GenreCtrl', ['$scope', '$rootScope', '$state', '$localForage', GenreCtrl])
     ;
 
+    function RegisterCtrl($rootScope, $localForage, $q, $state, AuthService, ParseService, $auth) {
+        $rootScope.metadata.title = 'Register';
+        var self = this;
+        self.user = {
+            email: '',
+            password: '',
+            first_name: '',
+            last_name: '',
+            //selected_genres: ''
+        };
+
+        self.getGenres = function () {
+            ParseService.genres();
+        };
+
+        self.getTypes = function () {
+            if (!angular.isArray($rootScope.typesList))
+                ParseService.types();
+        };
+        self.getCountries = function () {
+            if (!angular.isArray($rootScope.countryList))
+                ParseService.countries();
+        };
+
+        self.doRegister = function () {
+            AuthService.createUser(self.user).then(function (res) {
+                console.log('Success', res);
+                //$state.go('home', {reload: true});
+                window.location.reload();
+            }, function (res) {
+                $scope.error = res.message;
+                console.log('Failed', res);
+            }).then(function () {
+                window.location.reload();
+            })
+        };
+
+        self.doLoginFacebook = function () {
+            AuthService.registerWithFB().then(function (res) {
+                //$state.go('home', {reload: true});
+                window.location.reload();
+            });
+        };
+
+        self.authenticate = function (provider) {
+            self.error = null;
+            AuthService.otherSocialLogin(provider).then(function (a) {
+                console.log(a);
+            });
+        };
+
+    }
     function SignInCtrl($rootScope, $localForage, $q, $state, AuthService, $mdDialog) {
         $rootScope.metadata.title = 'Sign In';
         var self = this;
@@ -38,8 +88,8 @@
             AuthService.login(self.user.email, self.user.password).then(function (res) {
                 console.log('Success', res);
                 if (redirect) {
-                    $state.go('home');
-                    //window.location.reload();
+                    //$state.go('home', {reload: true});
+                    window.location.reload();
                 }
             }, function (res) {
                 self.error = res;
@@ -51,7 +101,7 @@
 
         self.doLoginFacebook = function () {
             AuthService.loginWithFB().then(function (res) {
-                $state.go('home');
+                //$state.go('home', {reload: true});
                 window.location.reload();
             });
         };
@@ -83,57 +133,6 @@
         };
     }
 
-    function RegisterCtrl($rootScope, $localForage, $q, $state, AuthService, ParseService, $auth) {
-        $rootScope.metadata.title = 'Register';
-        var self = this;
-        self.user = {
-            email: '',
-            password: '',
-            first_name: '',
-            last_name: '',
-            //selected_genres: ''
-        };
-
-        self.getGenres = function () {
-            ParseService.genres();
-        };
-
-        self.getTypes = function () {
-            if (!angular.isArray($rootScope.typesList))
-                ParseService.types();
-        };
-        self.getCountries = function () {
-            if (!angular.isArray($rootScope.countryList))
-                ParseService.countries();
-        };
-
-        self.doRegister = function () {
-            AuthService.createUser(self.user).then(function (res) {
-                console.log('Success', res);
-                $state.go('home');
-            }, function (res) {
-                $scope.error = res.message;
-                console.log('Failed', res);
-            }).then(function () {
-                //window.location.reload();
-            })
-        };
-
-        self.doLoginFacebook = function () {
-            AuthService.registerWithFB().then(function (res) {
-                $state.go('home');
-                //window.location.reload();
-            });
-        };
-
-        self.authenticate = function (provider) {
-            self.error = null;
-            AuthService.otherSocialLogin(provider).then(function (a) {
-                console.log(a);
-            });
-        };
-
-    }
 
     function BodyCtrl($rootScope, $localForage, $mdSidenav, $mdBottomSheet, $log, $q, $state, AuthService, $mdToast, UserActions, $sce) {
         var self = this;
@@ -536,12 +535,6 @@
         };
 
         self.refresh = function () {
-            var innerQuery = new Parse.Query("Film");
-            //innerQuery.notEqualTo("disableProject", true);
-            innerQuery.notEqualTo("unlist", true);
-            innerQuery.limit(8);
-            innerQuery.include(["type", "owner"]);
-
             /*var filmsQuery = new Parse.Query("Film_Genre");
              filmsQuery.matchesQuery("film", innerQuery);
              filmsQuery.include(["film.type", "film.owner"]);
@@ -582,6 +575,12 @@
              });
              });*!/
              });*/
+
+            var innerQuery = new Parse.Query("Film");
+            //innerQuery.notEqualTo("disableProject", true);
+            innerQuery.notEqualTo("unlist", true);
+            innerQuery.limit(8);
+            innerQuery.include(["type", "owner"]);
 
             // Trending Videos
             var innerQ_1 = innerQuery;
@@ -650,8 +649,26 @@
                 self.latest.critiquesLoaded = '';
                 self.latest.reactionsLoaded = '';
                 self.latest.commentsLoaded = '';
-
-            })
+            }).then(function () {
+                /*var allCommentQuery = new Parse.Query("Comment");
+                allCommentQuery.exists("author");
+                allCommentQuery.find().then(function (result) {
+                    _.each(result, function (c, index) {
+                            var replyQuery = new Parse.Query("Comment");
+                            replyQuery.include("author");
+                            replyQuery.equalTo('parentComment', c);
+                            replyQuery.find().then(function (replies) {
+                                if (replies.length) {
+                                    var relReplies = c.relation("replies");
+                                    relReplies.add(replies);
+                                    c.set('replyCount', replies.length);
+                                    c.save();
+                                    console.log('Comment ', c.id, ' saved.');
+                                }
+                            });
+                    });
+                });*/
+            });
 
         };
         self.refresh();
@@ -1004,6 +1021,7 @@
                 url: window.location.href
             };
             //$scope.$broadcast('scroll.refreshComplete');
+
 
             // Fetch Genres
             var relGenres = self.film.relation("genres");
@@ -1365,6 +1383,8 @@
                     //nominatee: {__type: "Pointer", className: "Film", objectId: $rootScope.$stateParams.id}
                 };
 
+                $scope.starArray = angular.copy([{"num":0},{"num":1},{"num":2},{"num":3},{"num":4},{"num":5},{"num":6},{"num":7},{"num":8},{"num":9},{"num":10}].reverse());
+
                 $scope.calcOverall = function () {
                     $scope.critique.overall = ($scope.critique.originality + $scope.critique.direction + $scope.critique.writing +
                         $scope.critique.cinematography + $scope.critique.performances + $scope.critique.production +
@@ -1461,7 +1481,7 @@
         });
 
         $scope.$on('$destroy', function (event) {
-            $scope.commentSubscribe.cancel();
+            //$scope.commentSubscribe.cancel();
         });
 
         //Lets begin
@@ -1771,6 +1791,8 @@
             })
         };
 
+        self.starArray = angular.copy([{"num":0},{"num":1},{"num":2},{"num":3},{"num":4},{"num":5},{"num":6},{"num":7},{"num":8},{"num":9},{"num":10}].reverse());
+
         self.cancelled = function () {
             if ($state.is('profile_critique-edit'))
                 $state.go('profile_critique', {id: self.critique.id});
@@ -1863,21 +1885,31 @@
         self.getThumbnailUrl = function (url) {
             if (url != null && url != '') {
                 if (url.indexOf('youtu') != -1) {
-                    var video_id = url.split('v=')[1].split('&')[0];
+                    var video_id = url.indexOf('v=') != -1 ? url.split('v=')[1].split('&')[0] : url.split('be/')[1];
+                    self.newVideo.hosting_type = 'youtube';
+                    self.newVideo.hosting_id = video_id;
                     return self.newVideo.thumbnailUrl = 'http://img.youtube.com/vi/' + video_id + '/mqdefault.jpg';
                 } else if (url.indexOf('vimeo') != -1) {
                     var video_id = url.split('.com/')[1];
+                    self.newVideo.hosting_type = 'vimeo';
+                    self.newVideo.hosting_id = video_id;
                     $http.jsonp('http://www.vimeo.com/api/v2/video/' + video_id + '.json?callback=JSON_CALLBACK').then(function (res) {
                         return self.newVideo.thumbnailUrl = res.data[0].thumbnail_large;
                     });
                 } else if (url.indexOf('dailymotion') != -1) {
                     var video_id = url.split('video/')[1].split('_')[0];
+                    self.newVideo.hosting_type = 'dailymotion';
+                    self.newVideo.hosting_id = video_id;
                     $http.get('https://api.dailymotion.com/video/' + video_id + '?fields=thumbnail_large_url').then(function (res) {
                         return self.newVideo.thumbnailUrl = res.data.thumbnail_large_url;
                     });
                 } else if (url.indexOf('youku') != -1) {
+                    self.newVideo.hosting_type = 'youku';
+                    self.newVideo.hosting_id = undefined;
 
                 } else if (url.indexOf('vine') != -1) {
+                    self.newVideo.hosting_type = 'vine';
+                    self.newVideo.hosting_id = undefined;
                     $http.get('/alpha/utils/get-vine-data.php?url=' + url).then(function (res) {
                         return self.newVideo.thumbnailUrl = res.data;
                     });
@@ -1933,6 +1965,8 @@
                 film.set('runTime', self.newVideo.runTime);
                 film.set('video_url', self.newVideo.video_url);
                 film.set('thumbnail_url', self.newVideo.thumbnailUrl);
+                film.set('hosting_type', self.newVideo.hosting_type);
+                film.set('hosting_id', self.newVideo.hosting_id);
                 film.set('tags', self.newVideo.tags || []);
                 film.set('disableComments', self.newVideo.disableComments || false);
                 film.set('disableCritique', self.newVideo.disableCritique || false);
@@ -1947,7 +1981,11 @@
 
                 // Must check so that new null objects are not created
                 if (angular.isString(self.newVideo.language))
-                    film.set('language', {__type: "Pointer", className: "Language", objectId: self.newVideo.language});
+                    film.set('language', {
+                        __type: "Pointer",
+                        className: "Language",
+                        objectId: self.newVideo.language
+                    });
                 if (angular.isString(self.newVideo.filmingCountry))
                     film.set('filmingCountry', {
                         __type: "Pointer",
@@ -2242,16 +2280,6 @@
 
     function MessagesCtrl($rootScope, $mdSidenav, UserActions, UtilsService) {
         $rootScope.metadata.title = 'Messages';
-
-        Parse.Object.extend({
-            className: "Conversation",
-            attrs: ['name', 'participants']
-        });
-
-        Parse.Object.extend({
-            className: "Message",
-            attrs: ['body', 'from', 'parent']
-        });
 
         var self = this;
         self.newMode = false;

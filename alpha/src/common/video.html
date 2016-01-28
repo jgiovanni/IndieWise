@@ -6,7 +6,7 @@
                       film="{{::VC.film}}" type="{{::VC.type}}"></elite-player>
     </div>
     <section id="content" class="container" layout="row" layout-align="center center">
-        <md-content flex id="content" class="grey lighten-3">
+        <md-content flex class="grey lighten-3">
             <md-card class="red-text" ng-if="::VC.film.attributes.unlist">
                 <md-card-content>
                     This video is Unlisted, please be mindful not to share without owner's permission.
@@ -63,43 +63,56 @@
                     </div>
                     <div ng-show="!!toggleDetails">
                         <p class="md-caption">
+                            <hr>
                             <b>Description</b><br>
                             <span ng-bind="::VC.film.attributes.description"></span>
                             <br>
                             <b>Genres</b><br>
-                        <span ng-repeat="g in VC.filmGenres">
-                            {{::g.attributes.name}}<span ng-if="!$last&&VC.filmGenres.length>1">, </span>
-                        </span>
-                        <span layout="row" layout-xs="column">
-                            <span flex="50">
-                                <span>
-                                    <b>Director</b><br>
-                                    <span ng-bind="::VC.film.attributes.director"></span>
-                                </span><br>
-                                <span>
-                                    <b>Writer</b><br>
-                                    <span ng-bind="::VC.film.attributes.writer"></span>
-                                </span><br>
-                                <span>
-                                    <b>Producer(s)</b><br>
-                                    <span ng-bind="::VC.film.attributes.producers"></span>
-                                </span><br>
-                            </span>
-                            <span flex="50">
-                                <span flex>
-                                    <b>Synopsis</b><br>
-                                    <span ng-bind="::VC.film.attributes.synopsis"></span>
-                                </span><br>
-                                <span flex>
-                                    <b>Key Cast</b><br>
-                                    <span ng-bind="::VC.film.attributes.keyCast"></span>
-                                </span><br>
-                                <span flex>
-                                    <b>Past Festivals/Awards</b><br>
-                                    <span ng-bind="::VC.film.attributes.pastAwards"></span>
+                            <span ng-repeat="g in VC.filmGenres">
+                                {{::g.attributes.name}}<span ng-if="!$last&&VC.filmGenres.length>1">, </span>
+                            </span><br>
+                            <b>Type</b><br>
+                            <span ng-bind="::VC.film.attributes.type.attributes.name"></span><br>
+                            <b>Running Time</b><br>
+                            <span ng-bind="::VC.film.attributes.runTime"></span><br>
+                            <span layout="row" layout-xs="column">
+                                <span flex="50">
+                                    <span>
+                                        <b>Director</b><br>
+                                        <span ng-bind="::VC.film.attributes.director"></span>
+                                    </span><br>
+                                    <span>
+                                        <b>Writer</b><br>
+                                        <span ng-bind="::VC.film.attributes.writer"></span>
+                                    </span><br>
+                                    <span>
+                                        <b>Producer(s)</b><br>
+                                        <span ng-bind="::VC.film.attributes.producers"></span>
+                                    </span><br>
+                                    <span>
+                                        <b>Date of Completion</b><br>
+                                        <span ng-bind="::VC.film.attributes.completionDate|date:'fullDate'"></span>
+                                    </span><br>
+                                </span>
+                                <span flex="50">
+                                    <span flex>
+                                        <b>Synopsis</b><br>
+                                        <span ng-bind="::VC.film.attributes.synopsis"></span>
+                                    </span><br>
+                                    <span flex>
+                                        <b>Key Cast</b><br>
+                                        <span ng-bind="::VC.film.attributes.keyCast"></span>
+                                    </span><br>
+                                    <span flex>
+                                        <b>Past Festivals/Awards</b><br>
+                                        <span ng-bind="::VC.film.attributes.pastAwards"></span>
+                                    </span><br>
+                                    <span flex>
+                                        <b>Country of Filming</b><br>
+                                        <span ng-bind="::VC.film.attributes.filmingCountry.attributes.name.common"></span>
+                                    </span><br>
                                 </span>
                             </span>
-                        </span>
                         </p>
                     </div>
                 </md-card-content>
@@ -120,7 +133,6 @@
                             <md-tooltip md-direction="top">Two thumbs up!</md-tooltip>
                         </md-button>
                         &nbsp;&nbsp;
-
                         <md-button class="" aria-label="Two thumbs down!" ng-click="VC.throttledRate('down')"
                                    ng-class="{'md-primary':VC.canRate.attributes.down}">
                             {{VC.film.attributes.rateDownCount || 0}}
@@ -138,30 +150,24 @@
                                    socialshare-url="{{::window.location.href}}"
                                    socialshare-via="150687055270744"
                                    socialshare-media="{{::VC.film.attributes.thumbnail_url}}">
-                            <!--<md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>-->
-                            Facebook
+                            <md-icon md-svg-icon="facebook" ></md-icon>
                         </md-button>
                         <md-button socialshare socialshare-provider="twitter"
                                    socialshare-url="{{::window.location.href}}">
-                            <!--<md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>-->
-                            Twitter
+                            <md-icon md-svg-icon="twitter" ></md-icon>
                         </md-button>
                         <md-button socialshare socialshare-provider="google+"
                                    socialshare-url="{{::window.location.href}}">
-                            <!--<md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>-->
-                            Google+
+                            <md-icon md-svg-icon="google-plus" ></md-icon>
                         </md-button>
                         <md-button socialshare socialshare-provider="reddit"
                                    socialshare-url="{{::window.location.href}}">
-                            <!--<md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>-->
-                            Reddit
+                            <md-icon md-svg-icon="reddit" ></md-icon>
                         </md-button>
                         <md-button socialshare socialshare-provider="pinterest"
                                    socialshare-url="{{::window.location.href}}">
-                            <!--<md-icon md-svg-icon="call:dialpad" md-menu-align-target></md-icon>-->
-                            Pinterest
+                            <md-icon md-svg-icon="pinterest" ></md-icon>
                         </md-button>
-
                     </div>
                 </md-card-content>
             </md-card>
@@ -220,7 +226,7 @@
                             </md-tab>
                             <md-tab label="Critiques &middot; {{VC.film.attributes.critiqueCount||0}}">
                                 <md-content class="md-padding" ng-if="!VC.film.attributes.disableCritique">
-                                    <md-card ng-repeat="c in VC.critiques|orderBy:'createdAt'">
+                                    <md-card ng-repeat-start="c in VC.critiques|orderBy:'createdAt'" class="no-shadow">
                                         <md-card-content>
                                             <section layout="row" class="md-padding">
                                                 <div flex="60">
@@ -336,15 +342,15 @@
                                                 </div>
                                             </section>
                                             <md-divider></md-divider>
-                                            <p>{{::c.attributes.commentCount||0}} comments</p>
 
                                         </md-card-content>
                                         <div class="md-actions" layout="row" layout-align="end center">
+                                            <p>{{::c.attributes.commentCount||0}} comments</p>
+                                            <span flex></span>
                                             <md-button class="md-warn"
                                                        ng-if="::c.attributes.author.id === AppData.User.id"
                                                        ng-click="VC.deleteCritique(c, $event)">Delete
                                             </md-button>
-                                            <span flex></span>
                                             <md-button class="md-accent md-hue-2"
                                                        ng-if="::c.attributes.author.id === AppData.User.id"
                                                        ng-click="Body.toPage('video_critique-edit', {video_id:VC.film.id, id:c.id})">
@@ -356,6 +362,7 @@
                                             </md-button>
                                         </div>
                                     </md-card>
+                                    <md-divider ng-repeat-end></md-divider>
                                 </md-content>
                                 <md-content class="md-padding" ng-if="VC.film.attributes.disableCritique">
                                     <h3 class="md-subhead">Critiques are disabled by Uploader</h3>

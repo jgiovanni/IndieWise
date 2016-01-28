@@ -1,6 +1,5 @@
-<md-list-item ng-repeat="n in AppData.RawNotifications.list|orderBy:'-updated_at'"
-              ng-click="Body.notiURL(n);" aria-label="Notification"
-              ng-class="{'': !n.is_seen, 'indigo lighten-4': !n.is_read}" class="md-3-line">
+<md-list-item ng-repeat="n in AppData.RawNotifications.list|orderBy:'-updated_at'" aria-label="Notification" side-nav-notif
+              ui-sref="{{::n.main_url.state}}({{::n.main_url.args}})" ng-class="{'indigo lighten-4': is_read}" class="md-3-line">
     <md-icon md-svg-icon="{{::n.icon}}"></md-icon>
     <div class="md-list-item-text">
         <p ng-show="!(Body.checkContains(['react','comment','reply','like','unlike','watch','judge'], n.verb))">

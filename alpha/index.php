@@ -50,11 +50,11 @@ $user_feed_all = $client->feed('user', 'all');
     <meta property="fb:app_id" content="150687055270744"/>
 
     <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
 
     <!-- Compiled and minified JavaScript -->
     <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
 
     <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
     <link rel="stylesheet" href="./app/bower_components/angular-material/angular-material.css"/>
@@ -78,8 +78,6 @@ $user_feed_all = $client->feed('user', 'all');
     <script type="text/javascript" src="./app/eliteplayer/deploy/js/videoPlayer.js"></script>
     <script type="text/javascript" src="./app/eliteplayer/deploy/js/Playlist.js"></script>
     <script type="text/javascript" src="./app/eliteplayer/deploy/js/ZeroClipboard.js"></script>
-
-
 </head>
 
 <body layout="row" ng-controller="BodyCtrl as Body" ng-cloak>
@@ -115,10 +113,19 @@ $user_feed_all = $client->feed('user', 'all');
                             <a class="md-accent md-hue-2" aria-label="Join" ui-sref="register">Join</a>
                         </li>
                         <li ng-if="AppData.User">
+                            <a class="md-icon-button" aria-label="Messages" ui-sref="messages">
+                                <md-icon md-svg-icon="message-outline" class="black-text" ng-if="!AppData.MessageNotifications.unseen"></md-icon>
+                                <md-icon md-svg-icon="message-text" class="black-text" ng-if="AppData.MessageNotifications.unseen"></md-icon>
+                                <span class="badge new" ng-if="AppData.MessageNotifications.unseen>0" ng-bind="AppData.MessageNotifications.unseen"></span>
+                                <md-tooltip md-direction="bottom">Messages</md-tooltip>
+                            </a>
+                        </li>
+                        <li ng-if="AppData.User">
                             <a class="md-icon-button" aria-label="Notifications" ng-click="Body.openNotificationsMenu()">
-                                <md-icon md-svg-icon="notifications_none" ng-if="!AppData.Notifications.unseen"></md-icon>
-                                <md-icon md-svg-icon="notifications_active" ng-if="AppData.Notifications.unseen"></md-icon>
-                                <span class="badge new" ng-if="AppData.Notifications.unseen>0" ng-bind="AppData.Notifications.unseen"></span>
+                                <md-icon md-svg-icon="notifications_none" ng-if="!AppData.RawNotifications.unseen"></md-icon>
+                                <md-icon md-svg-icon="notifications_active" ng-if="AppData.RawNotifications.unseen"></md-icon>
+                                <span class="badge new" ng-if="AppData.RawNotifications.unseen>0" ng-bind="AppData.RawNotifications.unseen"></span>
+                                <md-tooltip md-direction="bottom">Notifications</md-tooltip>
                             </a>
                         </li>
                         <li>
@@ -154,12 +161,6 @@ $user_feed_all = $client->feed('user', 'all');
                                             </md-button>
                                         </md-menu-item>
                                         <md-menu-item>
-                                            <md-button ui-sref="messages" class="black-text">
-                                                <!--<md-icon md-svg-icon="phone" md-menu-align-target></md-icon>-->
-                                                Messages
-                                            </md-button>
-                                        </md-menu-item>
-                                        <md-menu-item>
                                             <md-button ng-click="Body.doSignOut()" class="black-text">
                                                 <!--<md-icon md-svg-icon="phone" md-menu-align-target></md-icon>-->
                                                 Sign Out
@@ -188,41 +189,43 @@ $user_feed_all = $client->feed('user', 'all');
             </nav>
         </md-toolbar>
     </header>
-    <main>
-        <div>
-            <md-sidenav md-component-id="left" class="md-sidenav-left">
-                <md-toolbar class="md-theme-light">
-                    <h1 class="md-toolbar-tools">Menu</h1>
-                </md-toolbar>
-                <md-content>
-                    <md-list>
-                        <md-list-item ui-sref-active="active" ng-click="Body.toPage('home');Body.closeLeftMenu()">
-                            Home
-                        </md-list-item>
-                        <md-list-item ui-sref-active="active" ng-click="Body.toPage('browse');Body.closeLeftMenu()">
-                            Browse
-                        </md-list-item>
-                        <md-list-item ui-sref-active="active" ng-click="Body.toPage('upload');Body.closeLeftMenu()">
-                            Upload
-                        </md-list-item>
-                    </md-list>
-                </md-content>
-            </md-sidenav>
-            <div ui-view class=""></div>
-        </div>
-    </main>
-
-    <footer class="page-footer indigo" flex>
+    <md-sidenav md-component-id="left" class="md-sidenav-left">
+        <md-toolbar class="md-theme-light">
+            <h1 class="md-toolbar-tools">Menu</h1>
+        </md-toolbar>
+        <md-content>
+            <md-list>
+                <md-list-item ui-sref-active="active" ng-click="Body.toPage('home');Body.closeLeftMenu()">
+                    Home
+                </md-list-item>
+                <md-list-item ui-sref-active="active" ng-click="Body.toPage('browse');Body.closeLeftMenu()">
+                    Browse
+                </md-list-item>
+                <md-list-item ui-sref-active="active" ng-click="Body.toPage('upload');Body.closeLeftMenu()">
+                    Upload
+                </md-list-item>
+            </md-list>
+        </md-content>
+    </md-sidenav>
+    <main ui-view class="grey lighten-3"></main>
+    <footer class="page-footer indigo">
         <div class="footer-copyright">
-            <div class="container">
-                &copy; 2015 - <?php echo date('Y'); ?> IndieWise
-
+            <div class="container" layout="row">
+                <a ui-sref="home" class="" style="padding: 5px;height: 40px;">
+                    <img src="./assets/img/Logo_alt2_web_87x45.png" alt="IndieWise"/>
+                </a>&nbsp;
+                &copy; 2015 - <?php echo date('Y'); ?>
+                <span flex></span>
                 <a class="grey-text text-lighten-4 right padding-left action-link" ui-sref="privacy">Privacy Policy</a>
                 <a class="grey-text text-lighten-3 right padding-left action-link" ui-sref="advertise">Advertise</a>
                 <a class="grey-text text-lighten-3 right padding-left action-link" ui-sref="tos">Terms of Service</a>
                 <a class="grey-text text-lighten-3 right padding-left action-link" ui-sref="feedback">Feedback</a>
                 <a class="grey-text text-lighten-3 right padding-left action-link" ui-sref="about">About</a>
             </div>
+        </div>
+        <md-divider></md-divider>
+        <div class="container">
+
         </div>
     </footer>
 

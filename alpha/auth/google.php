@@ -99,6 +99,7 @@ if ($client->getAccessToken()) {
             try {
                 $user->signUp();
 
+                $user->set("first_name", current(explode('@', $token_data['payload']['email'])));
                 $user->set("googleID", $token_data['payload']['sub']);
                 if (is_object($client->getAccessToken()))
                     $user->set("google_access_token", $client->getAccessToken()->access_token);
