@@ -1,5 +1,7 @@
-<i class="material-icons orange-text help-info">help
-    <md-tooltip md-direction="top">
-        {{::text}}
-    </md-tooltip>
-</i>
+<span class="has-tip" tooltip="{{::text}}" tooltip-placement="{{::(direction||'top')}}" style="border-bottom: none;">
+    <!--<i class="fa fa-question" style="margin-right: 0;"></i>-->
+    <span class="fa-stack">
+        <i class="fa fa-circle fa-stack-2x" style="color: #2199E8;"></i>
+        <i class="fa fa-question fa-stack-1x" style="color: #ffffff;"></i>
+    </span>
+</span>

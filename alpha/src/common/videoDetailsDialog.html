@@ -1,0 +1,64 @@
+<md-dialog aria-label="Details">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Details</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="cancel()">
+                <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content class="md-padding" style="min-width:400px;max-width:600px;">
+        <p class="md-caption">
+        <b>Description</b><br>
+        <span ng-bind="::VC.film.attributes.description"></span>
+        <br>
+        <b>Genres</b><br>
+                            <span ng-repeat="g in VC.filmGenres">
+                                {{::g.attributes.name}}<span ng-if="!$last&&VC.filmGenres.length>1">, </span>
+                            </span><br>
+        <b>Type</b><br>
+        <span ng-bind="::VC.film.attributes.type.attributes.name"></span><br>
+        <b>Running Time</b><br>
+        <span ng-bind="::VC.film.attributes.runTime"></span><br>
+                            <span layout="row" layout-xs="column">
+                                <span flex="50">
+                                    <span>
+                                        <b>Director</b><br>
+                                        <span ng-bind="::VC.film.attributes.director"></span>
+                                    </span><br>
+                                    <span>
+                                        <b>Writer</b><br>
+                                        <span ng-bind="::VC.film.attributes.writer"></span>
+                                    </span><br>
+                                    <span>
+                                        <b>Producer(s)</b><br>
+                                        <span ng-bind="::VC.film.attributes.producers"></span>
+                                    </span><br>
+                                    <span>
+                                        <b>Date of Completion</b><br>
+                                        <span ng-bind="::VC.film.attributes.completionDate|date:'fullDate'"></span>
+                                    </span><br>
+                                </span>
+                                <span flex="50">
+                                    <span flex>
+                                        <b>Synopsis</b><br>
+                                        <span ng-bind="::VC.film.attributes.synopsis"></span>
+                                    </span><br>
+                                    <span flex>
+                                        <b>Key Cast</b><br>
+                                        <span ng-bind="::VC.film.attributes.keyCast"></span>
+                                    </span><br>
+                                    <span flex>
+                                        <b>Past Festivals/Awards</b><br>
+                                        <span ng-bind="::VC.film.attributes.pastAwards"></span>
+                                    </span><br>
+                                    <span flex>
+                                        <b>Country of Filming</b><br>
+                                        <span ng-bind="::VC.film.attributes.filmingCountry.attributes.name.common"></span>
+                                    </span><br>
+                                </span>
+                            </span>
+        </p>
+    </md-dialog-content>
+</md-dialog>

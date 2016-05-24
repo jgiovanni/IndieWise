@@ -1,0 +1,38 @@
+<section id="category">
+    <div class="row secBg">
+        <div class="large-12 columns">
+            <div class="column row">
+                <div class="heading category-heading clearfix">
+                    <div class="cat-head pull-left">
+                        <i class="fa fa-play-circle"></i>
+                        <h4>People are Watching</h4>
+                    </div>
+                    <div>
+                        <div class="navText pull-right show-for-large">
+                            <a class="prev secondary-button"><i class="fa fa-angle-left"></i></a>
+                            <a class="next secondary-button"><i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- category carousel -->
+            <div id="owl-demo-cat" class="owl-carousel carousel" data-car-length="6" data-items="6" data-loop="true" data-nav="false" data-autoplay="true" data-autoplay-timeout="3000" data-auto-width="true" data-margin="10" data-dots="false">
+                <div class="item-cat item thumb-border" ng-repeat="w in watched.data">
+                    <figure class="premium-img">
+                        <img ng-src="{{::watched.relatedObjects.Film[w.film].thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}" alt="carousel">
+                        <a ui-sref="video({id: w.film})" class="hover-posts">
+                            <span><i class="fa fa-play"></i></span>
+                        </a>
+                    </figure>
+                    <h6><a ui-sref="video({id: w.film})" ng-bind="::watched.relatedObjects.Film[w.film].name|truncate:50"></a></h6>
+                </div>
+            </div>
+            <!-- end carousel -->
+            <div class="row collapse">
+                <div class="large-12 columns text-center row-btn">
+                    <a href="categories.html" class="button radius">View All Categories</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

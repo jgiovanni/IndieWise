@@ -9,14 +9,16 @@
     "angular": "^1.4.x",
     "angular-animate": "^1.4.x",
     "angular-aria": "^1.4.x",
-    "angular-material": "^1.0.0-rc3-master-818652d",
+    "angular-material": "^1.0.4",
     "ngAnimate-animate.css": "~0.1.1",
     "angular-moment": "*",
     "getstream": "*",
     "angular-localforage": "*",
     "underscore": "*",
     "ng-videosharing-embed": "*",
-    "angularjs-socialshare": "~0.1.19"
+    "angularjs-socialshare": "~0.1.19",
+    "angucomplete-alt": "^2.4.1",
+    "cloudinary_ng": "^1.0.0"
   },
   "devDependencies": {}
 }

@@ -1,0 +1,103 @@
+<!-- single post description -->
+<section class="singlePostDescription">
+    <div class="row secBg">
+        <div class="large-12 columns">
+            <div class="heading">
+                <i class="fa fa-user"></i>
+                <h4>Description</h4>
+            </div>
+            <div class="description">
+                <p ng-bind="::ProfileAboutCtrl.user.bio"></p>
+
+                <div class="site profile-margin" ng-if="::ProfileAboutCtrl.user.website">
+                    <button><i class="fa fa-globe"></i>Site</button>
+                    <a href="{{::ProfileAboutCtrl.user.website}}" target="_blank" class="inner-btn" ng-bind="::ProfileAboutCtrl.user.website"></a>
+                </div>
+                <!--<div class="email profile-margin">
+                    <button><i class="fa fa-envelope"></i>Email</button>
+                    <span class="inner-btn">support@betube.com</span>
+                </div>-->
+                <!--<div class="phone profile-margin">
+                    <button><i class="fa fa-phone"></i>Phone</button>
+                    <span class="inner-btn">92-568-748</span>
+                </div>-->
+                <div class="socialLinks profile-margin">
+                    <button><i class="fa fa-share-alt"></i>get socialize</button>
+                    <a href="#" class="inner-btn"><i class="fa fa-facebook"></i></a>
+                    <a href="#" class="inner-btn"><i class="fa fa-twitter"></i></a>
+                    <a href="#" class="inner-btn"><i class="fa fa-google-plus"></i></a>
+                    <a href="#" class="inner-btn"><i class="fa fa-flickr"></i></a>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</section><!-- End single post description -->
+<!-- followers -->
+<!--
+<section class="content content-with-sidebar followers margin-bottom-10">
+    <div class="row secBg">
+        <div class="large-12 columns">
+            <div class="row column head-text clearfix">
+                <h4 class="pull-left"><i class="fa fa-users"></i>Followers</h4>
+            </div>
+            <div class="row collapse">
+                <div class="large-2 small-6 medium-3 columns">
+                    <div class="follower">
+                        <div class="follower-img">
+                            <img src="http://placehold.it/115x100" alt="followers">
+                        </div>
+                        <span>Frank Wright</span>
+                        <button type="submit" name="follow">Subscribe</button>
+                    </div>
+                </div>
+                <div class="large-2 small-6 medium-3 columns">
+                    <div class="follower">
+                        <div class="follower-img">
+                            <img src="http://placehold.it/115x100" alt="followers">
+                        </div>
+                        <span>John Doe</span>
+                        <button type="submit" name="follow">Subscribe</button>
+                    </div>
+                </div>
+                <div class="large-2 small-6 medium-3 columns">
+                    <div class="follower">
+                        <div class="follower-img">
+                            <img src="http://placehold.it/115x100" alt="followers">
+                        </div>
+                        <span>Nancy john</span>
+                        <button type="submit" name="follow">Subscribe</button>
+                    </div>
+                </div>
+                <div class="large-2 small-6 medium-3 columns">
+                    <div class="follower">
+                        <div class="follower-img">
+                            <img src="http://placehold.it/115x100" alt="followers">
+                        </div>
+                        <span>Frank</span>
+                        <button type="submit" name="follow">Subscribe</button>
+                    </div>
+                </div>
+                <div class="large-2 small-6 medium-3 columns">
+                    <div class="follower">
+                        <div class="follower-img">
+                            <img src="http://placehold.it/115x100" alt="followers">
+                        </div>
+                        <span>lucy</span>
+                        <button type="submit" name="follow">Subscribe</button>
+                    </div>
+                </div>
+                <div class="large-2 small-6 medium-3 columns end">
+                    <div class="follower">
+                        <div class="follower-img">
+                            <img src="http://placehold.it/115x100" alt="followers">
+                        </div>
+                        <span>daisy</span>
+                        <button type="submit" name="follow">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>-->

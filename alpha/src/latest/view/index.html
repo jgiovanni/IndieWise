@@ -1,0 +1,165 @@
+<!--breadcrumbs-->
+<section id="breadcrumb" class="breadMargin">
+    <div class="row">
+        <div class="large-12 columns">
+            <nav aria-label="You are here:" role="navigation">
+                <ul class="breadcrumbs">
+                    <li><i class="fa fa-home"></i><a ui-sref="home">Home</a></li>
+                    <li>
+                        <span class="show-for-sr">Current: </span>Latest
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section><!--end breadcrumbs-->
+
+<section class="category-content latest-page">
+    <div class="row">
+        <!-- sidebar -->
+        <div class="large-4 columns">
+            <aside class="secBg sidebar">
+                <div class="row">
+                    <!-- categories -->
+                    <div class="medium-centered columns">
+                        <div class="widgetBox">
+                            <div class="widgetTitle">
+                                <h5>Reactions</h5>
+                            </div>
+                            <div class="widgetContent">
+                                <div class="media-object stack-for-small" ng-repeat="r in LC.reactions.data">
+                                    <div class="media-object-section">
+                                        <div class="recent-img">
+                                            <img ng-src="{{::LC.reactions.relatedObjects.Film[r.parent].thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}"
+                                                 alt="recent">
+                                            <a ui-sref="video({id: r.parent})" class="hover-posts">
+                                                <span><i class="fa fa-play"></i></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="media-object-section">
+                                        <div class="media-content">
+                                            <h6><a ui-sref="video({id: r.parent})">{{::LC.reactions.relatedObjects.Film[r.parent].name|truncate:50}}</a>
+                                            </h6>
+
+                                            <p>
+                                                <!--<i class="fa fa-user"></i>-->
+                                                <span>
+                                                    made
+                                                    <a ui-sref="user.about({id: r.user})">{{::LC.reactions.relatedObjects.users[r.user].firstName}}
+                                                        {{::LC.reactions.relatedObjects.users[r.user].lastName}}</a>
+                                                    feel {{::r.emotion}}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </aside>
+        </div>
+        <!-- end sidebar -->
+
+        <!-- sidebar -->
+        <div class="large-4 columns">
+            <aside class="secBg sidebar">
+                <div class="row">
+                    <!-- categories -->
+                    <div class="medium-centered columns">
+                        <div class="widgetBox">
+                            <div class="widgetTitle">
+                                <h5>Nominations</h5>
+                            </div>
+                            <div class="widgetContent">
+                                <div class="media-object stack-for-small" ng-repeat="n in LC.nominations.data">
+                                    <div class="media-object-section">
+                                        <div class="recent-img">
+                                            <img ng-src="{{::LC.nominations.relatedObjects.Film[n.filmPntr].thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}"
+                                                 alt="recent">
+                                            <a ui-sref="video({id: n.filmPntr})" class="hover-posts">
+                                                <span><i class="fa fa-play"></i></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="media-object-section">
+                                        <div class="media-content">
+                                            <h6><a ui-sref="video({id: n.nominator})">{{::LC.nominations.relatedObjects.Film[n.filmPntr].name|truncate:50}}</a>
+                                            </h6>
+
+                                            <p>
+                                                <span>
+                                                    Nominated by <a ui-sref="user.about({id: a.nominator})">{{::LC.nominations.relatedObjects.users[n.nominator].firstName}}
+                                                    {{::LC.nominations.relatedObjects.users[n.nominator].lastName}}</a> for {{::LC.nominations.relatedObjects.Award[n.awardPntr].name}}
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </aside>
+        </div>
+        <!-- end sidebar -->
+
+        <!-- sidebar -->
+        <div class="large-4 columns">
+            <aside class="secBg sidebar">
+                <div class="row">
+                    <!-- categories -->
+                    <div class="medium-centered columns">
+                        <div class="widgetBox">
+                            <div class="widgetTitle">
+                                <h5>Critiques</h5>
+                            </div>
+                            <div class="widgetContent">
+                                <div class="media-object stack-for-small" ng-repeat="c in LC.critiques.data">
+                                    <div class="media-object-section">
+                                        <div class="recent-img">
+                                            <img ng-src="{{::LC.critiques.relatedObjects.Film[c.parent].thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}"
+                                                 alt="recent">
+                                            <a ui-sref="video({id: c.parent})" class="hover-posts">
+                                                <span><i class="fa fa-play"></i></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="media-object-section">
+                                        <div class="media-content">
+                                            <h6>
+                                                <a ui-sref="user.about({id: c.author})">{{::LC.critiques.relatedObjects.users[c.author].firstName}}
+                                                    {{::LC.critiques.relatedObjects.users[c.author].lastName}}</a>
+                                            </h6>
+
+                                            <p>
+                                                <span>
+                                                    gave
+                                                    <a ui-sref="video({id: c.parent})">{{::LC.critiques.relatedObjects.Film[c.parent].name|truncate:50}}</a>
+                                                     a {{::c.overall}}
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </aside>
+        </div>
+        <!-- end sidebar -->
+
+    </div>
+
+    <!-- ad Section -->
+    <div class="googleAdv text-center">
+        <a href="#"><img src="./assets/images/goodleadv.png" alt="googel ads"></a>
+    </div>
+    <!-- End ad Section -->
+
+</section>
+

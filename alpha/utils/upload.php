@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 //Path to autoload.php from current location
 require_once '../vendor/autoload.php';
 
@@ -20,16 +24,20 @@ use Flow\Basic;
 
 Flow\Autoloader::register();
 
+if (1 == mt_rand(1, 100)) {
+    \Flow\Uploader::pruneChunks('./$tempDir');
+}
+
 $config = new Flow\Config();
 $config->setTempDir($tempDir);
-/*$file = new \Flow\File($config);
+$file = new \Flow\File($config);
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($file->checkChunk()) {
         header("HTTP/1.1 200 Ok");
     } else {
         header("HTTP/1.1 204 No Content");
-        return ;
+        return;
     }
 } else {
     if ($file->validateChunk()) {
@@ -37,51 +45,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         // error, invalid chunk upload request, retry
         header("HTTP/1.1 400 Bad Request");
-        return ;
+        return;
     }
 }
-if ($file->validateFile() && $file->save($filesDir . DIRECTORY_SEPARATOR . $file->getIdentifier())) {
-    // File upload was completed
-    echo json_encode([
-        'success' => true,
-        'file' => $file,
-        'files' => $_FILES,
-        'get' => $_GET,
-        'post' => $_POST
-    ]);
+if ($file->validateFile()) {
+    // This is final chunk, upload complete
+    // Image Optimizations
+    $request = new Flow\Request();
+    $thumb = new Imagick($file->getChunkPath(1));
+
+    $thumb->resizeImage(200,200,Imagick::FILTER_LANCZOS ,1, true);
+    $thumb->cropThumbnailImage(200, 200);
+    $thumb->writeImage($file->getChunkPath(1));
+
+    //$thumb->destroy();
+
+    if ($file->save($filesDir . DIRECTORY_SEPARATOR . $request->getFileName())) {
+        // File upload was completed
+        echo json_encode([
+            'success' => true,
+            'file' => $file,
+            'files' => $_FILES,
+            'get' => $_GET,
+            'post' => $_POST
+        ]);
+        exit();
+    }
 } else {
     // This is not a final chunk, continue to upload
-}*/
-$request = new Flow\Request();
-if (Flow\Basic::save($filesDir . DIRECTORY_SEPARATOR . $request->getFileName(), $config, $request)) {
-    // file saved successfully and can be accessed at './final_file_destination'
-    echo json_encode([
-        'success' => true,
-        //'file' => $filesDir . DIRECTORY_SEPARATOR . $request->getFileName(),
-        'files' => $_FILES,
-        'get' => $_GET,
-        'post' => $_POST,
-        //optional
-        //'flowTotalSize' => isset($_FILES['file']) ? $_FILES['file']['size'] : $_GET['flowTotalSize'],
-        //'flowIdentifier' => isset($_FILES['file']) ? $_FILES['file']['name'] . '-' . $_FILES['file']['size'] : $_GET['flowIdentifier'],
-        //'flowFilename' => isset($_FILES['file']) ? $_FILES['file']['name'] : $_GET['flowFilename'],
-        //'flowRelativePath' => isset($_FILES['file']) ? $_FILES['file']['tmp_name'] : $_GET['flowRelativePath'],
-        //'flowRelativePath' => isset($_FILES['file']) ? $_FILES['file']['tmp_name'] : $_GET['flowRelativePath']
- ]);
-} else {
-    // This is not a final chunk or request is invalid, continue to upload.
 }
-
-// Just imitate that the file was stored.
-/*echo json_encode([
-    'success' => true,
-    'files' => $_FILES,
-    'get' => $_GET,
-    'post' => $_POST,
-    //optional
-    'flowTotalSize' => isset($_FILES['file']) ? $_FILES['file']['size'] : $_GET['flowTotalSize'],
-    'flowIdentifier' => isset($_FILES['file']) ? $_FILES['file']['name'] . '-' . $_FILES['file']['size']
-        : $_GET['flowIdentifier'],
-    'flowFilename' => isset($_FILES['file']) ? $_FILES['file']['name'] : $_GET['flowFilename'],
-    'flowRelativePath' => isset($_FILES['file']) ? $_FILES['file']['tmp_name'] : $_GET['flowRelativePath']
-]);*/

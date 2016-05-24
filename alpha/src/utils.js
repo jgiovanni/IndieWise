@@ -5,7 +5,6 @@
 angular.module('IndieWise.utilities', [])
 .factory('UtilsService',  ['$rootScope', '$window', '$sce', function ($rootScope, $window, $sce) {
         'use strict';
-
         return {
             compressArray: function (original) {
                 var compressed = [];
@@ -37,6 +36,10 @@ angular.module('IndieWise.utilities', [])
                 return compressed;
             },
             recordActivity: function (object, verb) {
+                /*DataService.save('Action', {
+                    actor: $rootScope.AppData.User.userId,
+                    verb: verb
+                });
                 var action = new Parse.Object("Action");
                 var me = Parse.User.current()||null;
                 var objectOwner = undefined;
@@ -49,54 +52,54 @@ angular.module('IndieWise.utilities', [])
                 switch (object.className) {
                     case 'Comment':
                         verb = verb || 'comment';
-                        objectOwner = object.attributes.author;
-                        if ( angular.isDefined(object.attributes.parentComment)) { // if reply, notify original comment author
+                        objectOwner = object.author;
+                        if ( angular.isDefined(object.parentComment)) { // if reply, notify original comment author
                             verb = 'reply';
-                            action.addUnique('to', 'notification:' + object.attributes.parentComment.attributes.author.id);
-                            action.addUnique('to', 'flat_notifications:' + object.attributes.parentComment.attributes.author.id);
+                            action.addUnique('to', 'notification:' + object.parentComment.author.id);
+                            action.addUnique('to', 'flat_notifications:' + object.parentComment.author.id);
                             objData.targets.comment = {
-                                id: object.attributes.parentComment.id,
+                                id: object.parentComment.id,
                                 owner: {
-                                    id: object.attributes.parentComment.attributes.author.id,
-                                    name: object.attributes.parentComment.attributes.author.attributes.first_name + ' ' + object.attributes.parentComment.attributes.author.attributes.last_name
+                                    id: object.parentComment.author.id,
+                                    name: object.parentComment.author.first_name + ' ' + object.parentComment.author.last_name
                                 },
-                                body: object.attributes.parentComment.attributes.body
+                                body: object.parentComment.body
                             };
                         }
-                        if ( angular.isDefined(object.attributes.parentFilm)) { // if comment to film, notify original film owner
-                            action.addUnique('to', 'notification:' + object.attributes.parentFilm.attributes.owner.id);
-                            action.addUnique('to', 'flat_notifications:' + object.attributes.parentFilm.attributes.owner.id);
+                        if ( angular.isDefined(object.parentFilm)) { // if comment to film, notify original film owner
+                            action.addUnique('to', 'notification:' + object.parentFilm.owner.id);
+                            action.addUnique('to', 'flat_notifications:' + object.parentFilm.owner.id);
                             objData.targets.film = {
-                                id: object.attributes.parentFilm.id,
+                                id: object.parentFilm.id,
                                 owner: {
-                                    id: object.attributes.parentFilm.attributes.owner.id,
-                                    name: object.attributes.parentFilm.attributes.owner.attributes.first_name+' '+object.attributes.parentFilm.attributes.owner.attributes.last_name
+                                    id: object.parentFilm.owner.id,
+                                    name: object.parentFilm.owner.first_name+' '+object.parentFilm.owner.last_name
                                 },
-                                name: object.attributes.parentFilm.attributes.name
+                                name: object.parentFilm.name
                             };
                         }
-                        if ( angular.isDefined(object.attributes.parentCritique)) { // if comment to film, notify original critique author
-                            action.addUnique('to', 'notification:' + object.attributes.parentCritique.attributes.author.id);
-                            action.addUnique('to', 'flat_notifications:' + object.attributes.parentCritique.attributes.author.id);
+                        if ( angular.isDefined(object.parentCritique)) { // if comment to film, notify original critique author
+                            action.addUnique('to', 'notification:' + object.parentCritique.author.id);
+                            action.addUnique('to', 'flat_notifications:' + object.parentCritique.author.id);
                             objData.targets.critique = {
-                                id: object.attributes.parentCritique.id,
+                                id: object.parentCritique.id,
                                 owner: {
-                                    id: object.attributes.parentCritique.attributes.author.id,
-                                    name: object.attributes.parentCritique.attributes.author.attributes.first_name+' '+object.attributes.parentCritique.attributes.author.attributes.last_name
+                                    id: object.parentCritique.author.id,
+                                    name: object.parentCritique.author.first_name+' '+object.parentCritique.author.last_name
                                 }
                             };
                         }
-                        objData.body = object.attributes.body;
+                        objData.body = object.body;
                         action.addUnique('to', 'comment:all');
                         break;
                     case 'Film':
                         verb = verb || 'watch';
-                        objectOwner = object.attributes.owner;
+                        objectOwner = object.owner;
                         objData.id = object.id;
-                        objData.name = object.attributes.name;
+                        objData.name = object.name;
                         objData.watcher = {
                             id: me.id,
-                            name: me.attributes.first_name+' '+me.attributes.last_name
+                            name: me.first_name+' '+me.last_name
                         };
                         if (verb === 'watch')
                             action.addUnique('to', 'watched:all');
@@ -120,49 +123,49 @@ angular.module('IndieWise.utilities', [])
                         verb = verb || 'judge';
                         objData.id = object.id;
                         objData.targets.film = {
-                            id: object.attributes.parent.id,
-                            name: object.attributes.parent.attributes.name
+                            id: object.parent.id,
+                            name: object.parent.name
                         };
-                        objectOwner = object.attributes.author;
-                        action.addUnique('to', 'notification:' + object.attributes.parent.attributes.owner.id);
-                        action.addUnique('to', 'flat_notifications:' + object.attributes.parent.attributes.owner.id);
+                        objectOwner = object.author;
+                        action.addUnique('to', 'notification:' + object.parent.owner.id);
+                        action.addUnique('to', 'flat_notifications:' + object.parent.owner.id);
                         break;
                     case 'Message':
                         verb = verb || 'message';
-                        objectOwner = object.attributes.from;
+                        objectOwner = object.from;
                         _.each(object.participants, function (a) {
                             if (a.id !== me.id)
                                 action.addUnique('to', 'message:'+a.id);
                         });
-                        objData.body = object.attributes.body;
+                        objData.body = object.body;
                         break;
                     case 'Rating':
                         verb = verb || 'like';
-                        objectOwner = object.attributes.author;
+                        objectOwner = object.author;
                         objData.id = object.id;
-                        objData.body = object.attributes.down || object.attributes.up;
+                        objData.body = object.down || object.up;
                         objData.targets.film = {
-                            id: object.attributes.parent.id,
-                            name: object.attributes.parent.attributes.name
+                            id: object.parent.id,
+                            name: object.parent.name
                         };
-                        action.addUnique('to', 'notification:' + object.attributes.parent.attributes.owner.id);
+                        action.addUnique('to', 'notification:' + object.parent.owner.id);
                         break;
                     case 'Reaction':
                         verb = verb || 'react';
-                        objectOwner = object.attributes.user;
+                        objectOwner = object.user;
                         objData.id = object.id;
-                        objData.body = object.attributes.emotion;
+                        objData.body = object.emotion;
                         objData.targets.film = {
-                            id: object.attributes.parent.id,
-                            name: object.attributes.parent.attributes.name
+                            id: object.parent.id,
+                            name: object.parent.name
                         };
-                        action.addUnique('to', 'notification:' + object.attributes.parent.attributes.owner.id);
-                        action.addUnique('to', 'flat_notifications:' + object.attributes.parent.attributes.owner.id);
+                        action.addUnique('to', 'notification:' + object.parent.owner.id);
+                        action.addUnique('to', 'flat_notifications:' + object.parent.owner.id);
                         break;
                 }
                 objData.owner = {
                     id: objectOwner.id,
-                    name: objectOwner.attributes.first_name+' '+objectOwner.attributes.last_name
+                    name: objectOwner.first_name+' '+objectOwner.last_name
                 };
                 // we write to the user feed
                 action.set('actor', me);
@@ -171,10 +174,10 @@ angular.module('IndieWise.utilities', [])
                 action.set('feedUserId', me ? me.id : null);
                 var objString = object.className+':'+object.id;
                 action.set('object', objString);
-                /*action.set('object', {
+                /!*action.set('object', {
                  className: object.className,
                  id: object.id
-                 });*/
+                 });*!/
 
                 // Notify Object Owner
                 if (angular.isDefined(objectOwner) && (!me || objectOwner.id !== me.id)) {
@@ -197,7 +200,7 @@ angular.module('IndieWise.utilities', [])
                     var activityType = 'Film';
                     var activityField = 'activity_' + activityType;
                     action.set(activityField, parseActivity);
-                    var streamActivityId = object.attributes.parent.id;
+                    var streamActivityId = object.parent.id;
                     action.set('activityId', streamActivityId);
                     action.addUnique('to', 'user:all');
 
@@ -207,7 +210,7 @@ angular.module('IndieWise.utilities', [])
                 action.set('object_data', objData);
                 action.save().then(function (res) {
                     console.log('Action: ', res);
-                });
+                });*/
             },
             enrichNotifications: function (data) {
                 // TODO rule out the need to query Parse for additional data
@@ -218,7 +221,7 @@ angular.module('IndieWise.utilities', [])
                     if(angular.isDefined(a.actor_parse)) {
                         var actor = {
                             id: a.actor_parse.id || null,
-                            name: a.actor_parse.attributes.first_name + ' ' + a.actor_parse.attributes.last_name
+                            name: a.actor_parse.first_name + ' ' + a.actor_parse.last_name
                         };
                         if (!_.contains(actorIds, actor.id)) {
                             a.actors.push(actor);
@@ -226,7 +229,7 @@ angular.module('IndieWise.utilities', [])
                         }
                     }
                     if (angular.isDefined(a.object_parse)) {
-                        var obj = {id: a.object_parse.id, name: a.object_parse.attributes.name, class: a.object_parse.className};
+                        var obj = {id: a.object_parse.id, name: a.object_parse.name, class: a.object_parse.className};
 
                         a.icon = 'notifications';
 
@@ -243,7 +246,7 @@ angular.module('IndieWise.utilities', [])
                             case 'comment':
                             case 'reply':
                                 a.icon = 'comment';
-                                if (angular.isDefined(a.object_parse.attributes.parentComment)) {
+                                if (angular.isDefined(a.object_parse.parentComment)) {
                                     a.verb = 'reply';
                                 }
                                 if (angular.isDefined(a.object_data.targets.film)) {
@@ -257,7 +260,7 @@ angular.module('IndieWise.utilities', [])
                                 break;
                             case 'message':
                                 a.icon = 'comment';
-                                obj.url = {state: 'messages', args: {id: a.object_parse.attributes.parent.id}};
+                                obj.url = {state: 'messages', args: {id: a.object_parse.parent.id}};
                                 break;
                         }
                         obj.timestamp = a.object_parse.createdAt;
@@ -368,7 +371,7 @@ angular.module('IndieWise.utilities', [])
                 };
             },
             deleteActivity: function(object) {
-                var objectOwner = object.attributes.author || object.attributes.owner;
+                var objectOwner = object.author || object.owner;
 
                 var ownerQuery = new Parse.Query("Action");
                 ownerQuery.equalTo('feedUserId', objectOwner.id);
@@ -411,3 +414,87 @@ if (!String.prototype.endsWith) {
         return lastIndex !== -1 && lastIndex === position;
     };
 }
+
+/**
+ *  Javascript AlphabeticID class
+ *  (based on a script by Kevin van Zonneveld &lt;kevin@vanzonneveld.net>)
+ *
+ *  Author: Even Simon &lt;even.simon@gmail.com>
+ *
+ *  Description: Translates a numeric identifier into a short string and backwords.
+ *
+ *  Usage:
+ *    var str = AlphabeticID.encode(9007199254740989); // str = 'fE2XnNGpF'
+ *    var id = AlphabeticID.decode('fE2XnNGpF'); // id = 9007199254740989;
+ **/
+
+var AlphabeticID = {
+    index:'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+
+    /**
+     *  @function AlphabeticID.encode
+     *  @description Encode a number into short string
+     *  @param integer
+     *  @return string
+     **/
+    encode:function(_number){
+        if('undefined' == typeof _number){
+            return null;
+        }
+        else if('number' != typeof(_number)){
+            throw new Error('Wrong parameter type');
+        }
+
+        var ret = '';
+
+        for(var i=Math.floor(Math.log(parseInt(_number))/Math.log(AlphabeticID.index.length));i>=0;i--){
+            ret = ret + AlphabeticID.index.substr((Math.floor(parseInt(_number) / AlphabeticID.bcpow(AlphabeticID.index.length, i)) % AlphabeticID.index.length),1);
+        }
+
+        return ret.reverse();
+    },
+
+    /**
+     *  @function AlphabeticID.decode
+     *  @description Decode a short string and return number
+     *  @param string
+     *  @return integer
+     **/
+    decode:function(_string){
+        if('undefined' == typeof _string){
+            return null;
+        }
+        else if('string' != typeof _string){
+            throw new Error('Wrong parameter type');
+        }
+
+        var str = _string.reverse();
+        var ret = 0;
+
+        for(var i=0;i<=(str.length - 1);i++){
+            ret = ret + AlphabeticID.index.indexOf(str.substr(i,1)) * (AlphabeticID.bcpow(AlphabeticID.index.length, (str.length - 1) - i));
+        }
+
+        return ret;
+    },
+
+    /**
+     *  @function AlphabeticID.bcpow
+     *  @description Raise _a to the power _b
+     *  @param float _a
+     *  @param integer _b
+     *  @return string
+     **/
+    bcpow:function(_a, _b){
+        return Math.floor(Math.pow(parseFloat(_a), parseInt(_b)));
+    }
+};
+
+/**
+ *  @function String.reverse
+ *  @description Reverse a string
+ *  @return string
+ **/
+String.prototype.reverse = function(){
+    return this.split('').reverse().join('');
+};

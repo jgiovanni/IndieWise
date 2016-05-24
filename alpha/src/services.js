@@ -66,85 +66,97 @@
 
 
         })
-        .factory('AuthService', ['$rootScope', '$q', '$localForage', '$state', 'UtilsService', '$auth',
-            function ($rootScope, $q, $localForage, $state, UtilsService, $auth) {
+        .factory('AuthService', ['$rootScope', '$q', '$localForage', '$state', 'UtilsService', 'Backand', '$http',
+            function ($rootScope, $q, $localForage, $state, UtilsService, Backand, $http) {
                 /**
                  *
                  * @returns {*}
                  */
+
+
                 var service = {
                     /**
                      *
                      * @param _userParams
                      */
                     createUser: function (_userParams) {
-
-                        var user = new Parse.User();
-                        user.set("username", _userParams.email);
-                        user.set("password", _userParams.password);
-                        user.set("email", _userParams.email);
-                        user.set("first_name", _userParams.first_name);
-                        user.set("last_name", _userParams.last_name);
-                        user.set("selected_genres", _userParams.selected_genres||[]);
-                        user.set("selected_types", _userParams.selected_types||[]);
-                        user.set("country", _userParams.country);
-                        user.set("dob", _userParams.dob);
-                        user.set("gender", _userParams.gender);
-
-                        // should return a promise
-                        return user.signUp(null, {}).then(function (user) {
-                            console.log(user);
-                            $localForage.setItem('User', user);
-                            $rootScope.AppData.User = user;
-                        });
-
+                        return Backand.signup(_userParams.firstName, _userParams.lastName, _userParams.email, _userParams.password, _userParams.passwordCheck, {
+                            username: _userParams.email,
+                            country: _userParams.country,
+                            dob: moment(_userParams.dob).startOf('day').toDate(),
+                            gender: _userParams.gender,
+                            selected_genres: [],
+                            selected_types: []
+                        })
+                            .then(function (userData) {
+                                service.getCurrentUser();
+                                service.error = '';
+                                console.log('User ' + userData.username + ' created successfully!');
+                                return service.login(_userParams.email, _userParams.password).then(function (res) {
+                                    console.log(res);
+                                    $state.go('home');
+                                });
+                            }, function (error) {
+                                console.log(error);
+                                service.error = error.error_description || 'Unknown error from server';
+                            }
+                        );
                     },
                     /**
                      *
                      * @param _userParams
                      */
                     updateUser: function (_userParams) {
-
-                        var user = Parse.User.current();
-                        user.set("username", _userParams.email);
-                        //user.set("password", _userParams.password);
-                        user.set("email", _userParams.email);
-                        user.set("bio", _userParams.bio);
-                        user.set("avatar", _userParams.avatar);
-                        user.set("first_name", _userParams.first_name);
-                        user.set("last_name", _userParams.last_name);
-                        user.set("usertag", _userParams.usertag);
-                        user.set("selected_genres", _userParams.selected_genres);
-                        user.set("selected_types", _userParams.selected_types||[]);
-                        user.set("country", _userParams.country);
-                        user.set("dob", _userParams.dob);
-                        user.set("gender", _userParams.gender);
-
-                        // should return a promise
-                        return user.save(null).then(function (user) {
-                            console.log(user);
-                            $localForage.setItem('User', user);
-                            $rootScope.AppData.User = user;
+                        return Backand.getUserDetails().then(function (response) {
+                            $rootScope.AppData.User = service.currentUser = response;
+                            return $http({
+                                method: 'PUT',
+                                url: Backand.getApiUrl() + '/1/objects/users/' + _userParams.id,
+                                data: _userParams,
+                                headers: {
+                                    Authorization: response.access_token,
+                                    AppName: 'indiewise'
+                                }
+                            });
                         });
-
                     },
                     /**
                      *
-                     * @param _parseInitUser
+                     * @param Back&
                      * @returns {Promise}
                      */
-                    currentUser: function (_parseInitUser) {
+                    currentUser: null,
+                    getCurrentUser: function () {
+                        var p = Backand.getUserDetails();
+                        p.then(function (response) {
+                            $rootScope.AppData.User = service.currentUser = response;
+                            service.getCurrentUserData();
+                            //console.log(response);
+                        });
+                    },
+                    currentUserData: null,
+                    getCurrentUserData: function () {
+                        var deferred = $q.defer();
+                        var user = Backand.getUserDetails();
+                        user.then(function (data) {
+                            if (data) {
+                                var p = $http({
+                                    method: 'GET',
+                                    url: Backand.getApiUrl() + '/1/objects/users/' + data.userId,
+                                    params: {
+                                        deep: false,
+                                    }
+                                });
+                                p.then(function (response) {
+                                    $rootScope.AppData.UserData = service.currentUserData = response.data;
+                                    deferred.resolve(response);
+                                });
 
-                        // if there is no user passed in, see if there is already an
-                        // active user that can be utilized
-                        _parseInitUser = _parseInitUser ? _parseInitUser : Parse.User.current();
-
-                        console.log("_parseInitUser ", Parse.User.current());
-                        if (!_parseInitUser) {
-                            return $q.reject({error: "noUser"});
-                        } else {
-                            return $q.when(_parseInitUser);
-                        }
+                            } else {
+                                return $q.reject(null);
+                            }
+                        });
+                        return deferred.promise;
                     },
                     /**
                      *
@@ -153,18 +165,25 @@
                      * @returns {Promise}
                      */
                     login: function (_user, _password) {
-                        return Parse.User.logIn(_user, _password).then(function (user) {
-                            $localForage.setItem('User', user);
-                            $rootScope.AppData.User = user;
-                        });
+                        //sign in to Backand
+                        return Backand.signin(_user, _password)
+                            .then(
+                            function (response) {
+                                service.getCurrentUser();
+                            },
+                            function (data) {
+                                console.log(data);
+                                self.error = data && data.error_description || 'Unknown error from server';
+                            }
+                        );
                     },
                     /**
                      *
                      * @returns {Promise}
                      */
-                    logout: function (_callback) {
+                    logout: function () {
                         var defered = $q.defer();
-                        Parse.User.logOut();
+                        Backand.signout();
                         $localForage.removeItem('User');
                         $rootScope.AppData.User = undefined;
                         defered.resolve(true);
@@ -177,313 +196,45 @@
                      * @returns {Promise}
                      */
                     passwordReset: function (email) {
+                        // TODO change to backend
                         return Parse.User.requestPasswordReset(email).then(function (res) {
                             console.log(res);
-                            //$localForage.setItem('User', user);
                             return res;
                         }, function (error) {
                             //console.log(error);
                             return error;
                         });
                     },
-                    /**
-                     *
-                     * @returns {Promise}
-                     */
-                    registerWithFB: function () {
-                        Parse.FacebookUtils.init({
-                            appId: 150687055270744, // Facebook App ID
-                            //status: true,
-                            cookie: true, // enable cookies to allow Parse to access the session
-                            xfbml: true, // parse XFBML
-                            frictionlessRequests: true // recommended
-
-                        });
-
-                        return Parse.FacebookUtils.logIn("public_profile,email,user_friends", {
-                            success: function (user) {
-                                // Handle successful login
-                                var d = $q.defer();
-                                FB.api('/me', {fields: 'first_name,last_name,gender,email'}, function(response) {
-                                    var needSave = false;
-                                    if (angular.isUndefined(user.attributes.first_name)) {
-                                        user.set("first_name", response.first_name);
-                                        needSave = true;
-                                    }
-                                    if (angular.isUndefined(user.attributes.last_name)) {
-                                        user.set("last_name", response.last_name);
-                                        needSave = true;
-                                    }
-                                    if (angular.isUndefined(user.attributes.gender)) {
-                                        user.set("gender", response.gender);
-                                        needSave = true;
-                                    }
-                                    if (angular.isUndefined(user.attributes.email)) {
-                                        user.set("email", response.email);
-                                        needSave = true;
-                                    }
-                                    /*if (angular.isUndefined(user.attributes.birthday)) {
-                                        user.set("birthday", response.birthday);
-                                        needSave = true;
-                                    }*/
-                                    if (needSave) {
-                                        user.save().then(function (user) {
-                                            d.resolve($rootScope.AppData.User = user);
-                                        });
-                                    } else {
-                                        d.resolve($rootScope.AppData.User = user);
-                                    }
-                                });
-                                return d.promise;
-                            },
-                            error: function (user, error) {
-                                console.log(user);
-                                console.log(error);
-                                // Handle errors and cancellation
-                            }
-                        });
-
-                        // STEP 1 - LOGIN TO FACEBOOK
-                        //return $cordovaFacebook.login(["public_profile", "email", "user_friends"])
-                        //    .then(function (success) {
-                        //        // save access_token
-                        //        var accessToken = success.authResponse.accessToken;
-                        //        var userID = success.authResponse.userID;
-                        //        var expiresIn = success.authResponse.expiresIn;
-                        //
-                        //        console.log("Login Success" + JSON.stringify(success));
-                        //
-                        //        // STEP - 2 CONVERTING DATE FORMAT
-                        //        var expDate = new Date(
-                        //            new Date().getTime() + expiresIn * 1000
-                        //        ).toISOString();
-                        //
-                        //        // STEP - 3 LOGIN TO PARSE
-                        //        return Parse.FacebookUtils.logIn({
-                        //            id: userID,
-                        //            access_token: accessToken,
-                        //            expiration_date: expDate
-                        //        });
-                        //    }).then(function (_parseResult) {
-                        //
-                        //        // STEP - 4 GET ADDITIONAL USER INFORMATION FROM FACEBOOK
-                        //        // get the user information to add to the Parse Object
-                        //        var fbValues = "&fields=id,name,location,website,picture,email";
-                        //        var fbPermission = ["public_profile"];
-                        //
-                        //        return $cordovaFacebook.api("me?access_token=" + accessToken + fbValues, fbPermission);
-                        //    }).then(function (_fbUserInfo) {
-                        //
-                        //        // use the information to update the object
-                        //        // STEP - 5 UPDATE THE USER OBJECT
-                        //        var username = _fbUserInfo.name.toLocaleLowerCase().replace(" ", "");
-                        //        var email = _fbUserInfo.email;
-                        //
-                        //        Parse.User.current().set("username", username);
-                        //        Parse.User.current().set("email", email);
-                        //
-                        //        return Parse.User.current().save();
-                        //    }).then(function (_updatedUser) {
-                        //        $localForage.setItem('User', _updatedUser);
-                        //        return _updatedUser;
-                        //    });
-
-                    },
-                    /**
-                     *
-                     * @returns {Promise}
-                     */
-                    loginWithFB: function () {
-                        Parse.FacebookUtils.init({
-                            appId: 150687055270744, // Facebook App ID
-                            //status: true,
-                            cookie: true, // enable cookies to allow Parse to access the session
-                            xfbml: true, // parse XFBML
-                            frictionlessRequests: true // recommended
-
-                        });
-
-                        return Parse.FacebookUtils.logIn("public_profile,email,user_friends", {
-                            success: function (user) {
-                                // Handle successful login
-                                $rootScope.AppData.User = user;
-                                return user;
-                            },
-                            error: function (user, error) {
-                                console.log(user);
-                                console.log(error);
-                                // Handle errors and cancellation
-                            }
-                        });
-
-                        // STEP 1 - LOGIN TO FACEBOOK
-                        //return $cordovaFacebook.login(["public_profile", "email", "user_friends"])
-                        //    .then(function (success) {
-                        //        // save access_token
-                        //        var accessToken = success.authResponse.accessToken;
-                        //        var userID = success.authResponse.userID;
-                        //        var expiresIn = success.authResponse.expiresIn;
-                        //
-                        //        console.log("Login Success" + JSON.stringify(success));
-                        //
-                        //        // STEP - 2 CONVERTING DATE FORMAT
-                        //        var expDate = new Date(
-                        //            new Date().getTime() + expiresIn * 1000
-                        //        ).toISOString();
-                        //
-                        //        // STEP - 3 LOGIN TO PARSE
-                        //        return Parse.FacebookUtils.logIn({
-                        //            id: userID,
-                        //            access_token: accessToken,
-                        //            expiration_date: expDate
-                        //        });
-                        //    }).then(function (_parseResult) {
-                        //
-                        //        // STEP - 4 GET ADDITIONAL USER INFORMATION FROM FACEBOOK
-                        //        // get the user information to add to the Parse Object
-                        //        var fbValues = "&fields=id,name,location,website,picture,email";
-                        //        var fbPermission = ["public_profile"];
-                        //
-                        //        return $cordovaFacebook.api("me?access_token=" + accessToken + fbValues, fbPermission);
-                        //    }).then(function (_fbUserInfo) {
-                        //
-                        //        // use the information to update the object
-                        //        // STEP - 5 UPDATE THE USER OBJECT
-                        //        var username = _fbUserInfo.name.toLocaleLowerCase().replace(" ", "");
-                        //        var email = _fbUserInfo.email;
-                        //
-                        //        Parse.User.current().set("username", username);
-                        //        Parse.User.current().set("email", email);
-                        //
-                        //        return Parse.User.current().save();
-                        //    }).then(function (_updatedUser) {
-                        //        $localForage.setItem('User', _updatedUser);
-                        //        return _updatedUser;
-                        //    });
-
-                    },
-                    /**
-                     *
-                     * @returns {Promise}
-                     */
-                    linkWithFB: function () {
-                        Parse.FacebookUtils.init({
-
-                            // pro-tip: swap App ID out for PROD App ID automatically on deploy using grunt-replace
-                            appId: 150687055270744, // Facebook App ID
-                            //channelUrl: 'http://brandid.github.io/parse-angular-demo/channel.html', // Channel File
-                            cookie: true, // enable cookies to allow Parse to access the session
-                            xfbml: true, // parse XFBML
-                            frictionlessRequests: true // recommended
-
-                        });
-                        var user = Parse.User.current();
-                        if (!Parse.FacebookUtils.isLinked(user)) {
-                            return Parse.FacebookUtils.link(user, null, {
-                                success: function (user) {
-                                    alert("Woohoo, user logged in with Facebook!");
-                                    $rootScope.AppData.User = user;
-                                    return user;
-                                },
-                                error: function (user, error) {
-                                    alert("User cancelled the Facebook login or did not fully authorize.");
-                                    return error;
+                    socialLogin: function (provider, newUser) {
+                        var socialSignIn = newUser ? Backand.socialSignUp(provider) : Backand.socialSignIn(provider);
+                        return socialSignIn
+                            .then(function (userData) {
+                                service.getCurrentUser();
+                                self.error = '';
+                                if (newUser) {
+                                    console.log('User ' + userData.username + ' created successfully!');
                                 }
-                            });
-                        } else {
-                            return false;
-                        }
-                    },
-                    /**
-                     *
-                     * @returns {Promise}
-                     */
-                    unlinkWithFB: function () {
-                        Parse.FacebookUtils.init({
-
-                            // pro-tip: swap App ID out for PROD App ID automatically on deploy using grunt-replace
-                            appId: 150687055270744, // Facebook App ID
-                            //channelUrl: 'http://brandid.github.io/parse-angular-demo/channel.html', // Channel File
-                            cookie: true, // enable cookies to allow Parse to access the session
-                            xfbml: true, // parse XFBML
-                            frictionlessRequests: true // recommended
-
-                        });
-
-                        return Parse.FacebookUtils.unlink(Parse.User.current(), {
-                            success: function(user) {
-                                alert("The user is no longer associated with their Facebook account.");
-                                $rootScope.AppData.User = user;
-                                return user;
+                            }, function (error) {
+                                self.error = error && error.error_description || 'Unknown error from server';
+                                console.log(self.error);
                             }
-                        });
-                    },
-                    /**
-                     *
-                     * @returns {Promise}
-                     */
-                    loginWithTwitter: function () {
-                        $auth.authenticate(provider)
-                            .then(function (response) {
-                                // Signed in with Google.
-                                console.log(response);
-                                console.log(response.config.data);
-                                //$state.go('home');
-                                //window.location.reload();
-
-                            })
-                            .catch(function (response) {
-                                // Something went wrong.
-                                console.log(response);
-                            });
-                    },
-                    otherSocialLogin: function (provider) {
-                        return $auth.authenticate(provider)
-                            .then(function (response) {
-                                // Signed in with Google.
-                                console.log(response);
-                                console.log(response.config.data);
-
-                                var token = UtilsService.parseJwt(response.data);
-                                Parse.User.become(token.sessionToken).then(function (user) {
-                                    // The current user is now set to user.
-                                    console.log(user);
-                                    switch(provider) {
-                                        case 'twitter':
-                                            $state.go('home');
-                                            break;
-                                        case 'google':
-                                            $state.go('home');
-                                            break;
-                                        case 'instagram':
-                                            $state.go('home');
-                                            break
-                                    }
-                                }, function (error) {
-                                    // The token could not be validated.
-                                    console.log(error);
-                                });
-                            })
-                            .catch(function (response) {
-                                // Something went wrong.
-                                console.log(response);
-
-                                if (response.status == 409)  {
-                                    if (response.data.message.indexOf("already taken") != -1) {
-                                        self.error = 'The email of this '+provider+' account is already associated with an indiewise account. Please login with that account and link your accounts in profile settings';
-                                    }
-                                }
-                            });
+                        )
                     }
                 };
+
+                function _init() {
+                    service.getCurrentUser();
+                }
+
+                _init();
                 return service;
             }
         ])
-        .factory('UserActions', ['$rootScope', '$q', 'AuthService', 'UtilsService', '$timeout', '$mdDialog', '$mdMedia', function ($rootScope, $q, AuthService, UtilsService, $timeout, $mdDialog, $mdMedia) {
+        .factory('UserActions', ['$rootScope', '$q', 'AuthService', 'DataService', 'UtilsService', '$timeout', '$modal', '$mdMedia', function ($rootScope, $q, AuthService, DataService, UtilsService, $timeout, $modal, $mdMedia) {
             var service = {
                 checkAuth: function () {
                     var deferred = $q.defer();
-                    Parse.User.current() ? deferred.resolve(true) : deferred.reject(false);
+                    AuthService.currentUser ? deferred.resolve(true) : deferred.reject(false);
                     return deferred.promise;
                 },
                 markAsWatched: function (video) {
@@ -495,24 +246,19 @@
                     }, time);
                 },
                 cancelWatched: function (promise) {
-                    $timeout.cancel(promise)
-                },
-                giveCritique: function (video_id) {
-
+                    $timeout.cancel(promise);
                 },
                 canCritique: function (filmId) {
                     var deferred = $q.defer();
-                    if (Parse.User.current()) {
-                        var query = new Parse.Query("Critique");
-                        query.equalTo('parent', {__type: "Pointer", className: "Film", objectId: filmId});
-                        query.equalTo('author', Parse.User.current());
-                        query.first().then(function (res) {
-                            angular.isDefined(res)
-                                // critique exists already from this user
-                                ? deferred.reject(res)
-                                // user hasn't critiqued yet
-                                : deferred.resolve(true);
-                        });
+                    if (AuthService.currentUser) {
+                        DataService.query('canCritique', {filmId: filmId, userId: AuthService.currentUser.userId})
+                            .then(function (res) {
+                                res.data.length
+                                    // critique exists already from this user
+                                    ? deferred.reject(res.data[0])
+                                    // user hasn't critiqued yet
+                                    : deferred.resolve(true);
+                            });
                     } else {
                         deferred.reject(false);
                     }
@@ -520,17 +266,15 @@
                 },
                 canReact: function (filmId) {
                     var deferred = $q.defer();
-                    if (Parse.User.current()) {
-                        var query = new Parse.Query("Reaction");
-                        query.equalTo('parent', {__type: "Pointer", className: "Film", objectId: filmId});
-                        query.equalTo('user', Parse.User.current());
-                        query.first().then(function (res) {
-                            angular.isDefined(res)
-                                // reaction exists already from this user
-                                ? deferred.reject(res)
-                                // user hasn't reacted yet
-                                : deferred.resolve(true);
-                        });
+                    if (AuthService.currentUser) {
+                        DataService.query('canReact', {filmId: filmId, userId: AuthService.currentUser.userId})
+                            .then(function (res) {
+                                res.data.length
+                                    // critique exists already from this user
+                                    ? deferred.reject(res.data[0])
+                                    // user hasn't critiqued yet
+                                    : deferred.resolve(true);
+                            });
                     } else {
                         deferred.reject(false);
                     }
@@ -538,17 +282,15 @@
                 },
                 canRate: function (filmId) {
                     var deferred = $q.defer();
-                    if (Parse.User.current()) {
-                        var query = new Parse.Query("Rating");
-                        query.equalTo('parent', {__type: "Pointer", className: "Film", objectId: filmId});
-                        query.equalTo('author', Parse.User.current());
-                        query.first().then(function (res) {
-                            angular.isDefined(res)
-                                // rating exists already from this user
-                                ? deferred.reject(res)
-                                // user hasn't rated yet
-                                : deferred.resolve(true);
-                        });
+                    if (AuthService.currentUser) {
+                        DataService.query('canRate', {filmId: filmId, userId: AuthService.currentUser.userId})
+                            .then(function (res) {
+                                res.data.length
+                                    // critique exists already from this user
+                                    ? deferred.reject(res.data[0])
+                                    // user hasn't critiqued yet
+                                    : deferred.resolve(true);
+                            });
                     } else {
                         deferred.reject(false);
                     }
@@ -557,36 +299,40 @@
                 checkFavorite: function (obj) {
                     var deferred = $q.defer();
                     service.checkAuth().then(function (res) {
-                        var query = new Parse.Query("Favorites");
-                        query.equalTo('project', {__type: "Pointer", className: "Film", objectId: obj.id});
-                        query.equalTo('user', Parse.User.current());
-                        query.first().then(function (res) {
-                            if (res) {
-                                deferred.resolve(res);
+                        DataService.query('checkFavorite', {
+                            parentId: obj.id,
+                            userId: AuthService.currentUser.userId
+                        }).then(function (res) {
+                            if (res.data.length) {
+                                deferred.resolve(res.data[0]);
                             } else {
                                 deferred.reject(false);
                             }
                         });
                     }, function (err) {
-                        service.loginModal();
+                        deferred.reject('login');
+                        //service.loginModal();
                     });
                     return deferred.promise;
                 },
                 favorite: function (obj) {
                     service.checkAuth().then(function (res) {
-                        var query = new Parse.Query("Favorites");
-                        query.equalTo('project', {__type: "Pointer", className: "Film", objectId: obj.id});
-                        query.equalTo('user', Parse.User.current());
-                        query.first().then(function (res) {
-                            if (res) {
-                                res.destroy();
+                        DataService.query('checkFavorite', {
+                            parentId: obj.id,
+                            userId: AuthService.currentUser.userId
+                        }).then(function (res) {
+                            if (res.data.length) {
+                                DataService.delete('Favorites', res.data[0].id);
                                 $rootScope.toastMessage('Removed from Favorites');
                             } else {
-                                var fav = new Parse.Object("Favorites");
-                                fav.set('project', {__type: "Pointer", className: "Film", objectId: obj.id});
-                                fav.set('user', Parse.User.current());
-                                fav.save();
-                                $rootScope.toastMessage('Added to Favorites');
+                                DataService.save('Favorites', {
+                                    project: obj.id,
+                                    user: AuthService.currentUser.userId
+                                }).then(function (res) {
+                                    $rootScope.toastMessage('Added to Favorites');
+                                }, function (err) {
+                                    console.log('Error: ', err);
+                                });
                             }
                         });
                     }, function (err) {
@@ -596,36 +342,40 @@
                 checkWatchLater: function (obj) {
                     var deferred = $q.defer();
                     service.checkAuth().then(function (res) {
-                        var query = new Parse.Query("WatchLater");
-                        query.equalTo('project', {__type: "Pointer", className: "Film", objectId: obj.id});
-                        query.equalTo('user', Parse.User.current());
-                        query.first().then(function (res) {
-                            if (res) {
-                                deferred.resolve(res);
+                        DataService.query('checkWatchLater', {
+                            parentId: obj.id,
+                            userId: AuthService.currentUser.userId
+                        }).then(function (res) {
+                            if (res.data.length) {
+                                deferred.resolve(res.data[0]);
                             } else {
                                 deferred.reject(false);
                             }
                         });
                     }, function (err) {
-                        service.loginModal();
+                        deferred.reject('login');
+                        //service.loginModal();
                     });
                     return deferred.promise;
                 },
                 watchLater: function (obj) {
                     service.checkAuth().then(function (res) {
-                        var query = new Parse.Query("WatchLater");
-                        query.equalTo('project', {__type: "Pointer", className: "Film", objectId: obj.id});
-                        query.equalTo('user', Parse.User.current());
-                        query.first().then(function (res) {
-                            if (res) {
-                                res.destroy();
+                        DataService.query('checkWatchLater', {
+                            parentId: obj.id,
+                            userId: AuthService.currentUser.userId
+                        }).then(function (res) {
+                            if (res.data.length) {
+                                DataService.delete('WatchLater', res.data[0].id);
                                 $rootScope.toastMessage('Removed from Watch Later');
                             } else {
-                                var wl = new Parse.Object("WatchLater");
-                                wl.set('project', {__type: "Pointer", className: "Film", objectId: obj.id});
-                                wl.set('user', Parse.User.current());
-                                wl.save();
-                                $rootScope.toastMessage('Added to Watch Later');
+                                DataService.save('WatchLater', {
+                                    project: obj.id,
+                                    user: AuthService.currentUser.userId
+                                }).then(function (res) {
+                                    $rootScope.toastMessage('Added to Watch Later');
+                                }, function (err) {
+                                    console.log('Error: ', err);
+                                });
                             }
                         });
                     }, function (err) {
@@ -634,23 +384,21 @@
                 },
                 loginModal: function () {
                     if (!$rootScope.authModalOpen) {
-                        var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'));
-                        $mdDialog.show({
-                            controller: ['$rootScope', '$localForage', '$q', '$state', 'AuthService', '$mdDialog', SignInModalCtrl],
+                        var modalInstance = $modal.open({
+                            controller: SignInModalCtrl,
                             controllerAs: 'SIC',
                             templateUrl: './src/auth/sign-in-dialog.html',
-                            parent: angular.element(document.body),
-                            //targetEvent: ev,
-                            clickOutsideToClose: true,
-                            fullscreen: useFullScreen
-                        })
-                            .then(function (answer) {
-                                console.log(answer);
-                                $rootScope.authModalOpen = false;
-                            }, function () {
-                                console.log('You cancelled the dialog.');
-                                $rootScope.authModalOpen = false;
-                            });
+                            size: Foundation.MediaQuery.atLeast('medium') ? 'large' : 'full'
+                        });
+                        modalInstance.result.then(function (answer) {
+                            console.log(answer);
+                            $rootScope.authModalOpen = false;
+                            zIndexPlayer(true);
+                        }, function () {
+                            console.log('You cancelled the dialog.');
+                            $rootScope.authModalOpen = false;
+                            zIndexPlayer(true);
+                        });
                         $rootScope.authModalOpen = true;
                     }
                 }
@@ -658,6 +406,7 @@
 
             return service;
         }])
+        .factory('DataService', DataService)
         .factory('ParseService', ['$rootScope', '$q', '$localForage', function ($rootScope, $q, $localForage) {
             var service = {
                 genres: function () {
@@ -769,8 +518,9 @@
             return service;
         }])
         .factory('linkify', ['$filter', function ($filter) {
-            function _linkifyAsType (type) {
-                return function (str) {(type, str);
+            function _linkifyAsType(type) {
+                return function (str) {
+                    (type, str);
                     return $filter('linkify')(str, type);
                 };
             }
@@ -782,7 +532,135 @@
             };
         }]);
 
-    function SignInModalCtrl($rootScope, $localForage, $q, $state, AuthService, $mdDialog) {
+    DataService.$inject = ['$rootScope', '$http', 'Backand', 'AuthService', '$q'];
+    function DataService($rootScope, $http, Backand, AuthService, $q) {
+        var vm = this;
+        //get the object name and optional parameters
+        vm.getList = function (name, sort, filter, size, deep, relatedObjects, page, search) {
+            return $http({
+                method: 'GET',
+                url: Backand.getApiUrl() + '/1/objects/' + name,
+                params: {
+                    pageSize: size || 20,
+                    pageNumber: page || 1,
+                    filter: filter || '',
+                    sort: sort || '',
+                    deep: deep || false,
+                    relatedObjects: relatedObjects || false,
+                    search: search || ''
+                }
+            });
+        };
+        vm.getItem = function (name, id, deep, exclude, level) {
+            return $http({
+                method: 'GET',
+                url: Backand.getApiUrl() + '/1/objects/' + name + '/' + id,
+                params: {
+                    deep: deep || false,
+                    exclude: exclude || '',
+                    level: level || 1
+                }
+            });
+        };
+        vm.query = function (name, params) {
+            return $http({
+                method: 'GET',
+                url: Backand.getApiUrl() + '/1/query/data/' + name,
+                params: {
+                    parameters: params
+                }
+            });
+        };
+        vm.notifyMe = function (params) {
+            return $http.post('utils/notify-me.php', params);
+        };
+        vm.save = function (name, params, deep, returnObject) {
+            return Backand.getUserDetails().then(function (response) {
+                $rootScope.AppData.User = AuthService.currentUser = response;
+                return $http({
+                    method: 'POST',
+                    url: Backand.getApiUrl() + '/1/objects/' + name + '?deep=' + !!deep + '&returnObject=' + !!returnObject,
+                    data: params,
+                    headers: {
+                        Authorization: response.access_token,
+                        AppName: 'indiewise'
+                    }
+                });
+            });
+        };
+        vm.update = function (name, id, params, deep, returnObject) {
+            return Backand.getUserDetails().then(function (response) {
+                $rootScope.AppData.User = AuthService.currentUser = response;
+                angular.extend(params, {
+                    __metadata: { id: id }
+                });
+                return $http({
+                    method: 'PUT',
+                    url: Backand.getApiUrl() + '/1/objects/' + name + '/' + id + '?deep=' + !!deep + '&returnObject=' + !!returnObject,
+                    data: params,
+                    headers: {
+                        Authorization: response.access_token,
+                        AppName: 'indiewise'
+                    }
+                });
+            });
+        };
+        vm.increment = function (name, id, params, deep, returnObject) {
+            var deferred = $q.defer();
+            Backand.getUserDetails().then(function (userResponse) {
+                $rootScope.AppData.User = AuthService.currentUser = userResponse;
+                $http({
+                    method: 'GET',
+                    url: Backand.getApiUrl() + '/1/objects/' + name + '/' + id,
+                    params: {
+                        deep: deep || false,
+                        //exclude: exclude || '',
+                        //level: level || 1
+                    }
+                }).then(function (res) {
+                    var data = {};
+                    _.each(params, function (val, key) {
+                        data[key] = (parseInt(res.data[key].valueOf())||0) + parseInt(val);
+                    });
+                    angular.extend(data, {
+                        __metadata: { id: res.data.id }
+                    });
+                    $http({
+                        method: 'PUT',
+                        url: Backand.getApiUrl() + '/1/objects/' + name + '/' + id + '?deep=' + !!deep + '&returnObject=' + !!returnObject,
+                        data: data,
+                        headers: {
+                            Authorization: userResponse.access_token,
+                            AppName: 'indiewise'
+                        }
+                    }).then(function (a) {
+                        console.log(a);
+                        deferred.resolve(a.data);
+                    });
+                });
+            });
+
+            return deferred.promise;
+        };
+        vm.delete = function (name, id) {
+            return Backand.getUserDetails().then(function (response) {
+                $rootScope.AppData.User = AuthService.currentUser = response;
+                return $http({
+                    method: 'DELETE',
+                    url: Backand.getApiUrl() + '/1/objects/' + name + '/' + id,
+                    headers: {
+                        Authorization: response.access_token,
+                        AppName: 'indiewise'
+                    }
+                });
+            });
+        };
+        return vm;
+    }
+
+    SignInModalCtrl.$inject = ['$rootScope', '$timeout', '$q', '$state', 'AuthService', '$modalInstance'];
+    function SignInModalCtrl($rootScope, $timeout, $q, $state, AuthService, $modalInstance) {
+        zIndexPlayer();
         $rootScope.metadata.title = 'Sign In';
         var self = this;
         self.user = {
@@ -803,26 +681,39 @@
                 self.error = res;
                 console.log('Failed', res);
             }).then(function () {
-                self.cancelModal();
+                self.ok();
             });
         };
 
-        self.doLoginFacebook = function () {
-            AuthService.registerWithFB().then(function (res) {
-                //$state.go('home');
-                //window.location.reload();
-            });
-        };
 
         self.authenticate = function (provider) {
             self.error = null;
-            AuthService.otherSocialLogin(provider).then(function (a) {
+            AuthService.socialLogin(provider, false).then(function (a) {
                 console.log(a);
             });
         };
-        self.cancelModal = function () {
-            $mdDialog.cancel();
+
+        self.ok = function () {
+            $modalInstance.close();
         };
+
+        self.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+
+        $timeout(function () {
+            jQuery(document).foundation();
+            $timeout(function () {
+                jQuery(document).foundation();
+            }, 500);
+        }, 0);
+    }
+
+    function zIndexPlayer(remove) {
+        var vidDiv = jQuery('.flex-video');
+        if(vidDiv) {
+            !!remove ? vidDiv.css('z-index', '') : vidDiv.css('z-index', 0);
+        }
     }
 
 })();

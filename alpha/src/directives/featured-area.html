@@ -1,37 +1,31 @@
-<div class="grid">
-    <ul class="items clearfix">
-        <li class="smallGrid" ng-repeat="f in featuredFilms|limitTo:5">
-            <div class="frame">
-                <div class="slide_element">
-                    <div class="slide" data-mightyslider="cover: '{{::f.attributes.thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}', icon:  'video'"></div>
+<section id="premium">
+    <div class="row">
+        <div class="heading clearfix">
+            <div class="large-11 columns">
+                <h4 class="has-tip" tooltip="Email getindiewise@gmail.com to find out how you may appear on this list" tooltip-placement="right"><i class="fa fa-play-circle-o"></i>
+                    Featured
+                </h4>
+            </div>
+            <div class="large-1 columns">
+                <div class="navText show-for-large">
+                    <a class="prev secondary-button"><i class="fa fa-angle-left"></i></a>
+                    <a class="next secondary-button"><i class="fa fa-angle-right"></i></a>
                 </div>
             </div>
-            <a class="details white-text">
-                <div class="image-link" ui-sref="video({id: f.id})">
-                    <div>
-                        <span class="md-caption white-text lighten-2" layout-align="flex-start center" style="padding-top: 10px">
-                            <span flex>
-                                <md-icon md-svg-icon="grade" class="indigo-text" style="width: 16px;height: 16px;"></md-icon> {{::(f.attributes.iwRating|number:1)||'N/A'}}
-                                <md-tooltip md-direction="top">IndieWise Average</md-tooltip>
-                            </span>
-                            &middot;
-                            <span flex>
-                                <md-icon md-svg-icon="trophy" class="orange-text" style="width: 16px;height: 16px;"></md-icon> {{::(f.attributes.awardCount)||0}}
-                                <md-tooltip md-direction="top">Awards</md-tooltip>
-                            </span>
-                            &middot;
-                            <span flex>
-                                <md-icon md-svg-icon="emotion" class="deep-orange-text" style="width: 16px;height: 16px;"></md-icon> {{::(f.attributes.reactionCount)||0}}
-                                <md-tooltip md-direction="top">Reactions</md-tooltip>
-                            </span>
-                        </span>
-                        <h6 ng-bind="::f.attributes.name"></h6>
-                        <span class="md-caption">
-                            by <span ui-sref="user({id: f.attributes.owner.id})" class="blue-text">{{::f.attributes.owner.attributes.first_name+' '+f.attributes.owner.attributes.last_name}}</span>
-                        </span>
-                    </div>
-                </div>
+        </div>
+    </div>
+    <div id="owl-demo" class="owl-carousel carousel" data-car-length="4" data-items="4" data-loop="true" data-nav="false" data-autoplay="true" data-autoplay-timeout="3000" data-dots="false" data-auto-width="false" data-responsive-small="1" data-responsive-medium="2" data-responsive-xlarge="5">
+        <div class="item" ng-repeat="f in featuredFilms.data|limitTo:5">
+            <figure class="premium-img">
+                <img src="{{::f.thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}" alt="carousel">
+                <figcaption>
+                    <h5>{{::f.name|truncate:40}}</h5>
+                    <p>{{::featuredFilms.relatedObjects.users[f.owner].firstName+' '+featuredFilms.relatedObjects.users[f.owner].lastName}}</p>
+                </figcaption>
+            </figure>
+            <a ui-sref="video({id: f.id})" class="hover-posts">
+                <span><i class="fa fa-play"></i>Watch Video</span>
             </a>
-        </li>
-    </ul>
-</div>
+        </div>
+    </div>
+</section>

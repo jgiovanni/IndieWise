@@ -1,0 +1,17 @@
+<div aria-label="Critique">
+    <form ng-submit="postMessage()">
+        <h3>Contact {{::recipient.firstName}} {{::recipient.lastName}}</h3>
+
+        <div class="input">
+            <label for="message">Message</label>
+            <textarea id="message" ng-model="myMessage" autofocus columns="1" ng-maxlength="3000" required></textarea>
+        </div>
+
+        <button class="button tiny" ng-click="cancel()">Cancel</button>
+        <button class="button tiny primary pull-right" type="submit">Send</button>
+        <button ng-click="cancel()" class="close-button" aria-label="Close" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+
+    </form>
+</div>

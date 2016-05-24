@@ -1,9 +1,17 @@
-<md-list-item class="md-3-line secondary-button-padding" layout="row" layout-lt-md="column" layout-align="center center">
-    <form name="replyForm" id="replyForm" ng-submit="postReply()" flex layout="row" layout-lt-md="column" layout-align="center center">
-        <md-input-container flex>
-            <label for="myReply">Reply to {{targetComment.attributes.author.attributes.first_name}}</label>
-            <textarea id="myReply" aria-label="Reply Comment" linkify ng-model="myReply" ng-minlength="1" focus-on="!!showReplyInput"></textarea>
-        </md-input-container>
-    </form>
-    <md-button form="replyForm" type="submit" class="md-primary md-secondary">Send</md-button>
-</md-list-item>
+<div class="comment-box thumb-border">
+    <div class="media-object stack-for-small">
+        <div class="media-object-section comment-img text-center">
+            <div class="comment-box-img">
+                <img ng-src="{{model.isLoggedInData.avatar || './assets/img/avatar-1.png'}}" alt="comment">
+            </div>
+            <h6><a ui-sref="user.about({id: model.isLoggedIn.userId})">{{model.isLoggedIn.fullName}}</a></h6>
+        </div>
+        <div class="media-object-section comment-textarea">
+            <form name="replyForm" id="replyForm" ng-submit="postReply()">
+            <textarea name="commentText" placeholder="Reply to {{targetComment.author.firstName}}"
+                      linkify ng-model="myReply" ng-minlength="1" focus-on="!!showReplyInput"></textarea>
+                <input type="submit" value="send">
+            </form>
+        </div>
+    </div>
+</div>

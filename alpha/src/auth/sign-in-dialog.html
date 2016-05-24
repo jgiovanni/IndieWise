@@ -1,14 +1,59 @@
-<md-dialog aria-label="Authentication" ng-cloak>
-    <form>
-        <md-toolbar>
-            <div class="md-toolbar-tools">
-                <h2>Authentication</h2>
-                <span flex></span>
-                <md-button class="md-icon-button" ng-click="SIC.cancelModal()">
-                    <md-icon md-svg-icon="close" aria-label="Close dialog"></md-icon>
-                </md-button>
+<section aria-label="Authentication" ng-cloak>
+    <div class="registration" style="background: none;">
+        <div class="row" data-equalizer data-equalize-on="medium" id="test-eq">
+            <div class="large-4 large-offset-1 medium-6 columns">
+                <div class="social-login" data-equalizer-watch>
+                    <h5 class="text-center">Login via Social Profile</h5>
+                    <div class="social-login-btn facebook">
+                        <a ng-click="SIC.authenticate('facebook')"><i class="fa fa-facebook"></i>login via facebook</a>
+                    </div>
+                    <div class="social-login-btn twitter">
+                        <a ng-click="SIC.authenticate('twitter')"><i class="fa fa-twitter"></i>login via twitter</a>
+                    </div>
+                    <div class="social-login-btn g-plus">
+                        <a ng-click="SIC.authenticate('google')"><i class="fa fa-google-plus"></i>login via google plus</a>
+                    </div>
+                </div>
             </div>
-        </md-toolbar>
+            <div class="large-2 medium-2 columns show-for-large">
+                <div class="middle-text text-center hide-for-small-only" data-equalizer-watch>
+                    <p>
+                        <i class="fa fa-arrow-left arrow-left"></i>
+                        <span>OR</span>
+                        <i class="fa fa-arrow-right arrow-right"></i>
+                    </p>
+                </div>
+            </div>
+            <div class="large-4 medium-6 columns end">
+                <div class="register-form">
+                    <h5 class="text-center">Create your Account</h5>
+                    <form ng-submit="SIC.doLogin()" data-abide>
+                        <div data-abide-error class="alert callout" style="display: none;">
+                            <p><i class="fa fa-exclamation-triangle"></i> There are some errors in your form.</p>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-label"><i class="fa fa-user"></i></span>
+                            <input class="input-group-field" type="text" placeholder="Enter your username" ng-model="SIC.user.email" required>
+                            <span class="form-error">username is required</span>
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-label"><i class="fa fa-lock"></i></span>
+                            <input type="password" id="password" placeholder="Enter your password" ng-model="SIC.user.password" required>
+                            <span class="form-error">password is required</span>
+                        </div>
+                        <div class="checkbox">
+                            <input id="remember" type="checkbox" name="check" value="remember">
+                            <label class="customLabel" for="remember">Remember me</label>
+                        </div>
+                        <button class="button expanded" type="submit" ng-click="SIC.doLogin(false)">login Now</button>
+                        <p class="loginclick"><a ui-sref="reset_password" ng-click="SIC.cancel()">Forgot Password</a> New Here? <a ui-sref="register" ng-click="SIC.cancel()">Create a new Account</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+<!--
         <md-dialog-content>
             <div class="md-dialog-content" layout="column" layout-align="center center">
 
@@ -25,10 +70,10 @@
                         <md-tooltip md-direction="top">Login with Google</md-tooltip>
                         <md-icon md-svg-icon="google-plus" class="white-text"></md-icon>
                     </md-button>
-                    <!--<md-button class="brown darken-2 md-fab" ng-click="SIC.authenticate('instagram')" aria-label="Login with Instagram">-->
-                        <!--<md-tooltip md-direction="top">Login with Instagram</md-tooltip>-->
-                        <!--<md-icon md-svg-icon="instagram" class="white-text"></md-icon>-->
-                    <!--</md-button>-->
+                    &lt;!&ndash;<md-button class="brown darken-2 md-fab" ng-click="SIC.authenticate('instagram')" aria-label="Login with Instagram">&ndash;&gt;
+                        &lt;!&ndash;<md-tooltip md-direction="top">Login with Instagram</md-tooltip>&ndash;&gt;
+                        &lt;!&ndash;<md-icon md-svg-icon="instagram" class="white-text"></md-icon>&ndash;&gt;
+                    &lt;!&ndash;</md-button>&ndash;&gt;
                     <h4>or with an account</h4>
                     <form>
                         <div layout="column">
@@ -56,6 +101,11 @@
                 <md-button class="md-primary" ui-sref="reset_password" ng-click="SIC.cancelModal()">Forgot Password?</md-button>
             </div>
         </md-dialog-content>
+-->
         <!--<md-dialog-actions layout="row"></md-dialog-actions>-->
-    </form>
-</md-dialog>
+    </div>
+    <button ng-click="cancel()" class="close-button" aria-label="Close" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+
+</section>

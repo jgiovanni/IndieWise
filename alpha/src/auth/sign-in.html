@@ -1,77 +1,85 @@
-<style>
-    body {
-        background-color: #eee !important;
-        background-image: url("../../media/img.jpg");
-        background-size: cover;
-        background-position: center center;
-    }
-
-</style>
-<div class="coverr">
-    <div class="">
-        <div class="container transparent" layout="column" layout-align="center center">
-            <div>
-                <hgroup>
-                    <!--<img src="./assets/img/Logo_alt2_web_87x45.png" alt="IndieWise"/>-->
-                    <h1 class="md-display-2">Sign In</h1>
-                </hgroup>
-            </div>
-
-            <md-whiteframe class="md-whiteframe-z5">
-                <md-content layout-padding align="center" style="padding: 40px">
-                    <md-button class="indigo md-fab" ng-click="SIC.doLoginFacebook()" aria-label="Login with Facebook">
-                        <md-icon md-svg-icon="facebook" class="white-text"></md-icon>
-                        <md-tooltip md-direction="top">Login with Facebook</md-tooltip>
-                    </md-button>
-                    <md-button class="blue lighten-2 md-fab" ng-click="SIC.authenticate('twitter')" aria-label="Login with Twitter">
-                        <md-tooltip md-direction="top">Login with Twitter</md-tooltip>
-                        <md-icon md-svg-icon="twitter" class="white-text"></md-icon>
-                    </md-button>
-                    <md-button class="orange darken-2 md-fab" ng-click="SIC.authenticate('google')" aria-label="Login with Google Plus">
-                        <md-tooltip md-direction="top">Login with Google</md-tooltip>
-                        <md-icon md-svg-icon="google-plus" class="white-text"></md-icon>
-                    </md-button>
-                    <!--<md-button class="brown darken-2 md-fab" ng-click="SIC.authenticate('instagram')" aria-label="Login with Instagram">-->
-                        <!--<md-tooltip md-direction="top">Login with Instagram</md-tooltip>-->
-                        <!--<md-icon md-svg-icon="instagram" class="white-text"></md-icon>-->
-                    <!--</md-button>-->
-
-                    <!--<md-divider></md-divider>-->
-                    <h4>or with email</h4>
-                    <form ng-submit="SIC.doLogin()">
-                        <md-input-container >
-                            <md-icon md-svg-icon="email"></md-icon>
-                            <input ng-model="SIC.user.email" type="email" placeholder="Email" ng-required="true">
-                        </md-input-container>
-                        <md-input-container >
-                            <md-icon md-svg-icon="security"></md-icon>
-                            <input ng-model="SIC.user.password" type="password" placeholder="Password" ng-required="true">
-                        </md-input-container>
-                        <p class="flow-text text-center red-text" ng-if="SIC.error">
-                            <span ng-show="SIC.error.code !== 101">{{SIC.error}}</span>
-                            <span ng-show="SIC.error.code === 101">Please check your credentials and try again.</span>
-                        </p>
-                        <div layout="row">
-                            <md-button type="submit" class="md-raised md-primary md-hue-2" flex>Sign In</md-button>
-                        </div>
-                    </form>
-
-                    <div layout="row">
-                        <md-button flex class="md-primary" ui-sref="register">Create an Account</md-button>
-                        <md-button flex class="md-primary" ui-sref="reset_password">Forgot Password?</md-button>
-                    </div>
-
-                </md-content>
-
-            </md-whiteframe>
+<!--breadcrumbs-->
+<section id="breadcrumb">
+    <div class="row">
+        <div class="large-12 columns">
+            <nav aria-label="You are here:" role="navigation">
+                <ul class="breadcrumbs">
+                    <li><i class="fa fa-home"></i><a ui-sref="home">Home</a></li>
+                    <li>
+                        <span class="show-for-sr">Current: </span> Login
+                    </li>
+                </ul>
+            </nav>
         </div>
-        <!--<video autoplay loop class="fillWidth">
-            <source src="./assets/video/A-Director-View/Mp4/A-Director-View.mp4" type="video/mp4" />Your browser does not support the video tag. I suggest you upgrade your browser.
-            <source src="./assets/video/A-Director-View/Webm/A-Director-View.webm" type="video/webm" />Your browser does not support the video tag. I suggest you upgrade your browser.
-            <source src="./assets/video/A-Director-View/Ogv/A-Director-View.ogv" type="video/ogg" />Your browser does not support the video tag. I suggest you upgrade your browser.
-        </video>
-        <div class="poster hidden">
-            <img src="./assets/video/A-Director-View/Snapshot/A-Director-View.jpg" alt="">
-        </div>-->
     </div>
-</div>
+</section><!--end breadcrumbs-->
+
+<!-- registration -->
+<section class="registration">
+    <div class="row secBg">
+        <div class="large-12 columns">
+            <div class="login-register-content">
+                <div class="row collapse borderBottom">
+                    <div class="medium-6 large-centered medium-centered">
+                        <div class="page-heading text-center">
+                            <h3>User login</h3>
+                            <!--<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>-->
+                        </div>
+                    </div>
+                </div>
+                <div class="row" data-equalizer data-equalize-on="medium" id="test-eq">
+                    <div class="large-4 large-offset-1 medium-6 columns">
+                        <div class="social-login" data-equalizer-watch>
+                            <h5 class="text-center">Login via Social Profile</h5>
+                            <div class="social-login-btn facebook">
+                                <a ng-click="SIC.authenticate('facebook')"><i class="fa fa-facebook"></i>login via facebook</a>
+                            </div>
+                            <div class="social-login-btn twitter">
+                                <a ng-click="SIC.authenticate('twitter')"><i class="fa fa-twitter"></i>login via twitter</a>
+                            </div>
+                            <div class="social-login-btn g-plus">
+                                <a ng-click="SIC.authenticate('google')"><i class="fa fa-google-plus"></i>login via google plus</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="large-2 medium-2 columns show-for-large">
+                        <div class="middle-text text-center hide-for-small-only" data-equalizer-watch>
+                            <p>
+                                <i class="fa fa-arrow-left arrow-left"></i>
+                                <span>OR</span>
+                                <i class="fa fa-arrow-right arrow-right"></i>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="large-4 medium-6 columns end">
+                        <div class="register-form">
+                            <h5 class="text-center">Login via Email</h5>
+                            <form ng-submit="SIC.doLogin()" data-abide>
+                                <div data-abide-error class="alert callout" style="display: none;">
+                                    <p><i class="fa fa-exclamation-triangle"></i> There are some errors in your form.</p>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-label"><i class="fa fa-user"></i></span>
+                                    <input class="input-group-field" type="text" placeholder="Enter your username" ng-model="SIC.user.email" required>
+                                    <span class="form-error">username is required</span>
+                                </div>
+
+                                <div class="input-group">
+                                    <span class="input-group-label"><i class="fa fa-lock"></i></span>
+                                    <input type="password" id="password" placeholder="Enter your password" ng-model="SIC.user.password" required>
+                                    <span class="form-error">password is required</span>
+                                </div>
+                                <div class="checkbox">
+                                    <input id="remember" type="checkbox" name="check" value="remember">
+                                    <label class="customLabel" for="remember">Remember me</label>
+                                </div>
+                                <button class="button expanded" type="submit" name="submit">login Now</button>
+                                <p class="loginclick"><a class="button tiny hollow" ui-sref="reset_password">Forgot Password</a> <a class="button tiny hollow" ui-sref="register">Create a new Account</a></p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

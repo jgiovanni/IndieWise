@@ -1,0 +1,43 @@
+<!-- single post description -->
+<section class="profile-videos">
+    <div class="row secBg">
+        <div class="large-12 columns">
+            <div class="heading">
+                <i class="fa fa-video-camera"></i>
+                <h4>My Videos</h4>
+            </div>
+            <div class="profile-video" ng-repeat="video in ProfileVideosCtrl.projects.data">
+                <div class="media-object stack-for-small">
+                    <div class="media-object-section media-img-content">
+                        <div class="video-img">
+                            <img ng-src="{{::video.thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}" alt="video thumbnail">
+                        </div>
+                    </div>
+                    <div class="media-object-section media-video-content">
+                        <div class="video-content">
+                            <h5><a ui-sref="video({id: video.id})">{{::video.name}}</a></h5>
+                            <p>{{::video.description}}</p>
+                        </div>
+                        <div class="video-detail clearfix">
+                            <div class="video-stats">
+                                <span><i class="fa fa-check-square-o"></i>published</span>
+                                <span><i class="fa fa-clock-o"></i>{{::video.createdAt|date:'fullDate'}}</span>
+                                <!--<span><i class="fa fa-eye"></i>1,862K</span>-->
+                            </div>
+                            <div class="video-btns">
+                                <a class="video-btn" ng-if="$state.is('profile.videos') && isLoggedIn.userId === video.owner"
+                                   ui-sref="video-edit({id: video.id})"><i class="fa fa-pencil-square-o"></i>edit</a>
+                                <a class="video-btn" ng-if="$state.is('profile.videos') && isLoggedIn.userId === video.owner"
+                                   ng-click="deleteProject(video.id)"><i class="fa fa-trash"></i>delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--<div class="show-more-inner text-center">
+                <a href="#" class="show-more-btn">show more</a>
+            </div>-->
+        </div>
+    </div>
+</section>
+<!-- End single post description -->

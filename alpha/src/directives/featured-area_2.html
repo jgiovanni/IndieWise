@@ -1,0 +1,100 @@
+<!-- div used as a holder for the gallery -->
+<div id="featuredGrid" style="width:100%;"></div>
+
+<!-- gallery data list -->
+<ul id="playlist" style="display: none;">
+
+    <!-- skin -->
+    <ul data-skin="">
+        <li data-preloader-path="./app/gridfolio/load/skin_modern_colored_square/rotite-30-29.png"></li>
+        <li data-show-more-thumbnails-button-normal-path="./app/gridfolio/load/skin_modern_colored_square/showMoreThumbsNormalState.png"></li>
+        <li data-show-more-thumbnails-button-selectsed-path="./app/gridfolio/load/skin_modern_colored_square/showMoreThumbsSelectedState.png"></li>
+        <li data-image-icon-path="./app/gridfolio/load/skin_modern_colored_square/photoIcon.png"></li>
+        <li data-video-icon-path="./app/gridfolio/load/skin_modern_colored_square/videoIcon.png"></li>
+        <li data-link-icon-path="./app/gridfolio/load/skin_modern_colored_square/linkIcon.png"></li>
+        <li data-iframe-icon-path="./app/gridfolio/load/skin_modern_colored_square/iframeIcon.png"></li>
+        <li data-hand-move-icon-path="./app/gridfolio/load/skin_modern_colored_square/handnmove.cur"></li>
+        <li data-hand-drag-icon-path="./app/gridfolio/load/skin_modern_colored_square/handgrab.cur"></li>
+        <li data-combobox-down-arrow-icon-normal-path="./app/gridfolio/load/skin_modern_colored_square/combobox-down-arrow.png"></li>
+        <li data-combobox-down-arrow-icon-selected-path="./app/gridfolio/load/skin_modern_colored_square/combobox-down-arrow-rollover.png"></li>
+        <li data-lightbox-slideshow-preloader-path="./app/gridfolio/load/skin_modern_colored_square/slideShowPreloader.png"></li>
+        <li data-lightbox-close-button-normal-path="./app/gridfolio/load/skin_modern_colored_square/galleryCloseButtonNormalState.png"></li>
+        <li data-lightbox-close-button-selected-path="./app/gridfolio/load/skin_modern_colored_square/galleryCloseButtonSelectedState.png"></li>
+        <li data-lightbox-next-button-normal-path="./app/gridfolio/load/skin_modern_colored_square/nextIconNormalState.png"></li>
+        <li data-lightbox-next-button-selected-path="./app/gridfolio/load/skin_modern_colored_square/nextIconSelectedState.png"></li>
+        <li data-lightbox-prev-button-normal-path="./app/gridfolio/load/skin_modern_colored_square/prevIconNormalState.png"></li>
+        <li data-lightbox-prev-button-selected-path="./app/gridfolio/load/skin_modern_colored_square/prevIconSelectedState.png"></li>
+        <li data-lightbox-play-button-normal-path="./app/gridfolio/load/skin_modern_colored_square/playButtonNormalState.png"></li>
+        <li data-lightbox-play-button-selected-path="./app/gridfolio/load/skin_modern_colored_square/playButtonSelectedState.png"></li>
+        <li data-lightbox-pause-button-normal-path="./app/gridfolio/load/skin_modern_colored_square/pauseButtonNormalState.png"></li>
+        <li data-lightbox-pause-button-selected-path="./app/gridfolio/load/skin_modern_colored_square/pauseButtonSelectedState.png"></li>
+        <li data-lightbox-maximize-button-normal-path="./app/gridfolio/load/skin_modern_colored_square/maximizeButtonNormalState.png"></li>
+        <li data-lightbox-maximize-button-selected-path="./app/gridfolio/load/skin_modern_colored_square/maximizeButtonSelectedState.png"></li>
+        <li data-lightbox-minimize-button-normal-path="./app/gridfolio/load/skin_modern_colored_square/minimizeButtonNormalState.png"></li>
+        <li data-lightbox-minimize-button-selected-path="./app/gridfolio/load/skin_modern_colored_square/minimizeButtonSelectedState.png"></li>
+        <li data-lightbox-info-button-open-normal-path="./app/gridfolio/load/skin_modern_colored_square/infoButtonOpenNormalState.png"></li>
+        <li data-lightbox-info-button-open-selected-path="./app/gridfolio/load/skin_modern_colored_square/infoButtonOpenSelectedState.png"></li>
+        <li data-lightbox-info-button-close-normal-path="./app/gridfolio/load/skin_modern_colored_square/infoButtonCloseNormalPath.png"></li>
+        <li data-lightbox-info-button-close-selected-path="./app/gridfolio/load/skin_modern_colored_square/infoButtonCloseSelectedPath.png"></li>
+    </ul>
+
+    <!-- image playlist category  -->
+    <ul data-cat="Featured">
+        <ul ng-repeat="f in featuredFilms|limitTo:6">
+            <li data-type="link" data-url="/alpha/screen/{{::f.id}}" data-target="_self"></li>
+            <li data-thumbnail-path="{{::f.attributes.thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}"></li>
+            <li data-thumbnail-text class="">
+                <p class="largeLabel black-text" style="text-transform: uppercase;" ng-bind="::f.attributes.name"></p>
+                <p class="smallLabel">
+                    <span class="md-caption">
+                        by <span ui-sref="user({id: f.attributes.owner.id})" class="">{{::f.attributes.owner.attributes.first_name+' '+f.attributes.owner.attributes.last_name}}</span>
+                    </span>
+                    <br>
+                    <span class="md-caption lighten-2" layout-align="flex-start center" style="padding-top: 10px">
+                        <span flex>
+                            <md-icon md-svg-icon="grade" class="indigo-text" style="width: 16px;height: 16px;"></md-icon> {{::(f.attributes.iwRating|number:1)||'N/A'}}
+                            <md-tooltip md-direction="top">IndieWise Average</md-tooltip>
+                        </span>
+                        &middot;
+                        <span flex>
+                                <md-icon md-svg-icon="trophy" class="orange-text" style="width: 16px;height: 16px;"></md-icon> {{::(f.attributes.awardCount)||0}}
+                                <md-tooltip md-direction="top">Awards</md-tooltip>
+                            </span>
+                        &middot;
+                        <span flex>
+                            <md-icon md-svg-icon="emotion" class="deep-orange-text" style="width: 16px;height: 16px;"></md-icon> {{::(f.attributes.reactionCount)||0}}
+                            <md-tooltip md-direction="top">Reactions</md-tooltip>
+                        </span>
+                    </span>
+                </p>
+            </li>
+            <li data-info class="">
+                <p class="mediaDescriptionHeader black-text" style="text-transform: uppercase;" ng-bind="::f.attributes.name"></p>
+                <p class="mediaDescriptionText">
+                    <span class="md-caption">
+                        by <span ui-sref="user({id: f.attributes.owner.id})" class="">{{::f.attributes.owner.attributes.first_name+' '+f.attributes.owner.attributes.last_name}}</span>
+                    </span>
+                    <br>
+                    <span class="md-caption lighten-2" layout-align="flex-start center" style="padding-top: 10px">
+                        <span flex>
+                            <md-icon md-svg-icon="grade" class="indigo-text" style="width: 16px;height: 16px;"></md-icon> {{::(f.attributes.iwRating|number:1)||'N/A'}}
+                            <md-tooltip md-direction="top">IndieWise Average</md-tooltip>
+                        </span>
+                        &middot;
+                        <span flex>
+                                <md-icon md-svg-icon="trophy" class="orange-text" style="width: 16px;height: 16px;"></md-icon> {{::(f.attributes.awardCount)||0}}
+                                <md-tooltip md-direction="top">Awards</md-tooltip>
+                            </span>
+                        &middot;
+                        <span flex>
+                            <md-icon md-svg-icon="emotion" class="deep-orange-text" style="width: 16px;height: 16px;"></md-icon> {{::(f.attributes.reactionCount)||0}}
+                            <md-tooltip md-direction="top">Reactions</md-tooltip>
+                        </span>
+                    </span>
+                </p>
+            </li>
+        </ul>
+    </ul>
+    <!-- end  -->
+    
+</ul>

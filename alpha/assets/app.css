@@ -1,820 +1,175 @@
-body {
-    font-family: 'Roboto', sans-serif;
-    font-size: 14px;
-    height: 100%;
-    margin: 0px;
-    padding: 0px;
-}
-
-body {
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
-}
-
-main {
-    flex: 1 0 auto;
-}
-
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak, .hidden {
     display: none !important;
 }
 
-.wrap-text, .wrap-text * {
-    white-space: normal;
+.content .post .post-thumb .video-stats .thumb-stats {
+    margin-right: 5px;
+    /*padding: 0 6px;*/
 }
 
-.help-info {
-    font-size: 12px;
-    cursor: help;
-}
-/* Toolbar area */
-
-.menu {
-    background-color: transparent;
-    border: none;
-    height: 38px;
-    margin: 16px;
-    width: 36px;
+hr.thin {
+    margin: .25rem auto;
 }
 
-md-toolbar h1 {
-    margin: auto;
+.fa.req {
+    color: #ff0000;
 }
 
-/* Sidenav area */
-
-md-list .md-button {
-    /*color: inherit;*/
-    /*font-weight: 500;*/
-    /*text-align: left;*/
-    /*width: 100%;*/
-}
-.md-3-line.secondary-button-padding form {
-    padding-right: 100px;
-}
-md-list .md-button.selected {
-    color: #03a9f4;
+/* Project card styles */
+.content .post .post-des {
+    min-height: 85px;
 }
 
-md-sidenav md-list {
-    padding: 0 0 8px 0;
+.pc-action-icons i{
+    font-size: 1.5em !important;
+}
+.pc-action-icons.has-tip{
+    border-bottom: none;
 }
 
-.md-list-item-text p {
-    word-break: break-word;
+.topProfile {
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
-.card-media {
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
+.comments .comment-sort span a.active {
+    color: #6969e9;
+}
+
+.customLabel:before {
+    color: #FFFFFF;
+    border: 1px solid #aaaaaa;
+}
+
+/*.content .post:hover a.hover-posts,
+.content .post a.hover-posts,
+.content .post:hover .video-stats,
+.content .post .video-stats {
+    transition-duration: .1s;
+}*/
+
+.content.content-with-sidebar .list-group .list .post .post-thumb:hover .video-stats,
+.content .post:hover .video-stats{
+    transform: translateY(0px);
+}
+
+a.post-thumb {
+    display: block;
+}
+
+.content .post .post-des .post-stats dropdown-toggle {
+    margin-right: 5px;
+    margin-bottom: 0;
+    line-height: 11px;
+}
+
+.content .post .post-des .post-stats dropdown-toggle i {
+    color: #aaaaaa;
+    font-size: 11px;
+    display: inline-block;
+}
+
+.content .post .post-des .post-stats dropdown-toggle span {
+    display: inline-block;
+    font-size: 11px;
+    color: #aaaaaa;
+}
+
+.content .post .post-des .post-stats dropdown-toggle span a {
+    font-size: 11px;
+    color: #aaaaaa;
+}
+
+
+
+
+/* Custom Tabs Menu - Video Page*/
+.customTabs {
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.customTabs .widgetBox {
+    margin-bottom: 10px;
+}
+
+.customTabs .widgetBox li{
+    background-color: #ffffff;
+}
+
+.customTabs .widgetBox a{
+    padding: 0 !important;
+}
+
+.customTabs .widgetBox a span{
+    padding-right: 10px !important;
+}
+
+/* Navbar Styles */
+#navBar .top-bar .top-bar-left.search-btn {
+    padding: 0;
+}
+
+/* Thumbs Styles */
+button.double-thumbs.active {
+    background: #6969e9 !important;
+    color: #fff !important;
+    border-color: #6969e9 !important;
+}
+.double-thumbs i:last-of-type {
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+    -o-transform: rotateY(180deg);
+    -ms-transform: rotateY(180deg);
+    unicode-bidi: bidi-override;
+    direction: rtl;
+}
+button.double-thumbs i {
+    margin-right: 5px !important;
+}
+button.double-thumbs i:last-of-type {
+    margin-right: 0 !important;
+}
+
+/* Video Player Styles*/
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    background-color: rgba(0,0,0,1); /* Semi-transparent */
 }
 
 .highlight {
-    color: #ff9800 !important
-}
-/* Primary content area */
-
-#content {
-    overflow: hidden;
-}
-
-#content {
-    /*padding-left: 40px;*/
-    /*padding-right: 40px;*/
-    /*padding-top: 5px;*/
-    /*max-width: 992px;*/
-}
-
-#content .md-button.contact {
-    background-color: transparent;
-    border: none;
-    width: 48px;
-    height: 48px;
-    margin: 8px auto 16px 0;
-    position: absolute;
-    top: 10px;
-    right: 40px;
-}
-
-#content md-icon.avatar {
-    margin-top: 10px;
-}
-
-#content .md-button.contact > md-icon {
-    fill: black;
-    width: 36px;
-    height: 36px;
-}
-
-md-button.menuBtn > md-icon {
-    fill: white;
-    width: 24px;
-    height: 24px;
-}
-
-#content .md-button.contact:active > md-icon {
-    background-color: #dadada;
-    border-radius: 75%;
-    padding: 4px;
-    transition: all 100ms ease-out 30ms;
-}
-
-#content img {
-    display: block;
-    height: auto;
-    max-width: 500px;
-    cursor: pointer;
-}
-
-#content md-card > img {
-    width: 100%;
-}
-
-/* Utils */
-
-.content-wrapper {
     position: relative;
+    z-index: 11;
 }
 
-/* Typography support coming in 0.8.0 */
-
-md-toolbar h1 {
-    font-size: 1.250em;
-    font-weight: 400;
-}
-
-.avatar {
-    position: relative;
-    width: 128px;
-    height: 128px;
-    border: 1px solid #ddd;
-    border-radius: 50%;
-    display: inline-block;
-    overflow: hidden;
-    margin: 0px;
-    vertical-align: middle;
-    zoom: 0.70;
-    transform: translateZ(0);
-    -webkit-transform: scale(0.70);
-    -moz-transform: scale(0.70);
-}
-
-md-bottom-sheet md-icon {
-    margin-right: 20px;
-}
-
-span.name {
-    font-weight: bold;
-    font-size: 1.1em;
-    padding-left: 5px;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.text-left {
-    text-align: left;
-}
-
-.text-right {
-    text-align: right;
-}
-
-.pull-right {
-    float: right;
-}
-
-.no-margin-top {
-    margin-top: 0;
-}
-
-.no-margin-bottom {
-    margin-bottom: 0;
-}
-
-.no-margin-left {
-    margin-left: 0;
-}
-
-.no-margin-right {
-    margin-right: 0;
-}
-
-#content .md-button.edit {
-    background-color: transparent;
-    border: none;
-    width: 48px;
-    height: 48px;
-    margin: 8px auto 16px 0;
-    position: absolute;
-    top: 10px;
-    right: 128px;
-}
-
-.action-link,
-.image-link,
-[ui-sref] {
-    cursor: pointer;
-}
-
-md-grid-tile md-icon.md-secondary,
-md-grid-tile md-menu {
-    position: absolute;
-    right: 0;
-    top: 0;
-    cursor: pointer;
-    padding: 12px;
-}
-
-md-autocomplete input:not(.md-input) {
-    color: #000;
-}
-
-footer.page-footer {
-    padding-top: 0;
-    margin-top: 0;
-}
-
-.padding-left {
-    padding-left: 8px;
-}
-
-md-backdrop.md-menu-backdrop {
-    /*z-index: auto;*/
-}
-
-.md-open-menu-container.md-active {
-
-}
-
-body.modal-is-open {
-    overflow-y: hidden;
-}
-
-.hero-module {
-    border-right: none;
-    border-left: none;
-    position: relative;
-}
-
-embed-video {
-    display: block;
-}
-
-md-list-item.short {
-    min-height: 36px;
-    height: 36px;
-}
-md-list-item.short .md-ripple-container  {
-    height: 36px;
-    top: 6px;
-}
-.no-borders {
-    border: none;
-}
-.no-shadow {
-    box-shadow: none;
-}
-.no-shadow md-card  {
-    box-shadow: none;
-}
-
-.no-shadow md-card md-card-title {
-    padding: 16px 0 !important;
-}
-.hero-bg {
-    background-image: url("../../media/img.jpg");
-    background-size: contain;
-    background-repeat: repeat-y;
-    background-position: top center;
-}
-.hero-bg.stretch {
-    background-size: cover;
-    background-position: center center;
-}
-
-.no-video .video-container video,
-.touch .video-container video {
-    display: none;
-}
-.no-video .video-container .poster,
-.touch .video-container .poster {
-    display: block !important;
-}
-.video-container {
-    position: relative;
-    bottom: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    background: #000;
-}
-.video-container .poster img {
-    width: 100%;
-    bottom: 0;
-    position: absolute;
-}
-.video-container .filter {
-    z-index: 100;
-    position: absolute;
-    background: rgba(0, 0, 0, 0.4);
-    width: 100%;
-    height: 100%;
-}
-.video-container video {
-    position: absolute;
-    z-index: 0;
-    bottom: 0;
-}
-.video-container video.fillWidth {
-    width: 100%;
-}
-
-/* ==================== BAR GRAPH  ==================== */
-/* ------ container ------ */
-div.css_bar_graph
-{
-    width: 490px;
-    height: 320px;
-    padding: 40px 20px 10px 70px;
-    /* --- font --- */
-    font-size: 13px;
-    font-family: arial, sans-serif;
+/* Emoticon SVG Styles */
+.emoticon, .material-icons {
+    font-family: 'Material Icons';
     font-weight: normal;
-    color: #444444;
-    background-color: #ffffff;
-    position: relative;
-    margin-left: auto;
-    margin-right: auto;
-    border: 1px solid #d5d5d5;
-    /* --- css3 --- */
-    border-radius: 10px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
+    font-style: normal;
+    font-size: 13px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+    width: 13px;
+    height: 13px;
 }
 
-/* ------ hyperlinks ------ */
-div.css_bar_graph a
-{
-    color: #444444;
-    text-decoration: none;
+button .emoticon {
 }
 
-/* ------ lists ------ */
-div.css_bar_graph ul
-{
-    margin: 0px;
-    padding: 0px;
-    list-style-type: none;
-}
-
-div.css_bar_graph li
-{
-    margin: 0px;
-    padding: 0px;
-}
-
-/* ==================== Y-AXIS LABELS ==================== */
-/* ------ base ------ */
-div.css_bar_graph ul.y_axis
-{
-    width: 50px;
-    position: absolute;
-    top: 40px;
-    left: 10px;
-    text-align: right;
-}
-
-/* ------ labels ------ */
-div.css_bar_graph ul.y_axis li
-{
-    width: 100%;
-    height: 49px;	/* 50px including border */
-    float: left;
-    color: #888888;
-    /* --- alignment correction --- */
-    border-top: 1px solid transparent;
-    position: relative;
-    top: -13px;	/* value = font height */
-}
-
-/* ==================== X-AXIS LABELS  ==================== */
-/* ------ base ------ */
-div.css_bar_graph ul.x_axis
-{
-    width: 100%;
-    height: 50px;
-    position: absolute;
-    bottom: 0px;
-    left: 90px;
-    text-align: center;
-}
-
-/* ------ labels ------ */
-div.css_bar_graph ul.x_axis li
-{
-    display: inline;
-    width: 90px;
-    float: left;
-}
-
-/* ==================== GRAPH LABEL  ==================== */
-/* ------ base ------ */
-div.css_bar_graph div.label
-{
-    width: 100%;
-    height: 50px;
-    float: left;
-    margin-top: 20px;
-    text-align: center;
-}
-
-div.css_bar_graph div.label span
-{
-    font-weight: bold;
-}
-
-/* ==================== GRAPH  ==================== */
-/* ------ base ------ */
-div.css_bar_graph div.graph
-{
-    width: 100%;
-    height: 100%;
-    float: left;
-}
-
-/* ------ grid ------ */
-div.css_bar_graph div.graph ul.grid
-{
-    width: 100%;
-}
-
-/* ------ IE grid ------ */
-div.css_bar_graph div.graph li
-{
-    width: 100%;
-    height: 49px;	/* 50px including border */
-    float: left;
-    border-top: 1px solid #e5e5e5;
-}
-
-/* ------ other browsers grid ------ */
-div.css_bar_graph div.graph li:nth-child(odd)
-{
-    width: 100%;
-    height: 49px;	/* 50px including border */
-    float: left;
-    border-top: 1px solid #e5e5e5;
-    background-color: #f8f8f8;
-}
-
-div.css_bar_graph div.graph li:nth-child(even)
-{
-    width: 100%;
-    height: 49px;	/* 50px including border */
-    float: left;
-    border-top: 1px solid #e5e5e5;
-}
-
-/* ------ bottom grid element ------ */
-div.css_bar_graph div.graph li.bottom
-{
-    border-top: 1px solid #d5d5d5;
-    background-color: #eeeeee;
-    height: 19px;
-}
-
-/* ==================== BARS COMMON  ==================== */
-/* ------ common styles ------ */
-div.css_bar_graph div.graph li.bar
-{
-    width: 50px;
-    float: left;
-    position: absolute;
-    bottom: 70px;
-    text-align: center;
-    /* --- css3 --- */
-    /* --- transitions --- */
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
-    -ms-transition: all 0.15s ease-in-out;
-    transition: all 0.15s ease-in-out;
-}
-
-/* ------ bar top circle ------ */
-div.css_bar_graph div.graph li.bar div.top
-{
-    width: 100%;
-    height: 20px;
-    margin-top: -10px;
-    /* --- css3 --- */
-    -moz-border-radius: 50px/20px;
-    -webkit-border-radius: 50px 20px;
-    border-radius: 50px/20px;
-    /* --- transitions --- */
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
-    -ms-transition: all 0.15s ease-in-out;
-    transition: all 0.15s ease-in-out;
-}
-
-/* ------ bar bottom circle ------ */
-div.css_bar_graph div.graph li.bar div.bottom
-{
-    width: 100%;
-    height: 20px;
-    position: absolute;
-    bottom: -10px;
-    left: 0px;
-    /* --- css3 --- */
-    -moz-border-radius: 50px/20px;
-    -webkit-border-radius: 50px 20px;
-    border-radius: 50px/20px;
-    /* --- transitions --- */
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
-    -ms-transition: all 0.15s ease-in-out;
-    transition: all 0.15s ease-in-out;
-}
-
-/* ------ bar top label ------ */
-div.css_bar_graph div.graph li.bar span
-{
-    position: relative;
-    top: -50px;
-    padding: 3px 5px 3px 5px;
-    z-index: 100;
-    background-color: #eeeeee;
-    border: 1px solid #bebebe;
-    /* --- css3 --- */
-    border-radius: 3px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    /* --- gradient --- */
-    background-image: linear-gradient(top, #ffffff, #f1f1f1 1px, #ebebeb); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f1f1f1', endColorstr='#ebebeb'); /* IE5.5 - 7 */
-    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f1f1f1', endColorstr='#ebebeb'); /* IE8 */
-    background: -ms-linear-gradient(top, #ffffff, #f1f1f1 1px, #ebebeb); /* IE9 */
-    background: -moz-linear-gradient(top, #ffffff, #f1f1f1 1px, #ebebeb); /* Firefox */
-    background: -o-linear-gradient(top, #ffffff, #f1f1f1 1px, #ebebeb); /* Opera 11  */
-    background: -webkit-linear-gradient(top, #ffffff, #f1f1f1 1px, #ebebeb); /* Chrome 11  */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffff), color-stop(0.05, #f1f1f1), color-stop(1, #ebebeb)); /* Chrome 10, Safari */
-    /* --- shadow --- */
-    text-shadow: 0px 1px 0px rgba(255,255,255,1);
-    box-shadow: 0px 1px 0px rgba(0,0,0,0.1);
-    -webkit-box-shadow: 0px 1px 0px rgba(0,0,0,0.1);
-    -moz-box-shadow: 0px 1px 0px rgba(0,0,0,0.1);
-    /* --- transitions --- */
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
-    -ms-transition: all 0.15s ease-in-out;
-    transition: all 0.15s ease-in-out;
-}
-
-/* ------ bars positions ------ */
-div.css_bar_graph div.graph li.nr_1
-{
-    left: 110px;
-}
-
-div.css_bar_graph div.graph li.nr_2
-{
-    left: 200px;
-}
-
-div.css_bar_graph div.graph li.nr_3
-{
-    left: 290px;
-}
-
-div.css_bar_graph div.graph li.nr_4
-{
-    left: 380px;
-}
-
-div.css_bar_graph div.graph li.nr_5
-{
-    left: 470px;
-}
-
-div.css_bar_graph div.graph li.nr_6
-{
-    left: 560px;
-}
-
-div.css_bar_graph div.graph li.nr_7
-{
-    left: 650px;
-}
-
-div.css_bar_graph div.graph li.nr_8
-{
-    left: 740px;
-}
-
-/* ==================== BLUE BAR  ==================== */
-/* ------ base ------ */
-div.css_bar_graph div.graph li.blue
-{
-    background: #208faf;	/* --- IE --- */
-    background: rgba(32,143,175,0.8);
-}
-
-/* ------ top ------ */
-div.css_bar_graph div.graph li.blue div.top
-{
-    background: #72b8cc;
-}
-
-/* ------ bottom ------ */
-div.css_bar_graph div.graph li.blue div.bottom
-{
-    background: #208faf;
-}
-
-/* ==================== GREEN BAR  ==================== */
-/* ------ base ------ */
-div.css_bar_graph div.graph li.green
-{
-    background: #608d00;	/* --- IE --- */
-    background: rgba(96,141,0,0.8);
-}
-
-/* ------ top ------ */
-div.css_bar_graph div.graph li.green div.top
-{
-    background: #a2c656;
-}
-
-/* ------ bottom ------ */
-div.css_bar_graph div.graph li.green div.bottom
-{
-    background: #608d00;
-}
-
-/* ==================== ORANGE BAR  ==================== */
-/* ------ base ------ */
-div.css_bar_graph div.graph li.orange
-{
-    background: #ff9000;	/* --- IE --- */
-    background: rgba(255,144,0,0.8);
-}
-
-/* ------ top ------ */
-div.css_bar_graph div.graph li.orange div.top
-{
-    background: #ffc24c;
-}
-
-/* ------ bottom ------ */
-div.css_bar_graph div.graph li.orange div.bottom
-{
-    background: #ff9000;
-}
-
-/* ==================== PURPLE BAR  ==================== */
-/* ------ base ------ */
-div.css_bar_graph div.graph li.purple
-{
-    background: #7d47ba;	/* --- IE --- */
-    background: rgba(125,71,186,0.8);
-}
-
-/* ------ top ------ */
-div.css_bar_graph div.graph li.purple div.top
-{
-    background: #b592dd;
-}
-
-/* ------ bottom ------ */
-div.css_bar_graph div.graph li.purple div.bottom
-{
-    background: #7d47ba;
-}
-
-/* ==================== RED BAR  ==================== */
-/* ------ base ------ */
-div.css_bar_graph div.graph li.red
-{
-    background: #d23648;	/* --- IE --- */
-    background: rgba(210,54,72,0.8);
-}
-
-/* ------ top ------ */
-div.css_bar_graph div.graph li.red div.top
-{
-    background: #ea828e;
-}
-
-/* ------ bottom ------ */
-div.css_bar_graph div.graph li.red div.bottom
-{
-    background: #d23648;
-}
-
-/* ==================== HOVERS  ==================== */
-div.css_bar_graph div.graph li.blue:hover
-{
-    cursor: pointer;
-    background: #208faf;
-}
-
-div.css_bar_graph div.graph li.green:hover
-{
-    cursor: pointer;
-    background: #608d00;
-}
-
-div.css_bar_graph div.graph li.orange:hover
-{
-    cursor: pointer;
-    background: #ff9000;
-}
-
-div.css_bar_graph div.graph li.purple:hover
-{
-    cursor: pointer;
-    background: #7d47ba;
-}
-
-div.css_bar_graph div.graph li.red:hover
-{
-    cursor: pointer;
-    background: #d23648;
-}
-
-div.css_bar_graph div.graph li.bar:hover span
-{
-    cursor: pointer;
-    top: -60px;
-    padding: 10px;
-    margin: 0px;
-}
-
-/* ==== Stars ======= */
-div.stars {
-    flex-direction: row-reverse;
-}
-
-input.star { display: none; }
-
-[type="radio"]:not(:checked)+label.star, [type="radio"]:checked+label.star {
-    padding: 12px;
-    font-size: 24px;
-    color: #444;
-    transition: all .2s;
-    text-align: center;
-}
-[type="radio"]:not(:checked)+label.star:before,
-[type="radio"]:not(:checked)+label.star:after {
-    border: none;
-}
-
-input.star:checked ~ label.star:before {
-    content: 'star';
-    color: #FD4;
-    transition: all .25s;
-}
-
-[type="radio"]:checked+label.star:after {
-    border: none;
-    background: none;
-}
-
-input.star-0:checked ~ label.star:before {
-    color: #FE7;
-    text-shadow: 0 0 10px #952;
-}
-
-input.star-10:checked ~ label.star:before,
-input.star-9:checked ~ label.star:before,
-input.star-8:checked ~ label.star:before,
-input.star-7:checked ~ label.star:before {
-    color: #F00;
-}
-
-input.star-6:checked ~ label.star:before,
-input.star-5:checked ~ label.star:before,
-input.star-4:checked ~ label.star:before {
-    color: #F62;
-}
-
-label.star:hover { transform: rotate(-15deg) scale(1.3); }
-
-label.star:before {
-    content: 'star_border';
-    margin: 0;
-    padding: 0;
-    width: 0;
-    height: 0;
-    position: relative;
-    /*font-family: FontAwesome;*/
+.latest-page .sidebar .widgetBox .widgetContent .media-object .media-object-section .media-content p span {
+    line-height: 13px;
 }

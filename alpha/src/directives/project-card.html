@@ -1,74 +1,73 @@
-<md-card style="position:relative;">
-    <img ng-src="{{::video.attributes.thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}" class="md-card-image image-link"
-         alt="{{::video.attributes.name}}" ui-sref="video({id: video.id})">
-    <md-card-title style="padding: 16px">
-        <md-card-title-text>
-            <a title="{{::video.attributes.name}}" class="card-title truncate black-text" ui-sref="video({id: video.id})">{{::video.attributes.name}}</a>
-                    <span class="md-caption">
-                        by
-                    <a class="action-link" ui-sref="user({id: video.attributes.owner.id})">
-                        {{::video.attributes.owner.attributes.first_name+' '+video.attributes.owner.attributes.last_name}}
-                    </a>
-            </span>
-            <md-divider></md-divider>
-            <span class="md-caption grey-text lighten-2" layout-align="flex-start center" style="padding-top: 10px">
-                <span flex>
-                    <md-icon md-svg-icon="grade" class="indigo-text" style="width: 16px;height: 16px;"></md-icon> {{::(video.attributes.iwRating|number:1)||'N/A'}}
-                    <md-tooltip>IndieWise Average</md-tooltip>
-                </span>
-                &middot;
-                <span flex>
-                    <md-icon md-svg-icon="trophy" class="orange-text" style="width: 16px;height: 16px;"></md-icon> {{::(video.attributes.awardCount)||0}}
-                    <md-tooltip>Awards</md-tooltip>
-                </span>
-                &middot;
-                <span flex>
-                    <md-icon md-svg-icon="emotion" class="deep-orange-text" style="width: 16px;height: 16px;"></md-icon> {{::(video.attributes.reactionCount)||0}}
-                    <md-tooltip>Reactions</md-tooltip>
-                </span>
-                <span ng-if="::video.attributes.unlist">&middot;</span>
-                <span flex ng-if="::video.attributes.unlist" class="red-text">
-                    <md-icon md-svg-icon="invisibility" class="red-text" style="width: 16px;height: 16px;"></md-icon>
-                    <md-tooltip md-direction="top">This video is not searchable by others.</md-tooltip>
-                </span>
-            </span>
-        </md-card-title-text>
-    </md-card-title>
-    <md-fab-speed-dial md-open="isOpenFab" md-direction="up" class="md-scale md-fab-bottom-right" style="right: -5px;bottom: 18px" ng-cloak>
-        <md-fab-trigger>
-            <md-button aria-label="menu" class="md-fab md-mini md-primary">
-                <md-icon md-svg-icon="more_vert_white"></md-icon>
-            </md-button>
-        </md-fab-trigger>
-        <md-fab-actions>
-            <md-button aria-label="Share" class="md-fab md-raised md-mini" ng-if="!$state.is('profile')"
-                       ng-click="openShareDialog(video)">
-                <md-tooltip md-direction="left" md-visible="tooltipVisible">Share</md-tooltip>
-                <md-icon md-svg-icon="share" aria-label="Share"></md-icon>
-            </md-button>
-            <md-button aria-label="Favorite" class="md-fab md-raised md-mini" ng-if="::!$state.is('profile')"
-                       ng-click="toFavorites(video, $event)">
-                <md-tooltip ng-if="faved==='blue-text'" md-direction="left" md-visible="tooltipVisible">Add to Favorites</md-tooltip>
-                <md-tooltip ng-if="faved==='red-text'" md-direction="left" md-visible="tooltipVisible">Remove from Favorites</md-tooltip>
-                <md-icon md-svg-icon="favorite" aria-label="Share" ng-class="faved"></md-icon>
-            </md-button>
-            <md-button aria-label="Watch Later" class="md-fab md-raised md-mini" ng-if="::!$state.is('profile')"
-                       ng-click="toWatchLater(video)">
-                <md-tooltip ng-if="wled==='blue-text'" md-direction="left" md-visible="tooltipVisible">Watch Later</md-tooltip>
-                <md-tooltip ng-if="wled==='red-text'" md-direction="left" md-visible="tooltipVisible">Don't Watch Later</md-tooltip>
-                <md-icon md-svg-icon="watch_later" aria-label="Watch Later" ng-class="wled"></md-icon>
-            </md-button>
-            <md-button aria-label="Delete Project" class="md-fab md-raised md-mini" ng-if="::$state.is('profile')"
-                       ng-click="deleteProject(video.id)">
-                <md-tooltip md-direction="left" md-visible="tooltipVisible">Delete Project</md-tooltip>
-                <md-icon md-svg-icon="close" aria-label="Delete Project"></md-icon>
-            </md-button>
-            <md-button aria-label="Edit" class="md-fab md-raised md-mini"
-                       ng-if="isLoggedIn.id === video.attributes.owner.id"
-                       ui-sref="video-edit({id: video.id})">
-                <md-tooltip md-direction="left" md-visible="tooltipVisible">Edit</md-tooltip>
-                <md-icon md-svg-icon="settings" aria-label="Edit"></md-icon>
-            </md-button>
-        </md-fab-actions>
-    </md-fab-speed-dial>
-</md-card>
+<div class="item large-3 medium-6 columns {{type||'grid-medium'}} project-card" ng-if="::video.name" ng-class="{'end':$last}">
+    <div class="post thumb-border">
+        <a class="post-thumb" ui-sref="video({id: video.id})">
+            <img ng-src="{{::video.thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}" alt="new video">
+            <!--<a class="hover-posts">
+                <span><i class="fa fa-play"></i>Watch Video</span>
+            </a>-->
+            <div class="video-stats clearfix">
+                <div class="thumb-stats pull-left">
+                    <i class="fa fa-star"></i>
+                    <span>{{::(video.iwRating|number:1)||'N/A'}}</span>
+                </div>
+                <div class="thumb-stats pull-left">
+                    <i class="fa fa-trophy"></i>
+                    <span>{{::(video.awardCount)||0}}</span>
+                </div>
+                <div class="thumb-stats pull-left">
+                    <i class="fa fa-smile-o"></i>
+                    <span>{{::(video.reactionCount)||0}}</span>
+                </div>
+                <div class="thumb-stats pull-right">
+                    <span>{{::video.runTime|secondsToDateTime|date:'HH:mm:ss'}}</span>
+                </div>
+            </div>
+        </a>
+        <div class="post-des">
+            <h6><a ui-sref="video({id: video.id})">{{::video.name|truncate:50}}</a></h6>
+            <div class="post-stats clearfix">
+                <p class="pull-left">
+                    <i class="fa fa-user"></i>
+                    <span><a ui-sref="user.about({id: video.owner})">{{::related.users[video.owner].firstName+' '+related.users[video.owner].lastName}}</a></span>
+                </p>
+                <p class="pull-left" ng-if="::!$state.is('profile')">
+                    <i class="fa fa-share"></i>
+                    <span><a ng-click="openShareDialog(video)">Share</a></span>
+                </p>
+                <dropdown-toggle class="pull-left" ng-if="::!$state.is('profile')" ng-click="check(video)">
+                    <toggle>
+                        <i class="fa fa-heart"></i>
+                        <span><a href="#">Add to</a></span>
+                    </toggle>
+                    <pane>
+                        <ul class="menu vertical">
+                            <li class="checkbox">
+                                <input type="checkbox" id="isFaved" ng-model="isFaved" ng-false-value="false||'login'" ng-change="toFavorites(video)">
+                                <label class="customLabel" for="isFaved">Favorites</label>
+                            </li>
+                            <li class="checkbox">
+                                <input type="checkbox" id="isSaved" ng-model="isSaved" ng-false-value="false||'login'" ng-change="toWatchLater(video)">
+                                <label class="customLabel" for="isSaved">Watch Later</label>
+                            </li>
+                        </ul>
+                    </pane>
+                </dropdown-toggle>
+                <!--<p class="pull-left" ng-if="::!$state.is('profile')">
+                    <i class="fa fa-heart" ng-class="{'primary':faved}"></i>
+                    <span><a ng-click="toFavorites(video, $event)">Fav</a></span>
+                </p>
+                <p class="pull-left" ng-if="::!$state.is('profile')">
+                    <i class="fa fa-clock-o" ng-class="{'primary':wled}"></i>
+                    <span><a ng-click="toWatchLater(video)">Save</a></span>
+                </p>-->
+            </div>
+            <div class="post-summary">
+                <p>{{::video.description|truncate:100}}</p>
+            </div>
+            <div class="post-button">
+                <a ui-sref="video({id: video.id})" class="secondary-button"><i class="fa fa-play-circle"></i>watch video</a>
+            </div>
+        </div>
+    </div>
+</div>
+

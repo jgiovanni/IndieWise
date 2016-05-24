@@ -1,0 +1,71 @@
+<div class="grey lighten-3">
+    <section class="container">
+    <md-content id="content" layout="column" layout-fill layout-padding>
+        <h1 class="md-headline">
+            <span>Advanced Search</span>
+        </h1>
+        <form flex="50" ng-submit="Results.advancedSearch()">
+            <!--<md-input-container>
+                <label>Username</label>
+                <input ng-model="Results.search.username">
+            </md-input-container>-->
+            <div layout="row">
+                <md-input-container flex-gt-xs>
+                    <label>Director</label>
+                    <input ng-model="Results.search.director">
+                </md-input-container>
+                <md-input-container flex-gt-xs>
+                    <label>Producers</label>
+                    <input ng-model="Results.search.producers">
+                </md-input-container>
+                <md-input-container flex-gt-xs>
+                    <label>Writer</label>
+                    <input ng-model="Results.search.writer">
+                </md-input-container>
+            </div>
+            <!--<div layout="row">-->
+                <md-select flex-gt-xs placeholder="Type" ng-model="Results.search.type">
+                    <md-option ng-value="type" ng-repeat="type in Results.arrs.types">{{type.attributes.name}}</md-option>
+                </md-select>
+                <md-select flex-gt-xs placeholder="Genre" ng-model="Results.search.genre">
+                    <md-option ng-value="g" ng-repeat="g in Results.arrs.genres">{{g.attributes.name}}</md-option>
+                </md-select>
+                <md-select flex-gt-xs placeholder="Country of Filming" ng-model="Results.search.country">
+                    <md-option ng-value="country" ng-repeat="country in countryList|orderBy:'attributes.name.common'">{{country.attributes.name.common}}</md-option>
+                </md-select>
+            <!--</div>-->
+            <md-button class="md-raised md-primary" type="submit">Search</md-button>
+        </form>
+        <h1 class="md-headline">
+            <!--<md-button ng-click="Results.toggleFilterNav()" class="md-accent" hide-gt-md>
+                <md-icon md-svg-icon="filter"></md-icon>
+                Filters
+            </md-button>-->
+            <span ng-show="Results.results">{{Results.results.length}} results</span>
+        </h1>      <section layout="row" layout-wrap layout-align="center flex-start">
+            <div class="collection" flex>
+                <div class="collection-item" ng-repeat="result in Results.results" layout="row" layout-padding>
+                    <div flex="25">
+                        <img class="title" style="width: 100%;" ng-if="result.className === 'Film'" ng-src="{{::result.attributes.thumbnail_url}}" ui-sref="video({id: result.id})"/>
+                        <img class="title" ng-if="result.className === '_User'" ng-src="{{::result.attributes.avatar||'./assets/img/avatar-1.png'}}" ui-sref="user({id: result.id})"/>
+                    </div>
+                    <div flex="75" ng-if="result.className === 'Film'">
+                        <a class="md-subhead" ui-sref="video({id: result.id})" ng-bind="::result.attributes.name"></a><br>
+                        <span class="md-caption">by
+                            <a class="action-link" ui-sref="user({id: video.attributes.owner.id})">
+                                {{::result.attributes.owner.attributes.first_name+' '+result.attributes.owner.attributes.last_name}}
+                            </a>
+                        </span>
+                        <span class="md-caption"><span am-time-ago="::result.createdAt"></span></span>
+                        <span class="md-caption truncate" ng-bind="::result.attributes.description"></span>
+                    </div>
+                    <div flex="75" ng-if="result.className === '_User'">
+                        <a class="md-subhead" ui-sref="user({id: result.id})" ng-bind="::result.attributes.first_name+' '+result.attributes.last_name"></a>
+                        <span class="md-caption"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </md-content>
+</section>
+    </div>

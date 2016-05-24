@@ -1,10 +1,10 @@
-<md-content flex id="content" class="md-padding">
+<!--<md-content flex id="content" class="md-padding">
     <md-icon ng-if="!UserC.user.attributes.avatar" md-svg-icon="avatar1" class="avatar"></md-icon>
     <img ng-if="UserC.user.attributes.avatar" ng-src="{{UserC.user.attributes.avatar}}" class="avatar" alt="{{UserC.user.attributes.first_name}} {{UserC.user.attributes.last_name}}">
     <h2 class="md-display-1">{{UserC.user.attributes.first_name}} {{UserC.user.attributes.last_name}}</h2>
     <h4 class="md-title">About</h4>
     <p class="md-body-1">{{UserC.user.attributes.bio}}</p>
-    <md-button class="contact" ng-click="" aria-label="Contact User">
+    <md-button class="contact" ng-click="UserC.showMessageDialog($event)" aria-label="Contact User">
         <md-tooltip>Contact {{UserC.user.attributes.first_name}} {{UserC.user.attributes.last_name}}</md-tooltip>
         <md-icon md-svg-icon="email"></md-icon>
     </md-button>
@@ -255,14 +255,14 @@
                         <md-content class="md-padding">
                             <md-list>
                                 <md-list-item class="md-2-line" ng-repeat="nom in UserC.user.nominations">
-                                    <!--<img ng-src="{{::nom.attributes.author.attributes.avatar}}" class="md-avatar" ng-if="::nom.attributes.author.attributes.avatar">-->
+                                    &lt;!&ndash;<img ng-src="{{::nom.attributes.author.attributes.avatar}}" class="md-avatar" ng-if="::nom.attributes.author.attributes.avatar">&ndash;&gt;
                                     <md-icon class="md-avatar" md-svg-icon="stars"></md-icon>
                                     <div class="md-list-item-text">
                                         <h3>
                                             Nominated for {{::nom.attributes.awardPntr.attributes.name}} by
                                             {{::nom.attributes.nominator.attributes.first_name+' '+nom.attributes.nominator.attributes.last_name}}
                                         </h3>
-                                        <!--<p ng-bind="::nom.attributes.body"></p>-->
+                                        &lt;!&ndash;<p ng-bind="::nom.attributes.body"></p>&ndash;&gt;
                                         <small ng-bind="::nom.createdAt|date:'mediumDate'"></small>
                                     </div>
                                 </md-list-item>
@@ -273,7 +273,7 @@
                         <md-content class="md-padding">
                             <md-list>
                                 <md-list-item class="" ng-repeat="win in UserC.myWins">
-                                    <!--<img ng-src="{{::nom.attributes.author.attributes.avatar}}" class="md-avatar" ng-if="::nom.attributes.author.attributes.avatar">-->
+                                    &lt;!&ndash;<img ng-src="{{::nom.attributes.author.attributes.avatar}}" class="md-avatar" ng-if="::nom.attributes.author.attributes.avatar">&ndash;&gt;
                                     <md-icon class="md-avatar" md-svg-icon="stars"></md-icon>
                                     <p>
                                         {{::win.attributes.award.attributes.name}} for <a ui-sref="video({id: win.attributes.film.id})">{{::win.attributes.film.attributes.name}}</a>
@@ -287,4 +287,154 @@
             </md-content>
         </md-tab>
     </md-tabs>
-</md-content>
+</md-content>-->
+
+<!--breadcrumbs-->
+<section id="breadcrumb">
+    <div class="row">
+        <div class="large-12 columns">
+            <nav aria-label="You are here:" role="navigation">
+                <ul class="breadcrumbs">
+                    <li><i class="fa fa-home"></i><a href="index.html">Home</a></li>
+                    <li>
+                        <span class="show-for-sr">Current: </span> {{::UserC.user.firstName+' '+UserC.user.lastName}} Profile
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section><!--end breadcrumbs-->
+
+<!-- profile top section -->
+<section class="topProfile">
+    <div class="main-text text-center">
+        <div class="row">
+            <!--<div class="large-12 columns">
+                <h3>World’s Biggest</h3>
+                <h1>Powerfull Video Theme</h1>
+            </div>-->
+        </div>
+    </div>
+    <div class="profile-stats">
+        <div class="row secBg">
+            <div class="large-12 columns">
+                <div class="profile-author-img">
+                    <img ng-src="{{::UserC.user.avatar || './assets/img/avatar-1.png'}}" alt="profile author img">
+                </div>
+                <div class="profile-subscribe">
+                    <span><i class="fa fa-comment"></i></span>
+                    <button type="submit" name="subscribe" ng-click="UserC.showMessageDialog()">send message</button>
+                </div>
+                <div class="profile-share">
+                    <div class="easy-share" data-easyshare data-easyshare-http data-easyshare-url="">
+                        <!-- Facebook -->
+                        <button data-easyshare-button="facebook">
+                            <span class="fa fa-facebook"></span>
+                            <span>Share</span>
+                        </button>
+                        <span data-easyshare-button-count="facebook">0</span>
+
+                        <!-- Twitter -->
+                        <button data-easyshare-button="twitter" data-easyshare-tweet-text="">
+                            <span class="fa fa-twitter"></span>
+                            <span>Tweet</span>
+                        </button>
+                        <span data-easyshare-button-count="twitter">0</span>
+
+                        <!-- Google+ -->
+                        <button data-easyshare-button="google">
+                            <span class="fa fa-google-plus"></span>
+                            <span>+1</span>
+                        </button>
+                        <span data-easyshare-button-count="google">0</span>
+
+                        <div data-easyshare-loader>Loading...</div>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <div class="profile-author-name float-left">
+                        <h4>{{::UserC.user.firstName+' '+UserC.user.lastName}}</h4>
+                        <p>Join Date : <span>{{::UserC.user.createdAt|date:'fullDate'}}</span></p>
+                    </div>
+                    <div class="profile-author-stats float-right">
+                        <ul class="menu">
+                            <li>
+                                <div class="icon float-left">
+                                    <i class="fa fa-video-camera"></i>
+                                </div>
+                                <div class="li-text float-left">
+                                    <p class="number-text">36</p>
+                                    <span>Videos</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="icon float-left">
+                                    <i class="fa fa-heart"></i>
+                                </div>
+                                <div class="li-text float-left">
+                                    <p class="number-text">50</p>
+                                    <span>favorites</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="icon float-left">
+                                    <i class="fa fa-users"></i>
+                                </div>
+                                <div class="li-text float-left">
+                                    <p class="number-text">6</p>
+                                    <span>followers</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="icon float-left">
+                                    <i class="fa fa-comments-o"></i>
+                                </div>
+                                <div class="li-text float-left">
+                                    <p class="number-text">26</p>
+                                    <span>comments</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End profile top section -->
+
+<div class="row">
+    <!-- left sidebar -->
+    <div class="large-4 columns">
+        <aside class="secBg sidebar">
+            <div class="row">
+                <!-- profile overview -->
+                <div class="large-12 columns">
+                    <div class="widgetBox">
+                        <div class="widgetTitle">
+                            <h5>Profile Overview</h5>
+                        </div>
+                        <div class="widgetContent">
+                            <ul class="profile-overview">
+                                <li class="clearfix"><a ui-sref="user.about({id: UserC.user.id})" ui-sref-active="active"><i class="fa fa-user"></i>about me</a></li>
+                                <li class="clearfix"><a ui-sref="user.videos({id: UserC.user.id})" ui-sref-active="active"><i class="fa fa-video-camera"></i>Videos <span class="float-right">36</span></a></li>
+                                <li class="clearfix"><a ui-sref="user.critiques({id: UserC.user.id})" ui-sref-active="active"><i class="fa fa-heart"></i>Critiques<span class="float-right">50</span></a></li>
+                                <li class="clearfix"><a ui-sref="user.reactions({id: UserC.user.id})" ui-sref-active="active"><i class="fa fa-users"></i>Reactions<span class="float-right">6</span></a></li>
+                                <li class="clearfix"><a ui-sref="user.awards({id: UserC.user.id})" ui-sref-active="active"><i class="fa fa-trophy"></i>Awards<span class="float-right">26</span></a></li>
+                                <!--<li class="clearfix"><a ui-sref="user.settings({id: UserC.user.id})" ui-sref-active="active"><i class="fa fa-gears"></i>Profile Settings</a></li>-->
+                                <li class="clearfix"><a ng-click=""><i class="fa fa-sign-out"></i>Logout</a></li>
+                            </ul>
+                            <a href="submit-post.html" class="button"><i class="fa fa-plus-circle"></i>Upload Video</a>
+                        </div>
+                    </div>
+                </div><!-- End profile overview -->
+            </div>
+        </aside>
+    </div><!-- end sidebar -->
+    <!-- right side content area -->
+    <div ui-view class="large-8 columns profile-inner">
+
+
+    </div><!-- end left side content area -->
+
+</div>

@@ -1,46 +1,28 @@
-<md-list ng-if="comment.attributes.replyCount" layout="row" layout-align="end flex-start" layout-wrap>
-    <md-list-item flex="95" ng-if="!comment.repliesLoaded" ng-click="loadReplies(comment)" style="height: 40px;">
-        <md-icon md-svg-icon="add_circle"></md-icon>
-        <p>{{comment.attributes.replyCount}} replies</p>
-    </md-list-item>
-    <md-list-item flex="95" ng-if="comment.repliesLoaded" class="md-3-line"
-                  ng-class="{'secondary-button-padding': reply.attributes.author.id === model.isLoggedIn.id&&!!editCommentMode&&editComment.id===reply.id}"
-                  ng-repeat-start="reply in comment.replies|orderBy:'createdAt'">
-        <img ng-src="{{::reply.attributes.author.attributes.avatar || './assets/img/avatar-1.png'}}" class="md-avatar">
-
-        <div class="md-list-item-text">
-            <h3>
-                <a ui-sref="user({id: reply.attributes.author.id})">
-                    {{::reply.attributes.author.attributes.first_name+' '+reply.attributes.author.attributes.last_name}}
-                </a>
-                <abbr title="{{::reply.createdAt|date:'medium'}}" am-time-ago="::reply.createdAt"
-                      class="md-caption"></abbr>
-                <span class="grey-text md-caption" ng-if="reply.attributes.editedAt">&middot;&nbsp;Edited:
-                    <abbr title="{{reply.attributes.editedAt|date:'medium'}}"
-                          am-time-ago="reply.attributes.editedAt" class=""></abbr>
-                </span>
-            </h3>
-
-            <p ng-show="editComment.id!=reply.id" ng-bind="reply.attributes.body"></p>
-            <edit-comment-block ng-if="reply.attributes.author.id === model.isLoggedIn.id && !!editCommentMode"></edit-comment-block>
-
-            <p ng-show="editComment.id!=reply.id">
-                <a ng-if="reply.attributes.author.id === model.isLoggedIn.id"
-                   ng-click="toggleEditCommentMode(reply)"
-                   class="md-warn md-caption action-link">Edit</a>
-                <span ng-if="reply.attributes.author.id === model.isLoggedIn.id">&nbsp;&middot;&nbsp;</span>
-                <a ng-if="reply.attributes.author.id === model.isLoggedIn.id"
-                   ng-click="deleteComment(reply)"
-                   class="md-warn md-caption action-link">Delete</a>
-                <span ng-if="reply.attributes.author.id === model.isLoggedIn.id">&nbsp;&middot;&nbsp;</span>
-                <a ng-click="toggleReplyInput(reply)"
-                   class="md-warn md-caption action-link">Reply</a>
-            </p>
-
-            <p class="hint" ng-if="reply.attributes.author.id === model.isLoggedIn.id" ng-show="editCommentMode">
-                <a ng-click="toggleEditCommentMode(reply)" class="md-warn md-caption action-link">Cancel Edit</a>
-            </p>
+<div class="">
+    <div class="media-object stack-for-small reply-comment" ng-repeat-start="reply in comment.replies">
+        <div class="media-object-section comment-img text-center">
+            <div class="comment-box-img">
+                <img ng-src="{{::reply.author.avatar || './assets/img/avatar-1.png'}}" alt="comment">
+            </div>
         </div>
-    </md-list-item>
+        <div class="media-object-section comment-desc">
+            <div class="comment-title">
+                <span class="name"><a ui-sref="user.about({id: reply.author.id})">{{::reply.author.firstName+' '+reply.author.lastName}}</a> Said:</span>
+            <span class="time float-right"><i class="fa fa-clock-o"></i>
+                <abbr title="{{::reply.createdAt|date:'medium'}}" am-time-ago="::reply.createdAt"></abbr>
+            </span>
+            </div>
+            <div class="comment-text">
+                <p ng-show="editComment.id!=reply.id" ng-bind="reply.body"></p>
+                <edit-comment-block ng-if="reply.author.id === model.isLoggedIn.id && !!editCommentMode"></edit-comment-block>
+            </div>
+            <div class="comment-btns">
+            <span><a href="#"><i class="fa fa-thumbs-o-up"></i></a> | <a href="#"><i
+                    class="fa fa-thumbs-o-down"></i></a></span>
+                <span><a ng-click="toggleReplyInput(reply)"><i class="fa fa-share"></i>Reply</a></span>
+                <!--<span toggle-replies class='reply float-right'></span>-->
+            </div>
+        </div>
+    </div>
     <reply-block flex="95" ng-repeat-end target-comment="targetComment" parent="commentsParent" ng-if="!!showReplyInput && targetComment == reply"></reply-block>
-</md-list>
+</div>

@@ -1,129 +1,170 @@
 <div class="grey lighten-3">
     <section class="container">
-    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="ConvoNav">
-        <md-content layout-padding>
-            <h1 flex="100" class="md-subhead text-center">Inbox</h1>
-            <md-list>
-                <md-list-item ng-repeat="convo in Msgs.convos|orderBy:'-updatedAt'" class="md-2-line" aria-label="Convo {{$index}}"
-                              ng-click="Msgs.selectConvo(convo)">
-                    <!--<md-icon md-svg-icon="comment"></md-icon>-->
-                    <div class="md-list-item-text">
-                        <h3>
+        <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="ConvoNav">
+            <md-content layout-padding>
+                <h1 flex="100" class="md-subhead text-center">Inbox</h1>
+                <md-list>
+                    <md-list-item ng-repeat="convo in Msgs.convos|orderBy:'-updatedAt'" class="md-2-line"
+                                  aria-label="Convo {{$index}}"
+                                  ng-click="Msgs.selectConvo(convo)">
+                        <!--<md-icon md-svg-icon="comment"></md-icon>-->
+                        <div class="md-list-item-text">
+                            <h3>
                         <span ng-repeat="p in convo.participants">
                             {{::p.attributes.first_name+' '+p.attributes.last_name}}<span ng-if="!$last">, </span>
                         </span>
-                        </h3>
-                        <abbr title="{{::convo.updatedAt|date:'medium'}}" am-time-ago="::convo.updatedAt"></abbr>
-                    </div>
-                </md-list-item>
-            </md-list>
-        </md-content>
-    </md-sidenav>
-    <md-content layout="row" layout-padding layout-wrap>
-        <div flex flex-lg="30" flex-gt-lg="40" hide-sm hide-md>
-            <div layout="column" layout-fill>
-                <h1 class="md-subhead">Inbox</h1>
-                <md-list>
-                    <md-list-item ng-repeat="convo in Msgs.convos|orderBy:'-updatedAt'" class="md-2-line flat"
-                                  ng-click="Msgs.selectConvo(convo)" aria-label="View Conversation" ng-class="{true:'blue lighten-5', false:''}[Msgs.selectedConvo.id == convo.id]">
-                        <!--<md-icon md-svg-icon="comment"></md-icon>-->
-                        <div class="md-list-item-text">
-                            <h3 class="truncate">
+                            </h3>
+                            <abbr title="{{::convo.updatedAt|date:'medium'}}" am-time-ago="::convo.updatedAt"></abbr>
+                        </div>
+                    </md-list-item>
+                </md-list>
+            </md-content>
+        </md-sidenav>
+        <md-content layout="row" layout-padding layout-wrap>
+            <md-toolbar md-scroll-shrink class="white" style="border-bottom: 1px solid #eee;">
+                <div class="md-toolbar-tools">
+                    <h3 class="black-text" hide-xs hide-sm hide-md>
+                        <span>Inbox</span>
+                    </h3>
+                    <md-button ng-click="Msgs.toggleConvoNav()" class="md-accent" hide-gt-md>
+                        <md-icon md-svg-icon="menu"></md-icon>
+                        Inbox
+                    </md-button>
+                    <span flex></span>
+                    <md-button ng-click="Msgs.newConversation()" class="md-raised md-primary">New Message</md-button>
+                    <md-menubar ng-if="Msgs.selectedConvo&&!Msgs.newMode">
+                        <md-menu md-position-mode="target-right target">
+                            <md-button aria-label="Actions" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                                <md-icon md-svg-icon="settings"></md-icon>
+                            </md-button>
+                            <md-menu-content width="6">
+                                <md-menu-item>
+                                    <md-button ng-click="Msgs.deleteConvo()">Delete Conversation</md-button>
+                                </md-menu-item>
+                            </md-menu-content>
+                        </md-menu>
+                    </md-menubar>
+                </div>
+            </md-toolbar>
+            <div flex flex-lg="30" flex-gt-lg="30" hide-sm hide-md class="no-padding">
+                <div layout="column" layout-fill>
+                    <md-list class="no-padding" style="border: 1px solid #eeeeee;border-top:none;">
+                        <md-list-item ng-repeat="convo in Msgs.convos|orderBy:'-updatedAt'" class="md-3-line flat"
+                                      ng-click="Msgs.selectConvo(convo)" aria-label="View Conversation"
+                                      ng-class="{true:'blue lighten-5', false:''}[Msgs.selectedConvo.id == convo.id]">
+                            <img ng-src="{{::msg.attributes.from.attributes.avatar || './assets/img/avatar-1.png'}}"
+                                 class="md-avatar">
+
+                            <div class="md-list-item-text" layout="column">
+                                <h3 class="truncate">
                                 <span ng-repeat="p in convo.participants">
                                     {{::p.attributes.first_name}}
                                     <span ng-if="!$last">, </span>
                                 </span>
-                            </h3>
-                            <p class="truncate">
-                                <span>{{convo.latest.attributes.from.attributes.first_name}}</span>
-                                :&nbsp;
-                                <span ng-bind="convo.latest.attributes.body|limitTo:100"></span>
-                            </p>
-                            <abbr title="{{::convo.updatedAt|date:'medium'}}" am-time-ago="::convo.updatedAt"></abbr>
-                        </div>
-                        <md-divider ng-if="!$last"></md-divider>
+                                </h3>
+                                <h4 class="truncate">
+                                    <span>{{convo.latest.attributes.from.attributes.first_name}}</span>
+                                    :&nbsp;
+                                    <span ng-bind="convo.latest.attributes.body|limitTo:15"></span><span
+                                        ng-if="convo.latest.attributes.body.length>15">...</span>
+                                </h4>
+
+                                <p title="{{::convo.updatedAt|date:'medium'}}" am-time-ago="::convo.updatedAt"></p>
+                            </div>
+                            <md-divider ng-if="!$last"></md-divider>
+                        </md-list-item>
+                    </md-list>
+                </div>
+            </div>
+            <div flex flex-lg="70" flex-gt-lg="70" style="height:600px">
+                <div id="newConversationArea" layout="column" ng-if="!!Msgs.newMode">
+                    <md-contact-chips
+                            ng-model="Msgs.newConvo.participants"
+                            md-contacts="Msgs.querySearch($query)"
+                            md-contact-name="name"
+                            md-contact-image="image"
+                            md-contact-email="email"
+                            md-require-match="true"
+                            md-highlight-flags="i"
+                            filter-selected="true"
+                            placeholder="To">
+                    </md-contact-chips>
+                    <md-list-item class="md-3-line secondary-button-padding" layout="row" layout-lt-md="column"
+                                  layout-align="center center">
+                        <form name="newMsgForm" id="newMsgForm" ng-submit="Msgs.postNewMsg()" flex layout="row"
+                              layout-lt-md="column" layout-align="center center">
+                            <md-input-container flex>
+                                <label for="mewMsgFormTxt">Send new message</label>
+                                <input id="mewMsgFormTxt" type="text" ng-model="Msgs.newConvo.body" columns="1"
+                                       md-maxlength="500" required/>
+                            </md-input-container>
+                        </form>
+                        <md-button form="newMsgForm" type="submit" class="md-primary md-secondary">Send</md-button>
                     </md-list-item>
-                </md-list>
-            </div>
-        </div>
-        <div flex flex-lg="70" flex-gt-lg="60">
-            <h1 class="md-headline" layout="row">
-                <md-button ng-click="Msgs.toggleConvoNav()" class="md-accent" hide-gt-md>
-                    <md-icon md-svg-icon="menu"></md-icon>
-                    Inbox
-                </md-button>
-
-                <span flex></span>
-                <!--<md-button ng-click="Msgs.newConversation()">New Message</md-button>-->
-                <!--<md-menubar>
-                    <md-menu md-position-mode="target-right target">
-                        <md-button aria-label="Actions" class="md-icon-button" ng-click="$mdOpenMenu($event)">
-                            <md-icon md-svg-icon="settings"></md-icon>
-                        </md-button>
-                        <md-menu-content width="6">
-                            <md-menu-item>
-                                <md-button>Testing</md-button>
-                            </md-menu-item>
-                        </md-menu-content>
-                    </md-menu>
-                </md-menubar>-->
-
-            </h1>
-            <div class="md-contact-chips">
-                <md-chips ng-model="Msgs.selectedConvo.participants" readonly="true">
-                    <md-chip-template>
-                        <div class="md-contact-avatar">
-                            <img ng-if="::!$chip.attributes.avatar" ng-src="./assets/img/avatar-1.png"
-                                 data-pin-nopin="true">
-                            <img ng-if="::$chip.attributes.avatar"
-                                 ng-src="{{::$chip.attributes.avatar}}"
-                                 ng-if="::$chip.attributes.avatar" data-pin-nopin="true">
-                        </div>
-                        <div class="md-contact-name">{{::$chip.attributes.first_name+' '+$chip.attributes.last_name}}</div>
-                    </md-chip-template>
-                </md-chips>
-            </div>
-            <md-list>
-                <!--<md-list-item ng-click="Msg.toggleCommentInput()">
-                    <md-icon aria-label="msg" md-svg-icon="msg"></md-icon>
-                    <p>Post msg</p>
-                </md-list-item>
-                <form ng-if="!!Msg.showCommentInput" ng-submit="Msg.postComment()" layout="row" layout-lt-md="column" class="md-padding">
-                    <md-input-container flex>
-                        <label>msg</label>
-                        <textarea ng-model="Msg.myComment" columns="1" md-maxlength="500" required></textarea>
-                    </md-input-container>
-                    <md-button flex="5" flex-sm type="submit" class="md-primary" style="text-align: center;">Send</md-button>
-                </form>-->
-                <md-list-item class="md-3-line md-long-text" ng-repeat="msg in Msgs.messages|orderBy:'createdAt'">
-                    <img ng-src="{{::msg.attributes.from.attributes.avatar || './assets/img/avatar-1.png'}}" class="md-avatar">
-
-                    <div class="md-list-item-text">
-                        <h3>
-                            {{::msg.attributes.from.attributes.first_name+' '+msg.attributes.from.attributes.last_name}}
-                            <abbr title="{{::msg.createdAt|date:'medium'}}" am-time-ago="::msg.createdAt" class="md-caption"></abbr>
-                        </h3>
-                        <p ng-bind="::msg.attributes.body"></p>
-
-                        <p>
-                            <a ng-if="msg.attributes.from.id === isLoggedIn.id" ng-click="Msgs.deleteMsg(msg)"
-                               class="md-warn md-caption action-link">Delete</a>
-                        </p>
+                </div>
+                <div id="currentConversationArea" layout="column" ng-if="!Msgs.newMode">
+                    <div class="md-contact-chips">
+                        <md-chips ng-model="Msgs.selectedConvo.participants" readonly="true">
+                            <md-chip-template>
+                                <div class="md-contact-avatar">
+                                    <img ng-src="{{::$chip.attributes.avatar||'./assets/img/avatar-1.png'}}"
+                                         data-pin-nopin="true">
+                                </div>
+                                <div class="md-contact-name">{{::$chip.attributes.first_name+'
+                                    '+$chip.attributes.last_name}}
+                                </div>
+                            </md-chip-template>
+                        </md-chips>
                     </div>
-                    <md-divider md-inset ng-if="!$last"></md-divider>
-                </md-list-item>
-                <form ng-show="Msgs.selectedConvo" ng-submit="Msgs.postReply()" layout="row" layout-lt-md="column"
-                      class="md-padding">
-                    <md-input-container flex>
-                        <label>Reply</label>
-                        <input type="text" ng-model="Msgs.myReply" columns="1" md-maxlength="500" required/>
-                    </md-input-container>
-                    <md-button flex="5" flex-sm type="submit" class="md-primary" style="text-align: center;">Send
-                    </md-button>
-                </form>
-            </md-list>
-        </div>
+                    <md-list>
+                        <!--<md-list-item ng-click="Msg.toggleCommentInput()">
+                            <md-icon aria-label="msg" md-svg-icon="msg"></md-icon>
+                            <p>Post msg</p>
+                        </md-list-item>
+                        <form ng-if="!!Msg.showCommentInput" ng-submit="Msg.postComment()" layout="row" layout-lt-md="column" class="md-padding">
+                            <md-input-container flex>
+                                <label>msg</label>
+                                <textarea ng-model="Msg.myComment" columns="1" md-maxlength="500" required></textarea>
+                            </md-input-container>
+                            <md-button flex="5" flex-sm type="submit" class="md-primary" style="text-align: center;">Send</md-button>
+                        </form>-->
+                        <md-list-item class="md-3-line md-long-text"
+                                      ng-repeat="msg in Msgs.messages|orderBy:'createdAt'">
+                            <img ng-src="{{::msg.attributes.from.attributes.avatar || './assets/img/avatar-1.png'}}"
+                                 class="md-avatar">
 
-    </md-content>
-</section>
+                            <div class="md-list-item-text">
+                                <h3>
+                                    {{::msg.attributes.from.attributes.first_name+'
+                                    '+msg.attributes.from.attributes.last_name}}
+                                    <abbr title="{{::msg.createdAt|date:'medium'}}" am-time-ago="::msg.createdAt"
+                                          class="md-caption"></abbr>
+                                </h3>
+
+                                <p ng-bind="::msg.attributes.body"></p>
+
+                                <p>
+                                    <a ng-if="msg.attributes.from.id === isLoggedIn.id" ng-click="Msgs.deleteMsg(msg)"
+                                       class="md-warn md-caption action-link">Delete</a>
+                                </p>
+                            </div>
+                            <md-divider md-inset ng-if="!$last"></md-divider>
+                        </md-list-item>
+                        <form ng-show="Msgs.selectedConvo" ng-submit="Msgs.postReply()" layout="row"
+                              layout-lt-md="column"
+                              class="md-padding">
+                            <md-input-container flex>
+                                <label>Reply</label>
+                                <input type="text" ng-model="Msgs.myReply" columns="1" md-maxlength="500" required/>
+                            </md-input-container>
+                            <md-button flex="5" flex-sm type="submit" class="md-primary" style="text-align: center;">
+                                Send
+                            </md-button>
+                        </form>
+                    </md-list>
+                </div>
+            </div>
+
+        </md-content>
+    </section>
 </div>

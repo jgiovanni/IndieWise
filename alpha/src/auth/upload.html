@@ -8,7 +8,7 @@
                 </md-input-container>
                 <md-input-container flex>
                     <label>Date of Completion</label>
-                    <input type="month" ng-model="UC.dateOfCompl" max="UC.maxDate" required />
+                    <input type="month" ng-model="UC.dateOfCompl" max="UC.maxDate" required/>
                 </md-input-container>
             </div>
             <div layout layout-lt-md="column">
@@ -40,7 +40,8 @@
                         <div class="md-ripple-container"></div>
                     </md-option>
                     <md-divider></md-divider>
-                    <md-option ng-value="l.id" ng-repeat="l in languageList|orderBy:'attributes.English'" class="md-accent">
+                    <md-option ng-value="l.id" ng-repeat="l in languageList|orderBy:'attributes.English'"
+                               class="md-accent">
                         {{l.attributes.English}}
                     </md-option>
                 </md-select>
@@ -111,7 +112,12 @@
                                          width="100%" height="200"></embed-video>
                         </div>
                     </div>
-                    <div flex layout="column" layout-align="center top">
+                    <div flex layout="column">
+                        <md-switch ng-model="uploadOwnArt" aria-label="Private" style="margin: 0;">
+                            Upload your own video thumbnail/artwork ?
+                        </md-switch>
+                    </div>
+                    <div flex layout="column" layout-align="center top" ng-if="!uploadOwnArt">
                         <md-input-container flex>
                             <label>Poster Artwork/Video Thumbnail URL</label>
                             <input type="url" ng-model="UC.newVideo.thumbnailUrl">
@@ -121,7 +127,23 @@
                             <img ng-if="UC.newVideo.thumbnailUrl != ''" ng-src="{{UC.newVideo.thumbnailUrl}}"
                                  alt="Video Thumbnail URL">
                         </div>
-
+                    </div>
+                    <div flex layout="column" layout-align="center top" ng-if="!!uploadOwnArt">
+                        <md-card flow-init="{target: 'utils/upload_artwork.php',}" flow flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
+                                 flow-files-submitted="$flow.upload()" flow-complete="UC.uploadArtwork($flow)">
+                            <img ng-hide="$flow.files.length" ng-src="{{UC.newVideo.thumbnailUrl||'./assets/img/default_video_thumbnail.jpg'}}"
+                                 class="md-card-image" alt="Avatar" style="max-width: 560px"/>
+                            <img ng-show="$flow.files.length" flow-img="$flow.files[0]" class="md-card-image" style="max-width: 560px"/>
+                            <md-card-actions layout="row" layout-align="end center">
+                                <md-button class="" ng-hide="$flow.files.length" flow-btn
+                                           flow-attrs="{accept:'image/*'}">Select image
+                                </md-button>
+                                <md-button class="" ng-show="$flow.files.length" flow-btn
+                                           flow-attrs="{accept:'image/*'}">Change
+                                </md-button>
+                                <md-button class="" ng-show="$flow.files.length" ng-click="$flow.cancel()">
+                            </md-card-actions>
+                        </md-card>
                     </div>
                 </div>
             </fieldset>
@@ -130,11 +152,11 @@
                 <legend>Optional Details</legend>
                 <div layout layout-lt-md="column">
                     <md-chips flex
-                            ng-model="UC.newVideo.tags"
-                            placeholder="Enter a tag"
-                            delete-button-label="Remove Tag"
-                            delete-hint="Press delete to remove tag"
-                            secondary-placeholder="Tags"></md-chips>
+                              ng-model="UC.newVideo.tags"
+                              placeholder="Enter a tag"
+                              delete-button-label="Remove Tag"
+                              delete-hint="Press delete to remove tag"
+                              secondary-placeholder="Tags"></md-chips>
                     <br/>
                     <!--<md-select flex placeholder="Country of Origin" ng-model="UC.newVideo.originCountry"
                                md-on-open="UC.getCountries()" style="min-width: 200px;">

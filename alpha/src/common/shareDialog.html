@@ -1,21 +1,17 @@
-<md-button socialshare socialshare-provider="facebook" socialshare-url="{{::shareLink}}"
-           socialshare-via="150687055270744" socialshare-media="{{::video.attributes.thumbnail_url}}">
-    <md-icon md-svg-icon="facebook" ></md-icon>
-    Facebook
-</md-button>
-<md-button socialshare socialshare-provider="twitter" socialshare-url="{{::shareLink}}">
-    <md-icon md-svg-icon="twitter" ></md-icon>
-    Twitter
-</md-button>
-<md-button socialshare socialshare-provider="google+" socialshare-url="{{::shareLink}}">
-    <md-icon md-svg-icon="google-plus" ></md-icon>
-    Google+
-</md-button>
-<md-button socialshare socialshare-provider="reddit" socialshare-url="{{::shareLink}}">
-    <md-icon md-svg-icon="reddit" ></md-icon>
-    Reddit
-</md-button>
-<md-button socialshare socialshare-provider="pinterest" socialshare-url="{{::shareLink}}">
-    <md-icon md-svg-icon="pinterest" ></md-icon>
-    Pinterest
-</md-button>
+<div class="sidebar" style="padding: 0;margin: 0;z-index: 0">
+    <div class="widgetBox" style="margin: 0;">
+        <div class="widgetContent">
+            <ul class="expanded profile-overview">
+                <li class="clearfix"><a socialshare socialshare-provider="facebook" socialshare-url="{{::shareLink}}"
+                                        socialshare-via="150687055270744" socialshare-media="{{::video.attributes.thumbnail_url}}"><i class="fa fa-facebook"></i>Facebook</a></li>
+                <li class="clearfix"><a socialshare socialshare-provider="twitter" socialshare-url="{{::shareLink}}"><i class="fa fa-twitter"></i>Twitter</a></li>
+                <li class="clearfix"><a socialshare socialshare-provider="google+" socialshare-url="{{::shareLink}}"><i class="fa fa-google-plus"></i>Google+</a></li>
+                <li class="clearfix"><a socialshare socialshare-provider="reddit" socialshare-url="{{::shareLink}}"><i class="fa fa-reddit"></i>Reddit</a></li>
+                <li class="clearfix"><a socialshare socialshare-provider="pinterest" socialshare-url="{{::shareLink}}"><i class="fa fa-pinterest"></i>Pinterest</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<button ng-click="cancel()" class="close-button" aria-label="Close reveal" type="button">
+    <span aria-hidden="true">&times;</span>
+</button>

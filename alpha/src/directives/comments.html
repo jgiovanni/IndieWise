@@ -1,59 +1,194 @@
-<md-content class="md-padding" ng-if="!disable">
+<section class="content comments" ng-if="!disable" ng-init="sortOrder='-createdAt'">
+    <div class="row secBg">
+        <div class="large-12 columns">
+            <div class="main-heading borderBottom">
+                <div class="row padding-14">
+                    <div class="medium-12 small-12 columns">
+                        <div class="head-title">
+                            <i class="fa fa-comments"></i>
+                            <h4>Comments <span>({{comments.totalRows}})</span></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comment-box thumb-border">
+                <div class="media-object stack-for-small">
+                    <div class="media-object-section comment-img text-center">
+                        <div class="comment-box-img">
+                            <img ng-src="{{model.isLoggedInData.avatar || './assets/img/avatar-1.png'}}" alt="comment">
+                        </div>
+                        <h6><a ui-sref="user.about({id: model.isLoggedIn.userId})">{{model.isLoggedIn.fullName}}</a></h6>
+                    </div>
+                    <div class="media-object-section comment-textarea">
+                        <form name="commentForm" id="commentForm" ng-submit="postComment()">
+                            <textarea name="commentText" placeholder="Add a comment here.."
+                                      linkify ng-model="model.myComment" ng-minlength="1"></textarea>
+                            <input type="submit" name="submit" value="send">
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comment-sort text-right">
+                <span>Sort By : <a ng-class="{'active':sortOrder=='-createdAt'}" ng-click="sortOrder='-createdAt'">newest</a> | <a ng-class="{'active':sortOrder=='createdAt'}" ng-click="sortOrder='createdAt'">oldest</a></span>
+            </div>
+
+            <!-- main comment -->
+            <div class="main-comment showmore_one" toggle-show-more>
+                <div class="media-object stack-for-small" ng-repeat="comment in comments.data|orderBy:sortOrder"
+                     ng-init="comment.replies=[];comment.showReplies=false;">
+                    <div class="media-object-section comment-img text-center">
+                        <div class="comment-box-img">
+                            <img ng-src="{{::comments.relatedObjects.users[comment.author].avatar || './assets/img/avatar-1.png'}}" alt="comment">
+                        </div>
+                    </div>
+                    <div class="media-object-section comment-desc">
+                        <div class="comment-title">
+                            <span class="name"><a ui-sref="user.about({id: comment.author})">
+                                {{::comments.relatedObjects.users[comment.author].firstName+' '+comments.relatedObjects.users[comment.author].lastName}}</a> Said:
+                            </span>
+                            <span class="time float-right"><i class="fa fa-clock-o"></i>
+                                <abbr title="{{::comment.createdAt|date:'medium'}}"
+                                      am-time-ago="::comment.createdAt"></abbr>
+                            </span>
+                        </div>
+                        <div class="comment-text">
+                            <p ng-bind="comment.body"></p>
+                        </div>
+                        <div class="comment-btns">
+                            <span><a href="#"><i class="fa fa-thumbs-o-up"></i></a> | <a href="#"><i
+                                    class="fa fa-thumbs-o-down"></i></a></span>
+                            <span><a ng-click="toggleReplyInput(comment)"><i class="fa fa-share"></i>Reply</a></span>
+                            <span toggle-replies ng-if="comment.replyCount" class='reply float-right'></span>
+                        </div>
+
+                        <reply-block target-comment="targetComment" parent="commentsParent"
+                                     ng-if="!!showReplyInput && targetComment == comment"></reply-block>
+
+                        <!--sub comment-->
+                        <div class="media-object stack-for-small reply-comment" ng-repeat-start="reply in comment.replies">
+                            <div class="media-object-section comment-img text-center">
+                                <div class="comment-box-img">
+                                    <img ng-src="{{::comments.relatedObjects.users[reply.author].avatar || './assets/img/avatar-1.png'}}"
+                                         alt="comment">
+                                </div>
+                            </div>
+                            <div class="media-object-section comment-desc">
+                                <div class="comment-title">
+                                    <span class="name"><a ui-sref="user.about({id: reply.author.id})">{{::comments.relatedObjects.users[reply.author].first_name+' '+comments.relatedObjects.users[reply.author].last_name}}</a> Said:</span>
+                                    <span class="time float-right"><i class="fa fa-clock-o"></i>
+                                        <abbr title="{{::reply.createdAt|date:'medium'}}" am-time-ago="::reply.createdAt"></abbr>
+                                    </span>
+                                </div>
+                                <div class="comment-text">
+                                    <p ng-show="editComment.id!=reply.id" ng-bind="reply.body"></p>
+                                    <edit-comment-block
+                                            ng-if="reply.author === model.isLoggedIn.id && !!editCommentMode"></edit-comment-block>
+                                </div>
+                                <div class="comment-btns">
+                                    <span>
+                                        <a href="#"><i class="fa fa-thumbs-o-up"></i></a> |
+                                        <a href="#"><i class="fa fa-thumbs-o-down"></i></a>
+                                    </span>
+                                    <span><a ng-click="toggleReplyInput(reply)"><i
+                                            class="fa fa-share"></i>Reply</a></span>
+                                    <!--<span toggle-replies class='reply float-right'></span>-->
+                                </div>
+                            </div>
+                        </div>
+                        <reply-block flex="95" ng-repeat-end target-comment="targetComment" parent="commentsParent"
+                                     ng-if="!!showReplyInput && targetComment == reply"></reply-block>
+                        <!-- end sub comment -->
+
+                    </div>
+                </div>
+            </div>
+            <!-- End main comment -->
+
+        </div>
+    </div>
+</section>
+
+<!--<md-content class="md-padding" ng-if="!disable">
     <md-list>
         <md-list-item class="md-3-line secondary-button-padding">
             <img ng-src="{{::AppData.User.attributes.avatar || './assets/img/avatar-1.png'}}" class="md-avatar">
-            <form name="commentForm" id="commentForm" ng-submit="postComment()" layout="row" layout-lt-md="column" class="md-padding md-list-item-text">
+
+            <form name="commentForm" id="commentForm" ng-submit="postComment()" layout="row" layout-lt-md="column"
+                  class="md-padding md-list-item-text">
                 <md-input-container flex>
                     <label>Add a comment</label>
                     <textarea linkify ng-model="model.myComment" ng-minlength="1"></textarea>
                 </md-input-container>
             </form>
-            <md-button form="commentForm" type="submit" class="md-primary md-secondary" style="text-align: center;">Send</md-button>
+            <md-button form="commentForm" type="submit" class="md-primary md-secondary" style="text-align: center;">
+                Send
+            </md-button>
         </md-list-item>
-    <md-list-item class="md-3-line" ng-repeat-start="comment in comments|orderBy:'-createdAt'" ng-init="comment.replies=[];"
-                  ng-class="{'secondary-button-padding': comment.attributes.author.id === model.model.isLoggedIn.id&&!!editCommentMode&&editComment.id===comment.id}">
-        <img ng-src="{{::comment.attributes.author.attributes.avatar || './assets/img/avatar-1.png'}}" class="md-avatar">
+        <md-list-item class="md-3-line" ng-repeat-start="comment in comments|orderBy:'-createdAt'"
+                      ng-init="comment.replies=[];"
+                      ng-class="{'secondary-button-padding': comment.attributes.author.id === model.model.isLoggedIn.id&&!!editCommentMode&&editComment.id===comment.id}">
+            <img ng-src="{{::comment.attributes.author.attributes.avatar || './assets/img/avatar-1.png'}}"
+                 class="md-avatar">
 
-        <div class="md-list-item-text">
-            <h3>
-                <a ui-sref="user({id: comment.attributes.author.id})">
-                    {{::comment.attributes.author.attributes.first_name+' '+comment.attributes.author.attributes.last_name}}
-                </a>
-                <abbr title="{{::comment.createdAt|date:'fullDate'}}"
-                      am-time-ago="::comment.createdAt" class="md-caption"></abbr>
+            <div class="md-list-item-text">
+                <h3>
+                    <a ui-sref="user.about({id: comment.attributes.author.id})">
+                        {{::comment.attributes.author.attributes.first_name+'
+                        '+comment.attributes.author.attributes.last_name}}
+                    </a>
+                    <abbr title="{{::comment.createdAt|date:'fullDate'}}"
+                          am-time-ago="::comment.createdAt" class="md-caption"></abbr>
                 <span class="grey-text md-caption" ng-if="comment.attributes.editedAt">&middot;&nbsp;Edited:
                     <abbr title="{{comment.attributes.editedAt|date:'medium'}}"
                           am-time-ago="comment.attributes.editedAt" class=""></abbr>
                 </span>
-            </h3>
+                </h3>
 
-            <p ng-show="editComment.id!=comment.id" ng-bind="comment.attributes.body"></p>
-            <edit-comment-block ng-if="comment.attributes.author.id === model.model.isLoggedIn.id&&!!editCommentMode&&editComment.id===comment.id"></edit-comment-block>
+                <p ng-show="editComment.id!=comment.id" ng-bind="comment.attributes.body"></p>
+                <edit-comment-block
+                        ng-if="comment.attributes.author.id === model.model.isLoggedIn.id&&!!editCommentMode&&editComment.id===comment.id"></edit-comment-block>
 
-            <p ng-show="editComment.id!=comment.id">
-                <a ng-if="comment.attributes.author.id === model.model.isLoggedIn.id"
-                   ng-click="toggleEditCommentMode(comment)"
-                   class="md-warn md-caption action-link">Edit</a>
-                <span ng-if="comment.attributes.author.id === model.model.isLoggedIn.id">&nbsp;&middot;&nbsp;</span>
-                <a ng-if="comment.attributes.author.id === model.model.isLoggedIn.id"
-                   ng-click="deleteComment(comment)"
-                   class="md-warn md-caption action-link">Delete</a>
-                <span ng-if="comment.attributes.author.id === model.model.isLoggedIn.id">&nbsp;&middot;&nbsp;</span>
-                <a ng-click="toggleReplyInput(comment)"
-                   class="md-warn md-caption action-link">Reply</a>
-            </p>
+                <p ng-show="editComment.id!=comment.id">
+                    <a ng-if="comment.attributes.author.id === model.model.isLoggedIn.id"
+                       ng-click="toggleEditCommentMode(comment)"
+                       class="md-warn md-caption action-link">Edit</a>
+                    <span ng-if="comment.attributes.author.id === model.model.isLoggedIn.id">&nbsp;&middot;&nbsp;</span>
+                    <a ng-if="comment.attributes.author.id === model.model.isLoggedIn.id"
+                       ng-click="deleteComment(comment)"
+                       class="md-warn md-caption action-link">Delete</a>
+                    <span ng-if="comment.attributes.author.id === model.model.isLoggedIn.id">&nbsp;&middot;&nbsp;</span>
+                    <a ng-click="toggleReplyInput(comment)"
+                       class="md-warn md-caption action-link">Reply</a>
+                </p>
 
-            <p class="hint" ng-if="comment.attributes.author.id===model.model.isLoggedIn.id&&editComment.id===comment.id" ng-show="editCommentMode">
-                <a ng-click="toggleEditCommentMode(comment)" class="md-warn md-caption action-link">Cancel Edit</a>
-            </p>
+                <p class="hint"
+                   ng-if="comment.attributes.author.id===model.model.isLoggedIn.id&&editComment.id===comment.id"
+                   ng-show="editCommentMode">
+                    <a ng-click="toggleEditCommentMode(comment)" class="md-warn md-caption action-link">Cancel Edit</a>
+                </p>
 
+            </div>
+        </md-list-item>
+        <reply-block target-comment="targetComment" parent="commentsParent"
+                     ng-if="!!showReplyInput && targetComment == comment"></reply-block>
+        <replies-block ng-repeat-end></replies-block>
+    </md-list>
+</md-content>-->
+<section class="content comments" ng-if="disable">
+    <div class="row secBg">
+        <div class="large-12 columns">
+            <div class="main-heading borderBottom">
+                <div class="row padding-14">
+                    <div class="medium-12 small-12 columns">
+                        <div class="head-title">
+                            <i class="fa fa-comments"></i>
+                            <h4>Comments are disabled by Uploader</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </md-list-item>
-    <reply-block target-comment="targetComment" parent="commentsParent"
-                 ng-if="!!showReplyInput && targetComment == comment"></reply-block>
-    <replies-block ng-repeat-end></replies-block>
-</md-list>
-</md-content>
-<md-content class="md-padding" ng-if="disable">
-    <h3 class="md-subhead">Comments are disabled by Uploader</h3>
-</md-content>
+    </div>
+</section>

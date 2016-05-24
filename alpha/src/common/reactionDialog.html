@@ -1,35 +1,56 @@
-<md-dialog aria-label="Reaction">
-    <form ng-submit="postCritique()">
-        <md-toolbar class=" md-accent md-hue-2">
-            <div class="md-toolbar-tools">
-                <h2>How did this make you feel?</h2>
-                <span flex></span>
-                <md-button class="md-icon-button" type="button" ng-click="closeDialog()" aria-label="Close">
-                    <md-icon md-svg-icon="close"></md-icon>
-                </md-button>
+<div aria-label="Reaction">
+    <h3>How'd this make you feel?</h3>
+    <angucomplete-alt id="em1"
+                      autofocus
+                      placeholder="Search a feeling"
+                      selected-object="selectedEmotion"
+                      local-data="emotions"
+                      search-fields="name"
+                      title-field="name"
+                      description-field="icon"
+                      minlength="0"
+                      template-url="my-custom-template.html"
+                      input-class="form-control form-control-small"/>
+    <br>
+    <button class="button tiny" ng-click="cancel()">Cancel</button>
+    <!--<button class="button tiny primary pull-right" ng-click="closeDialog()">Submit</button>-->
+    <button ng-click="cancel()" class="close-button" aria-label="Close reveal" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<script type="text/ng-template" id="my-custom-template.html">
+    <div class="angucomplete-holder input" ng-class="{'angucomplete-dropdown-visible': showDropdown}">
+        <input ng-model="searchStr"
+               autofocus
+               ng-disabled="disableInput"
+               type="text"
+               placeholder="{{placeholder}}"
+               ng-focus="onFocusHandler()"
+               class="{{inputClass}}"
+               ng-focus="resetHideResults()"
+               ng-blur="hideResults($event)"
+               autocapitalize="off"
+               autocorrect="off"
+               autocomplete="off"
+               ng-change="inputChangeHandler(searchStr)"/>
+        <div class="angucomplete-dropdown" ng-show="showDropdown" style="height: 300px;overflow-y: scroll;">
+            <div class="angucomplete-searching" ng-show="searching" ng-bind="textSearching"></div>
+            <div class="angucomplete-searching" ng-show="!searching && (!results || results.length == 0)" ng-bind="textNoResults"></div>
+            <div class="angucomplete-row" ng-repeat="result in results|orderBy:'title'" ng-click="selectResult(result)" ng-mouseenter="hoverRow($index)" ng-class="{'angucomplete-selected-row': $index == currentIndex}">
+                <div class="angucomplete-title" ng-if="matchClass">
+                    <md-icon class="emoticon" md-svg-icon="{{result.description}}"></md-icon>
+                    <span ng-bind-html="result.title"></span>
+                </div>
+                <div class="angucomplete-title" ng-if="!matchClass">
+                    <md-icon class="emoticon" md-svg-icon="{{result.description}}"></md-icon> {{ result.title }}
+                </div>
+                <!--<div ng-if="matchClass && result.description && result.description != ''" class="angucomplete-description" ng-bind-html="result.description"></div>-->
+                <!--<div ng-if="!matchClass && result.description && result.description != ''" class="angucomplete-description">{{result.description}}</div>-->
             </div>
-        </md-toolbar>
-        <md-dialog-content style="min-width:400px;max-width:800px;max-height:810px; ">
-            <div layout layout-padding></div>
-            <div layout layout-padding></div>
-            <div layout>
-                <md-radio-group ng-model="data.group3">
-                    <md-radio-button ng-repeat="it in avatarData"
-                                     ng-value="it.value"
-                                     aria-label="{{it.title}}">
-                        <md-icon md-svg-icon="{{it.id}}"></md-icon>
-                    </md-radio-button>
-                </md-radio-group>
-            </div>
-        </md-dialog-content>
-        <md-dialog-actions layout="row">
-            <span flex></span>
-            <md-button type="button" ng-click="closeDialog()">
-                Cancel
-            </md-button>
-            <md-button class="md-raised md-accent md-hue-2" type="submit" style="margin-right:20px;">
-                Done!
-            </md-button>
-        </md-dialog-actions>
-    </form>
-</md-dialog>
+            <!--<div class="angucomplete-row" ng-click="selectResult({title: searchStr, originalObject: { name: searchStr, custom: true }})" ng-mouseenter="hoverRow(results.length)" ng-class="{'angucomplete-selected-row': results.length == currentIndex}">
+                <div class="angucomplete-title">Select custom country '{{ searchStr }}'</div>
+            </div>-->
+        </div>
+    </div>
+</script>
