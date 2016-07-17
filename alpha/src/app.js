@@ -2,7 +2,7 @@
     'use strict';
     angular.module('underscore', [])
         .factory('_', function () {
-            return window._; // assumes underscore has already been loaded on the page
+            return window.___; // assumes underscore has already been loaded on the page
         });
 
     angular
@@ -11,15 +11,17 @@
             'mm.foundation',
             'angucomplete-alt',
             'ngMessages',
-            //'cloudinary',
+            'cloudinary',
             'underscore',
             'angularMoment',
             'videosharing-embed',
             'LocalForageModule',
-            'parse-angular',
             'ui.router',
+            'angular-google-analytics',
             'flow',
+            'angular-filepicker',
             'backand',
+            'pascalprecht.translate',
             '720kb.socialshare',
             'ngAnimate-animate.css',
             'IndieWise.controllers',
@@ -30,30 +32,67 @@
         ])
         .config(['flowFactoryProvider', function (flowFactoryProvider) {
             flowFactoryProvider.defaults = {
-                target: 'utils/upload.php',
+                //target: 'utils/upload.php',
+                query: {
+                    // upload_preset: "r0kuyqef"
+                    upload_preset: "ss3p66uy"
+                },
+                target: 'https://api.cloudinary.com/v1_1/indiewise/upload',
                 permanentErrors: [404, 500, 501],
                 maxChunkRetries: 1,
                 chunkRetryInterval: 5000,
-                simultaneousUploads: 4,
+                simultaneousUploads: 1,
                 singleFile: true
             };
-            flowFactoryProvider.on('catchAll', function (event) {
-                console.log('catchAll', arguments);
-            })
+            /*flowFactoryProvider.on('catchAll', function (event) {
+             console.log('catchAll', arguments);
+             })*/
+        }])
+        .config(function (filepickerProvider) {
+            filepickerProvider.setKey('APbjTx44SlSuCI6P58jwvz');
+        })
+        .config(['cloudinaryProvider', function (cloudinaryProvider) {
+            cloudinaryProvider
+                .set("cloud_name", "indiewise")
+                // .set("upload_preset", "r0kuyqef");
+                .set("upload_preset", "ss3p66uy");
         }])
         .config(['$compileProvider', function ($compileProvider) {
             // significant performance boost
             $compileProvider.debugInfoEnabled(false);
         }])
         .constant('angularMomentConfig', {
-            timezone: 'UTC' // e.g. 'Europe/London'
+            timezone: 'UTC'
+        })
+        .config(function (AnalyticsProvider) {
+            // Add configuration code as desired - see below
+            AnalyticsProvider
+                .setAccount('UA-27155404-17')
+                // Remove prefix on launch
+                .trackPrefix('alpha');
         })
         .config(function (BackandProvider) {
             BackandProvider.setAppName('indiewise');
             BackandProvider.setSignUpToken('ed37a6ff-ff08-4d3a-b82c-5f29f9a36c05');
             BackandProvider.setAnonymousToken('6ef61886-faa0-4f42-bf4d-d827339accfe');
-            //BackandProvider.runSocket(true); //enable the web sockets that makes the database realtime
+            BackandProvider.runSocket(true); //enable the web sockets that makes the database realtime
         })
+        .config(['$httpProvider', function ($httpProvider) {
+            $httpProvider.interceptors.push('authInterceptor');
+        }])
+        .factory('authInterceptor', ['$q', '$injector', 'Backand', function ($q, $injector, Backand) {
+            return {
+                request: function (config) {
+                    if (config.url.indexOf(Backand.getApiUrl()) === 0 && ___.contains(['PUT', 'POST', 'DELETE'], config.method)) {
+                        //var AuthService = $injector.get('AuthService');
+                        //var token = AuthService.getToken();
+                        //config.headers.Authorization = 'Bearer ' + token;
+                    }
+                    return config;
+                }
+            };
+        }])
+
         .config(function ($mdThemingProvider, $mdIconProvider) {
             // Emoticons
             $mdIconProvider
@@ -92,10 +131,14 @@
                 .icon("smile", "./assets/svg/emoticons/smile.svg", 120)
                 .icon("sympathetic", "./assets/svg/emoticons/sympathetic.svg", 120)
                 .icon("wink", "./assets/svg/emoticons/wink.svg", 120)
-                .icon("woah", "./assets/svg/emoticons/woah.svg", 120);
+                .icon("woah", "./assets/svg/emoticons/woah.svg", 120)
+                .icon("matureSmall", "./assets/svg/OFLC_small_M.svg", 120)
+                .icon("matureLarge", "./assets/svg/OFLC_large_M.svg", 120);
         })
         .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function ($stateProvider, $urlRouterProvider, $locationProvider) {
 
+            $urlRouterProvider.when('', '/home');
+            $urlRouterProvider.when('/', '/home');
             $stateProvider
                 .state('home', {
                     url: '/home',
@@ -104,101 +147,56 @@
                     controller: 'HomeCtrl as Home'
                 })
                 .state('browse', {
-                    url: '/browse?q&sort&genres&types',
+                    url: '/browse?q&sort&types&genres',
                     authenticate: false,
                     templateUrl: './src/browse/view/index.html',
                     controller: 'BrowseCtrl as Browse'
                 })
                 .state('latest', {
-                    url: '/latest?q&sort&genres&types',
+                    url: '/latest',
                     authenticate: false,
                     templateUrl: './src/latest/view/index.html',
                     controller: 'LatestCtrl as LC'
                 })
-                .state('video', {
-                    url: '/{id}',
-                    authenticate: false,
-                    templateUrl: './src/common/video.html',
-                    controller: 'VideoCtrl as VC',
-                    resolve: {
-                        Project: ['$stateParams', 'DataService', '$q', function ($stateParams, DataService, $q) {
-                            var deferred = $q.defer();
-                            DataService.getItem('Film', $stateParams.id, true, '', 2).then(function (result) {
-                                deferred.resolve(result);
-                            });
-                            return deferred.promise;
-                        }]
-                    }
-                })
-                .state('video-edit', {
-                    url: '/{id}/edit',
-                    authenticate: true,
-                    templateUrl: './src/common/video-edit.html',
-                    controller: 'VideoEditCtrl as VEC',
-                    resolve: {
-                        Project: ['$stateParams', 'DataService', '$q', function ($stateParams, DataService, $q) {
-                            var deferred = $q.defer();
-                            DataService.getItem('Film', $stateParams.id, true, '', 2).then(function (result) {
-                                if (result.data.owner.id === $rootScope.AppData.User.userId) {
-                                    deferred.resolve(result);
-                                } else {
-                                    deferred.reject('Not Owner');
-                                }
-                            });
-                            return deferred.promise;
-                        }]
-                    }
-                })
                 .state('video_critique', {
-                    url: '/{video_id}/critique/{id}',
+                    url: '/{video_url_id}/critique/{url_id}',
                     authenticate: false,
                     templateUrl: './src/common/critique.html',
                     controller: 'VideoCritiqueCtrl as VCC',
                     resolve: {
                         Critique: ['$stateParams', 'DataService', '$q', function ($stateParams, DataService, $q) {
                             var deferred = $q.defer();
-                            DataService.getItem('Critique', $stateParams.id, true, '', 2).then(function (result) {
+                            DataService.query('getCritiqueByUrlId', {urlId: $stateParams.url_id}).then(function (result) {
+                                deferred.resolve(result);
+                            });
+
+                            return deferred.promise;
+                        }]
+                    }
+                })
+                .state('video_critique-edit', {
+                    url: '/{video_url_id}/critique/{url_id}/edit',
+                    authenticate: true,
+                    templateUrl: './src/common/critique-edit.html',
+                    controller: 'VideoCritiqueEditCtrl',
+                    resolve: {
+                        Critique: ['AuthService', '$stateParams', 'DataService', '$q', function (AuthService, $stateParams, DataService, $q) {
+                            var deferred = $q.defer();
+                            DataService.query('getCritiqueByUrlId', {urlId: $stateParams.url_id}).then(function (result) {
+                                if (result.data[0].author === AuthService.currentUser.userId) {
+                                    deferred.resolve(result);
+                                } else {
+                                    deferred.reject('Not Owner');
+                                }
                                 deferred.resolve(result);
                             });
                             return deferred.promise;
                         }]
                     }
                 })
-                .state('video_critique-edit', {
-                    url: '/{video_id}/critique/{id}/edit',
-                    authenticate: true,
-                    templateUrl: './src/common/critique-edit.html',
-                    controller: 'VideoCritiqueEditCtrl as VCEC',
-                    resolve: {
-                        Critique: ['$stateParams', 'DataService', '$q', function ($stateParams, DataService, $q) {
-                            var deferred = $q.defer();
-                            DataService.getItem('Critique', $stateParams.id, true, '', 2).then(function (result) {
-                                if (result.data.author.id === $rootScope.AppData.User.userId) {
-                                    deferred.resolve(result);
-                                } else {
-                                    deferred.reject('Not Owner');
-                                }
-                            });
-                            return deferred.promise;
-                        }]
-                    }
-                })
-                .state('advanced-search', {
-                    url: '/advanced-search?q',
-                    authenticate: false,
-                    templateUrl: './src/common/search-results-advanced.html',
-                    controller: 'AdvancedResultsCtrl as Results'
-                })
-                .state('results', {
-                    url: '/search?q',
-                    authenticate: false,
-                    templateUrl: './src/common/search-results.html',
-                    controller: 'ResultsCtrl as Results'
-                })
-
                 // Authenticated Pages
                 .state('user', {
-                    url: '/user/{id}',
+                    url: '/user/{url_id}',
                     authenticate: true,
                     abstract: true,
                     templateUrl: './src/auth/user.html',
@@ -206,8 +204,15 @@
                     resolve: {
                         User: ['$stateParams', 'DataService', '$q', function ($stateParams, DataService, $q) {
                             var deferred = $q.defer();
-                            DataService.getItem('users', $stateParams.id, false, '', 1).then(function (result) {
-                                deferred.resolve(result);
+                            DataService.query('getUserByUrlId', {urlId: $stateParams.url_id}, false).then(function (result) {
+                                deferred.resolve(result.data[0]);
+                            });
+                            return deferred.promise;
+                        }],
+                        UserStats: ['User', 'DataService', '$q', function (User, DataService, $q) {
+                            var deferred = $q.defer();
+                            DataService.query('countUserStats', {userId: User.id}).then(function (response) {
+                                deferred.resolve(response);
                             });
                             return deferred.promise;
                         }]
@@ -223,11 +228,11 @@
                     templateUrl: './src/auth/user-videos.html',
                     controller: 'UserVideosController as UserVideosCtrl',
                     resolve: {
-                        Videos: ['$stateParams', 'DataService', '$q', function ($stateParams, DataService, $q) {
+                        Videos: ['User', 'DataService', '$q', function (User, DataService, $q) {
                             var deferred = $q.defer();
-                            DataService.getList('Film', [{fieldName: "createdAt", order: "desc"}],
+                            DataService.getList('Project', [{fieldName: "createdAt", order: "desc"}],
                                 [
-                                    {fieldName: "owner", operator: "in", value: $stateParams.id},
+                                    {fieldName: "owner", operator: "in", value: User.id},
                                     {fieldName: "unlist", operator: "is", value: false}
                                 ], 20, true, true, 1).then(function (result) {
                                     deferred.resolve(result);
@@ -241,11 +246,18 @@
                     templateUrl: './src/auth/user-critiques.html',
                     controller: 'UserCritiquesController as UserCritiquesCtrl',
                     resolve: {
-                        Critiques: ['$stateParams', 'DataService', '$q', function ($stateParams, DataService, $q) {
+                        Critiques: ['User', 'DataService', '$q', function (User, DataService, $q) {
                             var deferred = $q.defer();
-                            DataService.getList('Critique', [{fieldName: "createdAt", order: "desc"}],
-                                [{fieldName: "author", operator: "in", value: $stateParams.id}],
-                                20, true, true, 1).then(function (result) {
+                            DataService.query('getUserCritiques', {id: User.id})
+                                .then(function (result) {
+                                    deferred.resolve(result);
+                                });
+                            return deferred.promise;
+                        }],
+                        Critiqued: ['User', 'DataService', '$q', function (User, DataService, $q) {
+                            var deferred = $q.defer();
+                            DataService.query('getUserCritiqued', {id: User.id})
+                                .then(function (result) {
                                     deferred.resolve(result);
                                 });
                             return deferred.promise;
@@ -257,29 +269,18 @@
                     templateUrl: './src/auth/user-reactions.html',
                     controller: 'UserReactionsController as UserReactionsCtrl',
                     resolve: {
-                        Reactions: ['$stateParams', 'DataService', '$q', function ($stateParams, DataService, $q) {
+                        Reactions: ['User', 'DataService', '$q', function (User, DataService, $q) {
                             var deferred = $q.defer();
-                            DataService.getList('Reaction', [{fieldName: "createdAt", order: "desc"}],
-                                [{fieldName: "user", operator: "in", value: $stateParams.id}],
-                                20, true, true, 1).then(function (result) {
+                            DataService.query('getUserReactions', {id: User.id})
+                                .then(function (result) {
                                     deferred.resolve(result);
                                 });
                             return deferred.promise;
                         }],
-                        Reacted: ['$stateParams', 'DataService', '$q', function ($stateParams, DataService, $q) {
-                            //// Fetch My Reacted
-                            //var reactedQuery = new Parse.Query("Reaction");
-                            //reactedQuery.notEqualTo('user', self.user);
-                            //reactedQuery.include(['parent', 'user']);
-                            //reactedQuery.matchesQuery("parent", innerQuery);
-                            //reactedQuery.find().then(function (result) {
-                            //    self.myReacted = result;
-                            //});
-
+                        Reacted: ['User', 'DataService', '$q', function (User, DataService, $q) {
                             var deferred = $q.defer();
-                            DataService.getList('Reaction', [{fieldName: "createdAt", order: "desc"}],
-                                [{fieldName: "user", operator: "in", value: $stateParams.id}],
-                                20, true, true, 1).then(function (result) {
+                            DataService.query('getUserReacted', {id: User.id})
+                                .then(function (result) {
                                     deferred.resolve(result);
                                 });
                             return deferred.promise;
@@ -291,30 +292,30 @@
                     templateUrl: './src/auth/user-awards.html',
                     controller: 'UserAwardsController as UserAwardsCtrl',
                     resolve: {
-                        Awards: ['$stateParams', 'DataService', '$q', function ($stateParams, DataService, $q) {
+                        Awards: ['User', 'DataService', '$q', function (User, DataService, $q) {
                             var deferred = $q.defer();
-                            DataService.getList('AwardWin', [{fieldName: "createdAt", order: "desc"}],
-                                [{fieldName: "user", operator: "in", value: $stateParams.id}],
-                                20, true, true, 1).then(function (result) {
+                            DataService.query('getUserAwards', {id: User.id}).then(function (result) {
+                                deferred.resolve(result);
+                            });
+                            return deferred.promise;
+                        }],
+                        Nominations: ['User', 'DataService', '$q', function (User, DataService, $q) {
+                            var deferred = $q.defer();
+                            DataService.query('getUserNominations', {userId: User.id})
+                                .then(function (result) {
                                     deferred.resolve(result);
                                 });
                             return deferred.promise;
                         }],
-                        Nominations: ['$stateParams', 'DataService', '$q', function (AuthService, DataService, $q) {
+                        Nominated: ['User', 'DataService', '$q', function (User, DataService, $q) {
                             var deferred = $q.defer();
-                            DataService.query('getNominations', {userId: $stateParams.id})
+                            DataService.query('getUserNominated', {userId: User.id})
                                 .then(function (result) {
                                     deferred.resolve(result);
                                 });
                             return deferred.promise;
                         }]
                     }
-                })
-                .state('user_critique', {
-                    url: '/user/{user_id}/critique/{id}',
-                    authenticate: false,
-                    templateUrl: './src/common/critique.html',
-                    controller: 'VideoCritiqueCtrl as VCC'
                 })
                 .state('profile', {
                     url: '/profile',
@@ -327,6 +328,13 @@
                             var deferred = $q.defer();
                             AuthService.getCurrentUserData().then(function (response) {
                                 //console.log(response);
+                                deferred.resolve(response);
+                            });
+                            return deferred.promise;
+                        }],
+                        UserStats: ['AuthService', 'DataService', '$q', function (AuthService, DataService, $q) {
+                            var deferred = $q.defer();
+                            DataService.query('countUserStats', {userId: AuthService.currentUser.userId}).then(function (response) {
                                 deferred.resolve(response);
                             });
                             return deferred.promise;
@@ -353,11 +361,33 @@
                     resolve: {
                         Videos: ['AuthService', 'DataService', '$q', function (AuthService, DataService, $q) {
                             var deferred = $q.defer();
-                            DataService.getList('Film', [{fieldName: "createdAt", order: "desc"}],
+                            DataService.getList('Project', [{fieldName: "createdAt", order: "desc"}],
                                 [{fieldName: "owner", operator: "in", value: AuthService.currentUser.userId}],
-                                20, true, true, 1).then(function (result) {
+                                20).then(function (result) {
                                     deferred.resolve(result);
                                 });
+                            return deferred.promise;
+                        }]
+                    }
+                })
+                .state('profile.videos-edit', {
+                    url: '/videos/{url_id}/edit',
+                    authenticate: true,
+                    templateUrl: './src/auth/profile-videos-edit.html',
+                    controller: 'ProfileVideoEditCtrl as VEC',
+                    resolve: {
+                        Project: ['AuthService', '$stateParams', 'DataService', '$q', function (AuthService, $stateParams, DataService, $q) {
+                            var deferred = $q.defer();
+                            DataService.query('getProjectByUrlId', {urlId: $stateParams.url_id}).then(function (result) {
+                                if (result.data[0].ownerId === AuthService.currentUser.userId) {
+                                    DataService.getItem('Project', result.data[0].id, true, false, 1).then(function (res) {
+                                        deferred.resolve(res);
+                                    });
+                                } else {
+                                    deferred.reject('Not Owner');
+                                }
+                            });
+
                             return deferred.promise;
                         }]
                     }
@@ -370,20 +400,21 @@
                     resolve: {
                         Critiques: ['AuthService', 'DataService', '$q', function (AuthService, DataService, $q) {
                             var deferred = $q.defer();
-                            DataService.getList('Critique', [{fieldName: "createdAt", order: "desc"}],
-                                [{fieldName: "author", operator: "in", value: AuthService.currentUser.userId}],
-                                20, true, true, 1).then(function (result) {
+                            DataService.query('getUserCritiques', {id: AuthService.currentUser.userId})
+                                .then(function (result) {
+                                    deferred.resolve(result);
+                                });
+                            return deferred.promise;
+                        }],
+                        Critiqued: ['AuthService', 'DataService', '$q', function (AuthService, DataService, $q) {
+                            var deferred = $q.defer();
+                            DataService.query('getUserCritiqued', {id: AuthService.currentUser.userId})
+                                .then(function (result) {
                                     deferred.resolve(result);
                                 });
                             return deferred.promise;
                         }]
                     }
-                })
-                .state('profile.critique', {
-                    url: '/critiques/{id}',
-                    authenticate: true,
-                    templateUrl: './src/common/critique.html',
-                    controller: 'VideoCritiqueCtrl as VCC'
                 })
                 .state('profile.reactions', {
                     url: '/reactions',
@@ -393,9 +424,16 @@
                     resolve: {
                         Reactions: ['AuthService', 'DataService', '$q', function (AuthService, DataService, $q) {
                             var deferred = $q.defer();
-                            DataService.getList('Reaction', [{fieldName: "createdAt", order: "desc"}],
-                                [{fieldName: "user", operator: "in", value: AuthService.currentUser.userId}],
-                                20, true, true, 1).then(function (result) {
+                            DataService.query('getUserReactions', {id: AuthService.currentUser.userId})
+                                .then(function (result) {
+                                    deferred.resolve(result);
+                                });
+                            return deferred.promise;
+                        }],
+                        Reacted: ['AuthService', 'DataService', '$q', function (AuthService, DataService, $q) {
+                            var deferred = $q.defer();
+                            DataService.query('getUserReacted', {id: AuthService.currentUser.userId})
+                                .then(function (result) {
                                     deferred.resolve(result);
                                 });
                             return deferred.promise;
@@ -410,16 +448,22 @@
                     resolve: {
                         Awards: ['AuthService', 'DataService', '$q', function (AuthService, DataService, $q) {
                             var deferred = $q.defer();
-                            DataService.getList('AwardWin', [{fieldName: "createdAt", order: "desc"}],
-                                [{fieldName: "user", operator: "in", value: AuthService.currentUser.userId}],
-                                20, true, true, 1).then(function (result) {
-                                    deferred.resolve(result);
-                                });
+                            DataService.query('getUserAwards', {id: AuthService.currentUser.userId}).then(function (result) {
+                                deferred.resolve(result);
+                            });
                             return deferred.promise;
                         }],
                         Nominations: ['AuthService', 'DataService', '$q', function (AuthService, DataService, $q) {
                             var deferred = $q.defer();
-                            DataService.query('getNominations', {userId: AuthService.currentUser.userId})
+                            DataService.query('getUserNominations', {userId: AuthService.currentUser.userId})
+                                .then(function (result) {
+                                    deferred.resolve(result);
+                                });
+                            return deferred.promise;
+                        }],
+                        Nominated: ['AuthService', 'DataService', '$q', function (AuthService, DataService, $q) {
+                            var deferred = $q.defer();
+                            DataService.query('getUserNominated', {userId: AuthService.currentUser.userId})
                                 .then(function (result) {
                                     deferred.resolve(result);
                                 });
@@ -427,18 +471,17 @@
                         }]
                     }
                 })
-
-                .state('profile.favorites', {
-                    url: '/favorites',
+                .state('profile.playlists', {
+                    url: '/playlists',
                     authenticate: true,
-                    templateUrl: './src/auth/profile-favorites.html',
-                    controller: 'ProfileFavoritesController as ProfileFavoritesCtrl',
+                    templateUrl: './src/auth/profile-playlists.html',
+                    controller: 'ProfilePlaylistsController as ProfilePlaylistsCtrl',
                     resolve: {
-                        Favorites: ['AuthService', 'DataService', '$q', function (AuthService, DataService, $q) {
+                        Playlists: ['AuthService', 'DataService', '$q', function (AuthService, DataService, $q) {
                             var deferred = $q.defer();
-                            DataService.getList('Favorites', [{fieldName: "createdAt", order: "desc"}],
-                                [{fieldName: "user", operator: "in", value: AuthService.currentUser.userId}],
-                                20, true, true, 1).then(function (result) {
+                            DataService.getList('Playlist', [],
+                                [{fieldName: 'user', operator: 'in', value: AuthService.currentUser.userId}],
+                                50, true, false).then(function (result) {
                                     deferred.resolve(result);
                                 });
                             return deferred.promise;
@@ -449,48 +492,56 @@
                     url: '/settings',
                     authenticate: true,
                     templateUrl: './src/auth/profile-settings.html',
-                    controller: 'ProfileSettingsController as ProfileSettingsCtrl',
-                    resolve: {}
-                })
-                .state('profile_critique-edit', {
-                    url: '/profile/{profile_id}/critique/{id}/edit',
-                    authenticate: true,
-                    templateUrl: './src/common/critique-edit.html',
-                    controller: 'VideoCritiqueEditCtrl as VCEC',
+                    controller: 'ProfileSettingsController as PSC',
                     resolve: {
-                        Critique: ['$stateParams', '$q', function ($stateParams, $q) {
+                        Genres: ['AuthService', 'DataService', '$q', function (AuthService, DataService, $q) {
                             var deferred = $q.defer();
-                            var critiqueQuery = new Parse.Query("Critique");
-                            critiqueQuery.include(["author", "parent.owner"]);
-                            critiqueQuery.get($stateParams.id).then(function (result) {
-                                if (result.author.id === $rootScope.AppData.User.userId) {
+                            DataService.getList('Genres', [],
+                                [{fieldName: "user", operator: "in", value: AuthService.currentUser.userId}],
+                                20, false, false, 1).then(function (result) {
                                     deferred.resolve(result);
-                                } else {
-                                    deferred.reject('Not Owner');
-                                }
+                                });
+                            return deferred.promise;
+                        }],
+                        UserTypes: ['AuthService', 'DataService', '$q', function (AuthService, DataService, $q) {
+                            var deferred = $q.defer();
+                            DataService.getList('UserTypes', [],
+                                [{fieldName: "user", operator: "in", value: AuthService.currentUser.userId}],
+                                20, false, false, 1).then(function (result) {
+                                    deferred.resolve(result);
+                                });
+                            return deferred.promise;
+                        }]
+                    }
+                })
+                .state('messages', {
+                    url: '/messages',
+                    authenticate: true,
+                    templateUrl: './src/auth/messages.html',
+                    controller: 'MessagesCtrl as Msgs',
+                    resolve: {
+                        Conversations: ['AuthService', 'DataService', '$q', function (AuthService, DataService, $q) {
+                            var deferred = $q.defer();
+                            DataService.query('getUserConversations', {
+                                username: AuthService.currentUser.username
+                            }).then(function (result) {
+                                deferred.resolve(result);
                             });
                             return deferred.promise;
                         }]
                     }
                 })
-                .state('profile_edit', {
-                    url: '/profile/edit',
-                    authenticate: true,
-                    templateUrl: './src/auth/profile-edit.html',
-                    controller: 'EditProfileCtrl as Edit'
-                })
-                .state('messages', {
-                    url: '/messages/{id}',
+                .state('messages.message', {
                     authenticate: true,
                     templateUrl: './src/auth/messages.html',
                     controller: 'MessagesCtrl as Msgs'
                 })
-                .state('notifications', {
-                    url: '/notifications',
-                    authenticate: true,
-                    templateUrl: './src/auth/notifications.html',
-                    controller: 'NotificationsCtrl as NC'
-                })
+                /*.state('notifications', {
+                 url: '/notifications',
+                 authenticate: true,
+                 templateUrl: './src/auth/notifications.html',
+                 controller: 'NotificationsCtrl as NC'
+                 })*/
 
                 // Auth Pages
                 .state('register', {
@@ -500,13 +551,13 @@
                     controller: 'RegisterCtrl as RC'
                 })
                 .state('sign_in', {
-                    url: '/sign-in',
+                    url: '/sign-in?verified',
                     authenticate: false,
                     templateUrl: './src/auth/sign-in.html',
                     controller: 'SignInCtrl as SIC'
                 })
                 .state('reset_password', {
-                    url: '/reset-password',
+                    url: '/reset-password?token',
                     authenticate: false,
                     templateUrl: './src/auth/reset-password.html',
                     controller: 'ForgotPasswordCtrl as FPC'
@@ -516,36 +567,54 @@
                 .state('about', {
                     url: '/about',
                     authenticate: false,
-                    templateUrl: './src/static/about.html',
+                    templateUrl: './src/static/about.html'
                 })
                 .state('contact', {
                     url: '/contact',
                     authenticate: false,
-                    templateUrl: './src/static/contact.html',
+                    templateUrl: './src/static/contact.html'
                 })
                 .state('tos', {
                     url: '/terms-of-service',
                     authenticate: false,
-                    templateUrl: './src/static/tos.html',
+                    templateUrl: './src/static/tos.html'
                 })
                 .state('advertise', {
                     url: '/advertise',
                     authenticate: false,
-                    templateUrl: './src/static/advertise.html',
+                    templateUrl: './src/static/advertise.html'
                 })
                 .state('privacy', {
                     url: '/privacy-policy',
                     authenticate: false,
-                    templateUrl: './src/static/privacy.html',
+                    templateUrl: './src/static/privacy.html'
                 })
                 .state('404', {
                     url: '/404',
                     authenticate: false,
-                    templateUrl: './src/static/404.html',
+                    templateUrl: './src/static/404.html'
+                })
+
+                // Video Pages
+                .state('video', {
+                    url: '/{url_id:[0-9]{13}}',
+                    authenticate: false,
+                    templateUrl: './src/common/video.html',
+                    controller: 'VideoCtrl as VC',
+                    resolve: {
+                        Project: ['$stateParams', 'DataService', '$q', function ($stateParams, DataService, $q) {
+                            var deferred = $q.defer();
+                            DataService.query('getProjectByUrlId', {urlId: $stateParams.url_id}).then(function (result) {
+                                deferred.resolve(result);
+                            });
+
+                            return deferred.promise;
+                        }]
+                    }
                 })
             ;
 
-            $urlRouterProvider.otherwise('/home');
+            $urlRouterProvider.otherwise('/404');
 
             $locationProvider.html5Mode(true);
 
@@ -555,7 +624,22 @@
             streamApiSecret: 'k563yw7srhjeubw6xbx26def8xta47ume75uqaaewh6k4qyzj4mr3cfcmbts6cf3',
             streamApp: '6408'
         })
-        .run(['ParseSDK', '$rootScope', '$state', '$stateParams', 'AuthService', 'UtilsService', 'Config', '$http', '$timeout', 'DataService', function (ParseSDK, $rootScope, $state, $stateParams, AuthService, UtilsService, Config, $http, $timeout, DataService) {
+        .run(['$rootScope', '$state', '$stateParams', 'AuthService', 'UtilsService', 'DataService', '$http', '$timeout', '$transitions', 'Backand', function ($rootScope, $state, $stateParams, AuthService, UtilsService, DataService, $http, $timeout, $transitions, Backand) {
+            FastClick.attach(document.body);
+            $rootScope.AppData = {
+                User: AuthService.currentUser,
+                UserData: AuthService.currentUser ? AuthService.getCurrentUserData() : null,
+                Notifications: {
+                    loaded: 'indeterminate'
+                },
+                NotificationsFeed: {
+                    loaded: 'indeterminate'
+                },
+                MessageNotifications: {
+                    loaded: 'indeterminate'
+                },
+                searchText: ''
+            };
             $rootScope.$state = window.thisState = $state;
             $rootScope.metadata = {
                 title: '',
@@ -565,77 +649,30 @@
             };
             $rootScope.$stateParams = $stateParams;
             $rootScope.isViewLoading = false;
-            $rootScope.AppData = {
-                User: AuthService.currentUser,
-                UserData: AuthService.currentUser ? AuthService.getCurrentUserData() : null,
-                //Favorites: DataService.query(),
-                //WatchLaters:,
-                Notifications: {
-                    loaded: 'indeterminate',
-                },
-                NotificationsFeed: {
-                    loaded: 'indeterminate',
-                },
-                MessageNotifications: {
-                    loaded: 'indeterminate',
-                },
-                searchText: ''
-            };
+
             $rootScope.today = moment().toDate();
-            // initialize stream
-            window.StreamClient = stream.connect(Config.streamApiKey, null, Config.streamApp, {location: 'us-east'});
 
-            $rootScope.getNewToken = function (type, id) {
-                return $http.get('utils/token.php?type=' + type + '&id=' + id).then(function (res) {
-                    return res.data;
+            $rootScope.listenNotifications = function (username) {
+                $rootScope.refreshNotifications(username);
+                Backand.on('notifications', function (data) {
+                    console.log('Notifications: ', data);
+                    $rootScope.refreshNotifications(username);
                 });
             };
 
-            $rootScope.subscribeUserFeeds = function () {
-                // Notifications Feed
-                $rootScope.getNewToken('notification', $rootScope.AppData.User.userId).then(function (token) {
-                    var feed = window.StreamClient.feed('notification', $rootScope.AppData.User.userId, token);
-                    feed.subscribe(function (obj) {
-                        console.log('Notification: ', obj);
-                        $rootScope.getNotificationsFeed(feed);
-                    }).then(function () {
-                        $rootScope.getNotificationsFeed(feed);
-                    });
-                });
-                // Messages Feed
-                $rootScope.getNewToken('message', $rootScope.AppData.User.userId).then(function (token) {
-                    var feed = window.StreamClient.feed('message', $rootScope.AppData.User.userId, token);
-                    feed.subscribe(function (obj) {
-                        console.log('Messages: ', obj);
-                        $rootScope.getMessagesFeed(feed);
-                    }).then(function () {
-                        $rootScope.getMessagesFeed(feed);
-                    });
-                });
-            };
-
-            $rootScope.refreshNotificationsFeed = function () {
-                $rootScope.AppData.RawNotifications.loaded = $rootScope.AppData.Notifications.loaded = 'indeterminate';
-                $rootScope.getNewToken('notification', $rootScope.AppData.User.userId).then(function (token) {
-                    var feed = window.StreamClient.feed('notification', $rootScope.AppData.User.userId, token);
-                    $rootScope.getNotificationsFeed(feed);
-                });
-            };
-
-            $rootScope.getNotificationsFeed = function (feed) {
-                feed.get({limit: 10}, function (error, response, body) {
-                    console.log('Raw Notifications: ', body);
-                    try {
-                        var data = UtilsService.enrichRawNotifications(body.results);
-                        $rootScope.AppData.RawNotifications = {
-                            loaded: '',
-                            list: data.data,
-                            unseen: body.unseen,
-                            unread: body.unread
-                        };
-                    } catch (e) {
-                        console.log(e);
-                    }
+            $rootScope.refreshNotifications = function (id) {
+                $rootScope.AppData.Notifications.loaded = 'indeterminate';
+                DataService.query('getUserNotifications', {
+                    username: id
+                }).then(function (res) {
+                    console.log(res.data);
+                    $rootScope.AppData.Notifications = {
+                        loaded: '',
+                        list: res.data,
+                        unseen: _.where(res.data, {seen: false}).length,
+                        unread: 0
+                    };
+                    console.log($rootScope.AppData.Notifications);
                 });
             };
 
@@ -651,87 +688,85 @@
                             unseen: body.unseen,
                             unread: body.unread
                         };
+                        console.log($rootScope.AppData.MessageNotifications);
                     } catch (e) {
                         console.log(e);
                     }
                 });
             };
 
-            $rootScope.getFlatNotificationsFeed = function () {
-                Parse.Cloud.run("feed", {feed: "flat_notifications:" + $rootScope.AppData.User.userId, limit: 10}, {
-                    success: function (data) {
-                        try {
-                            var dataObj = UtilsService.enrichNotifications(data);
-                            console.log(dataObj);
-                            $rootScope.AppData.NotificationsFeed = {
-                                loaded: '',
-                                list: dataObj.data.activities,
-                                unseen: dataObj.unseen,
-                                unread: dataObj.unread
-                            };
-                        } catch (e) {
-                            console.log(e);
-                            $timeout(function () {
-                                $rootScope.getFlatNotificationsFeed(feed);
-                            }, 3000);
-                        }
-                    },
-                    error: function (error) {
-
-                    }
-                });
-            };
-
-            $rootScope.$watch('AppData.User', function (newValue, oldValue) {
-                if (newValue && angular.isString(newValue.id)) {
+            var endWatch = $rootScope.$watch('AppData.User', function (newValue, oldValue) {
+                if (newValue && angular.isString(newValue.userId)) {
                     console.log('User Logged In');
-                    $rootScope.subscribeUserFeeds();
+                    $rootScope.listenNotifications(newValue.username);
+                    endWatch();
                 }
             });
 
             // loading animation
             $rootScope.setLoading = function () {
+                /*var opts = {
+                 lines: 13 // The number of lines to draw
+                 , length: 9 // The length of each line
+                 , width: 7 // The line thickness
+                 , radius: 42 // The radius of the inner circle
+                 , scale: 1 // Scales overall size of the spinner
+                 , corners: 1 // Corner roundness (0..1)
+                 , color: '#000' // #rgb or #rrggbb or array of colors
+                 , opacity: 0.25 // Opacity of the lines
+                 , rotate: 0 // The rotation offset
+                 , direction: 1 // 1: clockwise, -1: counterclockwise
+                 , speed: 1 // Rounds per second
+                 , trail: 60 // Afterglow percentage
+                 , fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+                 , zIndex: 2e9 // The z-index (defaults to 2000000000)
+                 , className: 'spinner' // The CSS class to assign to the spinner
+                 , top: '-50%' // Top position relative to parent
+                 , left: '50%' // Left position relative to parent
+                 , shadow: true // Whether to render a shadow
+                 , hwaccel: true // Whether to use hardware acceleration
+                 , position: 'absolute' // Element positioning
+                 };
+                 var target = document.getElementById('alerts');
+                 $rootScope.spinner = window.spinner = new Spinner(opts).spin(target);*/
                 $rootScope.isViewLoading = true;
             };
             $rootScope.unsetLoading = function () {
                 $rootScope.isViewLoading = false;
+                //$rootScope.spinner.stop();
             };
 
-            $rootScope.$on('$stateChangeStart', function (ev, to, toParams, from, fromParams) {
-                if (AuthService.currentUser) {
-                    console.log(from);
-                    console.log(to);
-                    if (_.contains(['sign_in', 'register'], to.name)) {
-                        $timeout(function () {
-                            $state.go('home');
-                        }, 0);
-
-                    }
-                } else {
-                    if (to.authenticate) {
-                        $rootScope.returnToState = to.url;
-                        $rootScope.returnToStateParams = toParams.Id;
-                        $timeout(function () {
-                            $state.go('sign_in');
-                        }, 0);
-                    }
-                }
+            // State transition hooks
+            $transitions.onBefore({}, function ($transition$) {
                 $rootScope.setLoading();
             });
 
-            $rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
-                $rootScope.unsetLoading();
-                jQuery(document).foundation();
+            $transitions.onStart({to: 'register', from: '*'}, function ($transition$, $state, AuthService) {
+                return AuthService.currentUser ? $state.target('home') : true;
+            });
+            $transitions.onStart({to: 'sign_in', from: '*'}, function ($transition$, $state, AuthService) {
+                return AuthService.currentUser ? $state.target('home') : true;
+            });
+            $transitions.onStart({
+                to: function (state) {
+                    return !!state.authenticate;
+                }
+            }, function ($transition$, $state, AuthService) {
+                return AuthService.currentUser ? true : $state.target('sign_in');
             });
 
-            $rootScope.$on('$stateChangeError', function (ev, to, toParams, from, fromParams, err) {
-                console.log(err);
+            $transitions.onSuccess({}, function () {
+                $rootScope.unsetLoading();
+                $timeout(function () {
+                    jQuery(document).foundation();
+                }, 100);
+                //Analytics.trackPage($location.path());
+            });
+
+            $transitions.onError({}, function ($state) {
+                console.log($state);
             });
         }])
-        .value('ParseConfig', {
-            applicationId: "KkQqsTBaxOWqkoWjrPjz1CyL1iKmPRikVVG1Hwem",
-            javascriptKey: "nw73aGJuOatZrYSNMQpmmFILwOZVA0mTnp4BYbSL"
-        })
         .config(['$localForageProvider', function ($localForageProvider) {
             $localForageProvider.config({
                 //driver      : 'localStorageWrapper', // if you want to force a driver

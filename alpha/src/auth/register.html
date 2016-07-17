@@ -24,12 +24,11 @@
                     <div class="medium-6 large-centered medium-centered">
                         <div class="page-heading text-center">
                             <h3>User Registration</h3>
-                            <!--<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>-->
                         </div>
                     </div>
                 </div>
-                <div class="row" data-equalizer data-equalize-on="medium" id="test-eq">
-                    <div class="large-4 large-offset-1 medium-6 columns">
+                <div ng-show="!RC.accountCreated" class="row align-center" data-equalizer data-equalize-on="medium" id="test-eq">
+                    <!--<div class="large-4 large-offset-1 medium-6 columns">
                         <div class="social-login" data-equalizer-watch>
                             <h5 class="text-center">Register via Social Profile</h5>
                             <div class="social-login-btn facebook">
@@ -51,31 +50,42 @@
                                 <i class="fa fa-arrow-right arrow-right"></i>
                             </p>
                         </div>
-                    </div>
-                    <div class="large-4 medium-6 columns end">
+                    </div>-->
+                    <div class="large-offset-4 large-4 medium-offset-2 medium-6 columns end">
                         <div class="register-form">
                             <h5 class="text-center">Create your Account</h5>
                             <form ng-submit="RC.doRegister()" data-abide>
-                                <div data-abide-error class="alert callout" style="display: none;">
+                                <div id="errors" class="alert callout" ng-show="RC.errors.gender||RC.errors.genres||RC.errors.types||RC.errors.email">
                                     <p><i class="fa fa-exclamation-triangle"></i> There are some errors in your form.</p>
+                                    <p ng-show="RC.errors.gender">Please select a gender.</p>
+                                    <p ng-show="RC.errors.genres">Please select at least one genre.</p>
+                                    <p ng-show="RC.errors.types">Please select at least one type.</p>
+                                    <p ng-show="RC.errors.email===1">This email address is already in use.</p>
                                 </div>
+
                                 <!--<div class="input-group">
                                     <span class="input-group-label"><i class="fa fa-user"></i></span>
                                     <input class="input-group-field" type="text" placeholder="Enter your username" required>
                                 </div>-->
 
                                 <div class="input-group">
-                                    <span class="input-group-label"><i class="fa fa-envelope"></i></span>
-                                    <input class="input-group-field" type="email" placeholder="Enter your email" ng-model="RC.user.email" required>
+                                    <span class="input-group-label">
+                                        <i ng-if="RC.errors.email===false" class="fa fa-envelope"></i>
+                                        <i ng-if="RC.errors.email===0" class="fa fa-check" style="color: green;"></i>
+                                        <i ng-if="RC.errors.email===1" class="fa fa-exclamation-triangle" style="color: red;"></i>
+                                    </span>
+                                    <input class="input-group-field" type="email" placeholder="Enter your email"
+                                           ng-model="RC.user.email" ng-model-options="{debounce:1000}" ng-change="RC.checkEmailUse()"
+                                           validate-email required>
                                 </div>
 
                                 <div class="input-group">
                                     <div class="row">
                                         <div class="medium-6 columns ">
-                                            <input class="input-group-field" type="text" ng-model="RC.user.firstName" placeholder="First Name">
+                                            <input class="input-group-field" type="text" ng-model="RC.user.firstName" placeholder="First Name" required>
                                         </div>
                                         <div class="medium-6 columns">
-                                            <input class="input-group-field" type="text" ng-model="RC.user.lastName" placeholder="Last Name">
+                                            <input class="input-group-field" type="text" ng-model="RC.user.lastName" placeholder="Last Name" required>
                                         </div>
                                     </div>
                                 </div>
@@ -91,30 +101,174 @@
                                     <input type="password" placeholder="Re-type your password" ng-model="RC.user.passwordCheck" ng-minlength="6" data-equalto="password" required>
                                 </div>
 
-                                <div class="input-group">
+                                <!--<div class="input-group">
                                     <span class="input-group-label"><i class="fa fa-calendar"></i></span>
-                                    <input type="date" placeholder="Date of Birth" required ng-model="RC.user.dob" max="today">
+                                    <input type="date" placeholder="Date of Birth" ng-model="RC.user.dob" datepicker='' max="today" required>
+                                </div>-->
+
+                                <div class="row">
+                                    <div class="medium-12 columns">
+                                        <label>Date of Birth</label>
+                                    </div>
+                                    <div class="columns medium-4">
+                                        <label for="dob_month">
+                                            <select id="dob_month" name="dob_month" ng-model="RC.dobMonth"  required>
+                                                <option value="" disabled>Month</option>
+                                                <option value="01">January</option>
+                                                <option value="02">February</option>
+                                                <option value="03">March</option>
+                                                <option value="04">April</option>
+                                                <option value="05">May</option>
+                                                <option value="06">June</option>
+                                                <option value="07">July</option>
+                                                <option value="08">August</option>
+                                                <option value="09">September</option>
+                                                <option value="10">October</option>
+                                                <option value="11">November</option>
+                                                <option value="12">December</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                    <div class="columns medium-4">
+                                        <label for="dob_day">
+                                            <select id="dob_day" name="dob_day" ng-model="RC.dobDay" required>
+                                                <option value="" disabled>Day</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                                <option value="11">11</option>
+                                                <option value="12">12</option>
+                                                <option value="13">13</option>
+                                                <option value="14">14</option>
+                                                <option value="15">15</option>
+                                                <option value="16">16</option>
+                                                <option value="17">17</option>
+                                                <option value="18">18</option>
+                                                <option value="19">19</option>
+                                                <option value="20">20</option>
+                                                <option value="21">21</option>
+                                                <option value="22">22</option>
+                                                <option value="23">23</option>
+                                                <option value="24">24</option>
+                                                <option value="25">25</option>
+                                                <option value="26">26</option>
+                                                <option value="27">27</option>
+                                                <option value="28">28</option>
+                                                <option value="29">29</option>
+                                                <option value="30">30</option>
+                                                <option value="31">31</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                    <div class="columns medium-4">
+                                        <label>
+                                            <select ng-model="RC.dobYear" required>
+                                                <option value="" disabled>Year</option>
+                                                <option ng-value="y" ng-repeat="y in RC.yearsList"
+                                                        class="md-accent">
+                                                    {{::y}}
+                                                </option>
+                                            </select>
+                                        </label>
+                                    </div>
                                 </div>
 
-                                <div class="button-group expanded">
-                                    <button type="button" class="button" ng-model="RC.user.gender" btn-radio="'male'">Male</button>
-                                    <button type="button" class="button" ng-model="RC.user.gender" btn-radio="'female'">Female</button>
-                                </div>
+                                <style>
+                                    .iw-button, .iw-button * {
+                                        background: #414CAB;
+                                    }
+                                    .white, .white * {
+                                        background: #ffffff;
+                                        color: #414CAB;
+                                    }
+                                    .white.hollow, .white .button.hollow {
+                                        border: 1px solid #2199e8 !important;
+                                    }
+                                </style>
+
+                                <label>
+                                    <select ng-model="RC.user.gender" required>
+                                        <option value="" disabled>Select Gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                    </select>
+                                </label>
+
+                                <!--<div class="button-group tiny expanded white">
+                                    <button type="button" class="button hollow" ng-model="RC.user.gender" btn-radio="'male'">Male</button>
+                                    <button type="button" class="button hollow" ng-model="RC.user.gender" btn-radio="'female'">Female</button>
+                                    <button type="button" class="button hollow" ng-model="RC.user.gender" btn-radio="'other'">Other</button>
+                                </div>-->
+
+                                <!--<dropdown-toggle close-on-click="true" pane-align="center">
+                                    <toggle>
+                                        &lt;!&ndash;<a class="dropdown button large">Preferred Genres: (select all that apply)</a>&ndash;&gt;
+                                        &lt;!&ndash;<i class="fa fa-heart"></i>&ndash;&gt;
+                                        <button type="button" class="button small expanded iw-button">Select all preferred Genres</button>
+                                    </toggle>
+                                    <pane>
+                                        <ul class="menu vertical">
+                                            <li class="checkbox" ng-repeat="g in RC.genresList|orderBy:'name'">
+                                                <input type="checkbox"
+                                                       ng-model="bool" name="genre{{$index}}" id="genre{{$index}}"
+                                                       ng-change="RC.syncGenres(bool, g)" ng-checked="RC.isCheckedGenre(g.id)">
+                                                <label class="customLabel" for="genre{{$index}}">{{::g.name}}</label>
+                                            </li>
+                                        </ul>
+                                    </pane>
+                                </dropdown-toggle>-->
+
+                                <!--<dropdown-toggle close-on-click="true" pane-align="center">
+                                    <toggle>
+                                        &lt;!&ndash;<a class="dropdown button large">Preferred Types: (select all that apply)</a>&ndash;&gt;
+                                        &lt;!&ndash;<i class="fa fa-heart"></i>&ndash;&gt;
+                                        <button type="button" class="button small expanded iw-button">Select all preferred Types</button>
+                                    </toggle>
+                                    <pane>
+                                        <ul class="menu vertical">
+                                            <li class="checkbox" ng-repeat="t in RC.typesList|orderBy:'name'">
+                                                <input type="checkbox"
+                                                       ng-model="bool" name="type{{$index}}" id="type{{$index}}"
+                                                       ng-change="RC.syncTypes(bool, t)" ng-checked="RC.isCheckedType(t.id)">
+                                                <label class="customLabel" for="type{{$index}}">{{::t.name}}</label>
+                                            </li>
+                                        </ul>
+                                    </pane>
+                                </dropdown-toggle>-->
+
+                                <label>
+                                    <select ng-model="RC.user.country" required>
+                                        <option value="" disabled>Select Country</option>
+                                        <option ng-value="c.id" ng-repeat="c in countryList|orderBy:'name'"
+                                                 class="md-accent">
+                                          {{::c.name}}
+                                        </option>
+                                    </select>
+                                </label>
 
                                 <small>By registering, you agree to our <a ui-sref="tos">Terms</a> and have read our <a ui-sref="privacy">Privacy Policy</a></small>
-                                <!--<label>Country
-                                    <select ng-model="RC.user.country"  required>
-                                        <md-option ng-value="c" ng-repeat="c in countryList|orderBy:'name'"
-                                                   class="md-accent">
-                                            {{::c.attributes.name.common}}
-                                        </md-option>
-                                    </select>
-                                </label>-->
+
 
                                 <span class="form-error">your email is invalid</span>
-                                <button class="button expanded" type="submit" name="submit">register Now</button>
-                                <p class="loginclick"> <a class="button tiny hollow" ui-sref="sign_in">Login here</a><a class="button tiny hollow" ui-sref="sign_in">Already have acoount?</a></p>
+                                <button class="button expanded iw-button" type="submit" name="submit">register Now</button>
+                                <p class="loginclick white">
+                                    <a class="button tiny hollow white" ui-sref="sign_in">Login here</a>
+                                    <a class="button tiny hollow white" ui-sref="sign_in">Forgot password?</a></p>
                             </form>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="RC.accountCreated" class="row align-center">
+                    <div class="large-offset-3 large-6 medium-offset-3 medium-6 columns end">
+                        <div class="success callout">
+                        <p>Your account been created. Please check your email for verification.</p>
                         </div>
                     </div>
                 </div>

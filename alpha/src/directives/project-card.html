@@ -1,21 +1,22 @@
-<div class="item large-3 medium-6 columns {{type||'grid-medium'}} project-card" ng-if="::video.name" ng-class="{'end':$last}">
+<div class="item large-3 medium-6 small-12 columns {{type||'grid-medium'}} project-card nga-default nga-stagger nga-fade" ng-if="::video.name" ng-class="{'end':$last}">
     <div class="post thumb-border">
-        <a class="post-thumb" ui-sref="video({id: video.id})">
+        <a class="post-thumb" ui-sref="video({url_id: video.url_id})">
             <img ng-src="{{::video.thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}" alt="new video">
             <!--<a class="hover-posts">
                 <span><i class="fa fa-play"></i>Watch Video</span>
             </a>-->
             <div class="video-stats clearfix">
-                <div class="thumb-stats pull-left">
-                    <i class="fa fa-star"></i>
-                    <span>{{::(video.iwRating|number:1)||'N/A'}}</span>
+                <div class="thumb-stats pull-left" >
+                    <i class="fa fa-star has-tip" tooltip="IndieWise Average"></i>
+                    <span ng-if="video.critiqueCount>0">{{::video.iwRating|number:1}}</span>
+                    <span ng-if="video.critiqueCount==0">N/A</span>
                 </div>
                 <div class="thumb-stats pull-left">
-                    <i class="fa fa-trophy"></i>
+                    <i class="fa fa-trophy has-tip" tooltip="Award Wins"></i>
                     <span>{{::(video.awardCount)||0}}</span>
                 </div>
                 <div class="thumb-stats pull-left">
-                    <i class="fa fa-smile-o"></i>
+                    <i class="fa fa-smile-o has-tip" tooltip="Reactions"></i>
                     <span>{{::(video.reactionCount)||0}}</span>
                 </div>
                 <div class="thumb-stats pull-right">
@@ -24,17 +25,22 @@
             </div>
         </a>
         <div class="post-des">
-            <h6><a ui-sref="video({id: video.id})">{{::video.name|truncate:50}}</a></h6>
+            <h6><a ui-sref="video({url_id: video.url_id})">{{::video.name|truncate:50}}</a></h6>
             <div class="post-stats clearfix">
                 <p class="pull-left">
                     <i class="fa fa-user"></i>
-                    <span><a ui-sref="user.about({id: video.owner})">{{::related.users[video.owner].firstName+' '+related.users[video.owner].lastName}}</a></span>
+                    <span ng-if="isQueried">
+                        <a ui-sref="user.about({url_id: video.ownerUrlId})">{{::video.ownerFullName}}</a>
+                    </span>
+                    <span ng-if="!isQueried">
+                        <a ui-sref="user.about({id: video.owner})">{{::related.users[video.owner].firstName+' '+related.users[video.owner].lastName}}</a>
+                    </span>
                 </p>
                 <p class="pull-left" ng-if="::!$state.is('profile')">
                     <i class="fa fa-share"></i>
                     <span><a ng-click="openShareDialog(video)">Share</a></span>
                 </p>
-                <dropdown-toggle class="pull-left" ng-if="::!$state.is('profile')" ng-click="check(video)">
+                <!--<dropdown-toggle close-on-click="true" class="pull-left" ng-if="::!$state.is('profile')" ng-click="check(video)">
                     <toggle>
                         <i class="fa fa-heart"></i>
                         <span><a href="#">Add to</a></span>
@@ -51,21 +57,13 @@
                             </li>
                         </ul>
                     </pane>
-                </dropdown-toggle>
-                <!--<p class="pull-left" ng-if="::!$state.is('profile')">
-                    <i class="fa fa-heart" ng-class="{'primary':faved}"></i>
-                    <span><a ng-click="toFavorites(video, $event)">Fav</a></span>
-                </p>
-                <p class="pull-left" ng-if="::!$state.is('profile')">
-                    <i class="fa fa-clock-o" ng-class="{'primary':wled}"></i>
-                    <span><a ng-click="toWatchLater(video)">Save</a></span>
-                </p>-->
+                </dropdown-toggle>-->
             </div>
             <div class="post-summary">
                 <p>{{::video.description|truncate:100}}</p>
             </div>
             <div class="post-button">
-                <a ui-sref="video({id: video.id})" class="secondary-button"><i class="fa fa-play-circle"></i>watch video</a>
+                <a ui-sref="video({url_id: video.url_id})" class="secondary-button"><i class="fa fa-play-circle"></i>watch video</a>
             </div>
         </div>
     </div>

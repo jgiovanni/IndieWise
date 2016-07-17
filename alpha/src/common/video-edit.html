@@ -19,7 +19,7 @@
                 </tr>
                 <tr>
                     <td>Date Added</td>
-                    <td>{{::VEC.project.createdAt|date:'medium'}}</td>
+                    <td>{{::VEC.project.createdAt|amUtc|amLocal|amDateFormat:'lll'}}</td>
                 </tr>
                 <tr>
                     <td>URL</td>

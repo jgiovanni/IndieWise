@@ -1,0 +1,27 @@
+<div class="setting-form-inner">
+    <div class="row">
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>CCA2</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="country in PSC.allCountries.data">
+                <th>{{country.name}}</th>
+                <th>{{country.cca2}}</th>
+                <th>
+                    <a class="button updateCountryBtn" ng-click="PSC.updateCountry(country)"><i class="fa fa-upload"></i></a>
+                </th>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="setting-form-inner">
+    <button class="button expanded" ng-click="PSC.handleCountries()">
+        countries stuff
+    </button>
+</div>

@@ -21,13 +21,14 @@
 		{
 			videoPlayer = $("#Elite_video_player").Video({   //ALL PLUGIN OPTIONS
 				instanceName:"player1",                      //name of the player instance
+				instanceTheme:"dark",                        //choose video player theme: "dark", "light"
 				autohideControls:5,                          //autohide HTML5 player controls
 				hideControlsOnMouseOut:"No",                 //hide HTML5 player controls on mouse out of the player: "Yes","No"
 				videoPlayerWidth:1006,                       //fixed total player width
 				videoPlayerHeight:420,                       //fixed total player height
 				responsive:false,				             //this option will overwrite above videoPlayerWidth/videoPlayerHeight and set player to fit your div (parent) container: true/false
 				playlist:"Right playlist",                   //choose playlist type: "Right playlist", "Off"
-				playlistScrollType:"light",                  //choose scrollbar type: "light","minimal","light-2","light-3","light-thick","light-thin","inset","inset-2","inset-3","rounded","rounded-dots","3d"
+				playlistScrollType:"light",                  //choose scrollbar type: "light","minimal","light-2","light-3","light-thick","light-thin","inset","inset-2","inset-3","rounded","rounded-dots","3d","dark","minimal-dark","dark-2","dark-3","dark-thick","dark-thin","inset-dark","inset-2-dark","inset-3-dark","rounded-dark","rounded-dots-dark","3d-dark","3d-thick-dark"
 				playlistBehaviourOnPageload:"opened",		 //choose playlist behaviour when webpage loads: "closed", "opened" (not apply to Vimeo player)
 				autoplay:false,                              //autoplay when webpage loads: true/false
 				colorAccent:"#cc181e",                       //plugin colors accent (hexadecimal or RGB value - http://www.colorpicker.com/)
@@ -85,21 +86,21 @@
 						mp4:"http://creativeinteractivemedia.com/player/videos/Pieces.mp4",               //HTML5 video mp4 url
 						imageUrl:"images/preview_images/poster2.jpg",                                     //display image instead of playing video
 						imageTimer:4, 																	  //set time how long image will display
-						prerollAD:"yes",                                                                  //show pre-roll "yes","no"
+						prerollAD:"no",                                                                  //show pre-roll "yes","no"
 						prerollGotoLink:"http://codecanyon.net/",                                         //pre-roll goto link
 						preroll_mp4:"http://creativeinteractivemedia.com/player/videos/Short_Elegant_Logo_Reveal.mp4",   //pre-roll video mp4 format
 						prerollSkipTimer:5,
-						midrollAD:"yes",                                                                  //show mid-roll "yes","no"
+						midrollAD:"no",                                                                  //show mid-roll "yes","no"
 						midrollAD_displayTime:"00:10",                                                    //show mid-roll at any custom time in format "minutes:seconds" ("00:00")
 						midrollGotoLink:"http://codecanyon.net/",                                         //mid-roll goto link
 						midroll_mp4:"http://creativeinteractivemedia.com/player/videos/Logo_Explode.mp4", //mid-roll video mp4 format
 						midrollSkipTimer:5,	
-						postrollAD:"yes",                                                                 //show post-roll "yes","no"
+						postrollAD:"no",                                                                 //show post-roll "yes","no"
 						postrollGotoLink:"http://codecanyon.net/",                                        //post-roll goto link
 						postroll_mp4:"http://creativeinteractivemedia.com/player/videos/Logo_Light.mp4",  //post-roll video mp4 format
 						postrollSkipTimer:5,
 						popupImg:"images/preview_images/popup.jpg",                        			  	  //popup image URL
-						popupAdShow:"yes",                                                                //enable/disable popup image: "yes","no"
+						popupAdShow:"no",                                                                //enable/disable popup image: "yes","no"
 						popupAdStartTime:"00:03",                                                         //time to show popup ad during playback
 						popupAdEndTime:"00:07",                                                           //time to hide popup ad during playback
 						popupAdGoToLink:"http://codecanyon.net/",                                         //re-direct to URL when popup ad clicked
@@ -1091,7 +1092,6 @@
 						thumbImg:"images/thumbnail_images/pic1.jpg",
 						info:"Video info goes here.<br>This text can be <i>HTML formatted</i>, <a href='http://codecanyon.net/user/_zac_' target='_blank'><font color='008BFF'>find out more</font></a>.<br>You can disable this info window in player options. <br><br>Lorem ipsum dolor sit amet, eu pri dolores theophrastus. Posidonium vituperatoribus cu mel, cum feugiat nostrum sapientem ne. Vis ea summo persius, unum velit erant in eos, pri ut suas iriure euripidis. Ad augue expetendis sea. Ne usu saperet appetere honestatis, ne qui nulla debitis sententiae."
 					}
-
 				]
 			});
 		});

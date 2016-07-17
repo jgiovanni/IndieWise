@@ -1,0 +1,17 @@
+<div class="comment-box thumb-border">
+    <div class="media-object stack-for-small">
+        <div class="media-object-section comment-img text-center">
+            <div class="comment-box-img">
+                <img ng-src="{{model.isLoggedInData.avatar || './assets/img/avatar-1.png'}}" alt="comment">
+            </div>
+            <h6><a ui-sref="user.about({id: model.isLoggedIn.userId})">{{model.isLoggedIn.fullName}}</a></h6>
+        </div>
+        <div class="media-object-section comment-textarea">
+            <form name="replyForm" id="replyForm" ng-submit="postReply()">
+            <textarea name="commentText" placeholder="Reply to {{targetComment.author.firstName}}"
+                      linkify ng-model="myReply" ng-minlength="1" focus-on="!!showReplyInput"></textarea>
+                <input type="submit" value="send">
+            </form>
+        </div>
+    </div>
+</div>

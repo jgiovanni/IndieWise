@@ -70,7 +70,7 @@ RewriteEngine On
 
 # allow social media crawlers to work by redirecting them to a server-rendered static version on the page
 RewriteCond %{HTTP_USER_AGENT} (facebookexternalhit/[0-9]|Twitterbot|Pinterest|Google.*snippet)
-RewriteRule ^screen/(.*)$ http://getindiewise.com/alpha/static/video.php?id=$1 [P,L]
+RewriteRule ^([0-9]{13})$ http://getindiewise.com/alpha/static/video.php?id=$1 [P,L]
 
 # www to non-www
 RewriteCond %{HTTPS} off

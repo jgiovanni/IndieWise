@@ -17,22 +17,24 @@
             </div>
             <!-- category carousel -->
             <div id="owl-demo-cat" class="owl-carousel carousel" data-car-length="6" data-items="6" data-loop="true" data-nav="false" data-autoplay="true" data-autoplay-timeout="3000" data-auto-width="true" data-margin="10" data-dots="false">
-                <div class="item-cat item thumb-border" ng-repeat="w in watched.data">
+                <div class="item-cat item thumb-borde" ng-repeat="w in watched">
                     <figure class="premium-img">
-                        <img ng-src="{{::watched.relatedObjects.Film[w.film].thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}" alt="carousel">
-                        <a ui-sref="video({id: w.film})" class="hover-posts">
+                        <img ng-src="{{::w.projectThumbnail||'./assets/img/default_video_thumbnail.jpg'}}"
+                             alt="carousel">
+                        <a ui-sref="video({url_id: w.projectUrlId})" class="hover-posts">
                             <span><i class="fa fa-play"></i></span>
                         </a>
                     </figure>
-                    <h6><a ui-sref="video({id: w.film})" ng-bind="::watched.relatedObjects.Film[w.film].name|truncate:50"></a></h6>
+                    <h6 style="width: 184px;"><a ui-sref="video({url_id: w.projectUrlId})"
+                           ng-bind="::w.projectName|truncate:50"></a></h6>
                 </div>
             </div>
             <!-- end carousel -->
-            <div class="row collapse">
+            <!--<div class="row collapse">
                 <div class="large-12 columns text-center row-btn">
                     <a href="categories.html" class="button radius">View All Categories</a>
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
 </section>

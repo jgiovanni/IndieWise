@@ -4,11 +4,10 @@
     "require": {
         "get-stream/stream": "^2.2",
         "flowjs/flow-php-server": "^1.0",
-        "parse/php-sdk" : "1.1.9",
-        "abraham/twitteroauth": "^0.6.2",
-        "google/apiclient": "^1.1",
         "ircmaxell/random-lib": "^1.1",
-        "lcobucci/jwt": "^3.1"
+        "lcobucci/jwt": "^3.1",
+        "nategood/httpful": "^0.2.20",
+        "cloudinary/cloudinary_php": "dev-master"
     },
     "authors": [
         {

@@ -1,13 +1,23 @@
 <div class="sidebar" style="padding: 0;margin: 0;z-index: 0">
     <div class="widgetBox" style="margin: 0;">
         <div class="widgetContent">
+            <div class="input-group">
+                <span class="input-group-label"><i class="fa fa-globe"></i></span>
+                <input class="input-group-field" type="text" value="{{::shareLink}}" readonly/>
+            </div>
             <ul class="expanded profile-overview">
                 <li class="clearfix"><a socialshare socialshare-provider="facebook" socialshare-url="{{::shareLink}}"
-                                        socialshare-via="150687055270744" socialshare-media="{{::video.attributes.thumbnail_url}}"><i class="fa fa-facebook"></i>Facebook</a></li>
+                                        socialshare-via="150687055270744" socialshare-media="{{::video.thumbnail_url}}"><i class="fa fa-facebook"></i>Facebook</a></li>
+                <li class="clearfix hide-for-large"><a socialshare socialshare-provider="facebook-messenger" socialshare-url="{{::shareLink}}"><i class="fa fa-comment-o"></i>Facebook Messenger</a></li>
+                <li class="clearfix hide-for-large"><a socialshare socialshare-provider="whatsapp" socialshare-url="{{::shareLink}}"><i class="fa fa-whatsapp"></i>WhatsApp</a></li>
+                <li class="clearfix hide-for-large"><a socialshare socialshare-provider="viber" socialshare-url="{{::shareLink}}"><i class="fa fa-phone"></i>Viber</a></li>
                 <li class="clearfix"><a socialshare socialshare-provider="twitter" socialshare-url="{{::shareLink}}"><i class="fa fa-twitter"></i>Twitter</a></li>
-                <li class="clearfix"><a socialshare socialshare-provider="google+" socialshare-url="{{::shareLink}}"><i class="fa fa-google-plus"></i>Google+</a></li>
+                <li class="clearfix"><a socialshare socialshare-provider="google" socialshare-url="{{::shareLink}}"><i class="fa fa-google-plus"></i>Google+</a></li>
                 <li class="clearfix"><a socialshare socialshare-provider="reddit" socialshare-url="{{::shareLink}}"><i class="fa fa-reddit"></i>Reddit</a></li>
                 <li class="clearfix"><a socialshare socialshare-provider="pinterest" socialshare-url="{{::shareLink}}"><i class="fa fa-pinterest"></i>Pinterest</a></li>
+                <li class="clearfix"><a socialshare socialshare-provider="skype" socialshare-url="{{::shareLink}}"><i class="fa fa-skype"></i>Skype</a></li>
+                <li class="clearfix"><a socialshare socialshare-provider="stumbleupon" socialshare-url="{{::shareLink}}" socialshare-media="{{::video.thumbnail_url}}"><i class="fa fa-stumbleupon"></i>StumbleUpon</a></li>
+
             </ul>
         </div>
     </div>

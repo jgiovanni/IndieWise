@@ -1,525 +1,3 @@
-<!--<div class="grey lighten-3">
-    <div class="black">
-        <section class="container">
-            <embed-video ng-if="VC.loaded && Body.checkContains(['other'], VC.type)" ng-href="{{VC.film.video_url}}"
-                         width="100%" height="500" embed-watcher></embed-video>
-            <div style="display:flex;position:relative;width: 100%;height: 500px;">
-                <elite-player ng-if="VC.loaded && Body.checkContains(['youtube', 'vimeo', 'hosted'], VC.type)"
-                              film="{{::VC.film}}" type="{{::VC.type}}"></elite-player>
-            </div>
-        </section>
-    </div>
-
-    <section id="content" class="container" layout="row" layout-align="center center">
-        <md-content flex class="grey lighten-3">
-            <md-card class="red-text" ng-if="::VC.film.unlist">
-                <md-card-content>
-                    This video is Unlisted, please be mindful not to share without owner's permission.
-                </md-card-content>
-            </md-card>
-            <md-card>
-                <md-card-header class="secondary-button-padding">
-                    <md-card-avatar>
-                        <img ng-src="{{::VC.film.owner.avatar || './assets/img/avatar-1.png'}}"
-                             class="md-user-avatar"
-                             alt="{{::VC.film.owner.first_name}} {{::VC.film.owner.last_name}}">
-                    </md-card-avatar>
-                    <md-card-header-text>
-                        <span class="md-title" ng-bind="::VC.film.name"></span>
-                    <span class="md-subhead">
-                        by <a ui-sref="user({id:VC.film.owner.id})">{{::VC.film.owner.first_name}}
-                        {{::VC.film.owner.last_name}}</a>
-                        &middot; <span class="md-caption" am-time-ago="VC.film.createdAt"></span>
-                        &middot; <a class="active-link" ng-click="VC.showDetailsDialog()">Details</a>
-                    </span>
-                    </md-card-header-text>
-                    <md-button class="md-secondary md-icon-button" ng-click="VC.showMessageDialog($event)">
-                        <md-icon ng-if="AppData.User.id !== VC.film.owner.id"
-                                 class="md-accent"
-                                 aria-label="Message Author" md-svg-icon="email"></md-icon>
-                    </md-button>
-                </md-card-header>
-                <md-divider></md-divider>
-                <md-card-actions ng-if="AppData.User.id === VC.film.owner.id" layout="row"
-                                 layout-align="flex-start center">
-                    <md-button ui-sref="video-edit({id: VC.film.id})">
-                        <md-icon md-svg-icon="mode_edit"></md-icon>
-                        Edit
-                    </md-button>
-                </md-card-actions>
-                &lt;!&ndash;<md-card-content ng-if="!!VC.showMessageInput">
-                    <form layout="row" layout-lt-md="column" class="md-padding" ng-submit="VC.postMessage()">
-                        <md-input-container flex>
-                            <label>Message Author</label>
-                            <textarea ng-model="VC.myMessage" focus-on="!!VC.showMessageInput" columns="1"
-                                      md-maxlength="3000" required></textarea>
-                        </md-input-container>
-                        <md-button flex="5" flex-sm type="submit" class="md-primary" style="text-align: center;">
-                            Send
-                        </md-button>
-                    </form>
-
-                </md-card-content>&ndash;&gt;
-
-            </md-card>
-            <md-card>
-                &lt;!&ndash;<md-card-content style="padding:16px 8px 0;">
-                    <div ng-show="!toggleDetails">
-                    <span class="md-caption">
-                        <span ng-bind="::(VC.film.description|limitTo:200)+'...'"></span>
-                    </span>
-                    </div>
-                    <div ng-show="!!toggleDetails">
-                        <p class="md-caption">
-                            <hr>
-                            <b>Description</b><br>
-                            <span ng-bind="::VC.film.description"></span>
-                            <br>
-                            <b>Genres</b><br>
-                            <span ng-repeat="g in VC.filmGenres">
-                                {{::g.name}}<span ng-if="!$last&&VC.filmGenres.length>1">, </span>
-                            </span><br>
-                            <b>Type</b><br>
-                            <span ng-bind="::VC.film.type.name"></span><br>
-                            <b>Running Time</b><br>
-                            <span ng-bind="::VC.film.runTime"></span><br>
-                            <span layout="row" layout-xs="column">
-                                <span flex="50">
-                                    <span>
-                                        <b>Director</b><br>
-                                        <span ng-bind="::VC.film.director"></span>
-                                    </span><br>
-                                    <span>
-                                        <b>Writer</b><br>
-                                        <span ng-bind="::VC.film.writer"></span>
-                                    </span><br>
-                                    <span>
-                                        <b>Producer(s)</b><br>
-                                        <span ng-bind="::VC.film.producers"></span>
-                                    </span><br>
-                                    <span>
-                                        <b>Date of Completion</b><br>
-                                        <span ng-bind="::VC.film.completionDate|date:'fullDate'"></span>
-                                    </span><br>
-                                </span>
-                                <span flex="50">
-                                    <span flex>
-                                        <b>Synopsis</b><br>
-                                        <span ng-bind="::VC.film.synopsis"></span>
-                                    </span><br>
-                                    <span flex>
-                                        <b>Key Cast</b><br>
-                                        <span ng-bind="::VC.film.keyCast"></span>
-                                    </span><br>
-                                    <span flex>
-                                        <b>Past Festivals/Awards</b><br>
-                                        <span ng-bind="::VC.film.pastAwards"></span>
-                                    </span><br>
-                                    <span flex>
-                                        <b>Country of Filming</b><br>
-                                        <span ng-bind="::VC.film.filmingCountry.name.common"></span>
-                                    </span><br>
-                                </span>
-                            </span>
-                        </p>
-                    </div>
-                </md-card-content>
-                <md-divider></md-divider>
-                <md-card-actions layout="row" layout-align="flex-start center">
-                    <md-button flex ng-click="toggleDetails = !toggleDetails" md-no-ink>
-                        <span class="md-caption" ng-if="!!toggleDetails">Less Details</span>
-                        <span class="md-caption" ng-if="!toggleDetails">More Details</span>
-                    </md-button>
-                </md-card-actions>
-                <md-divider></md-divider>&ndash;&gt;
-                <md-card-content style="padding:0 8px;">
-                    <div layout="row">
-                        <md-button class="" aria-label="Two thumbs up!" ng-click="VC.throttledRate('up')"
-                                   ng-class="{'md-primary':VC.canRate.up}">
-                            {{VC.film.rateUpCount || 0}}
-                            <md-icon md-svg-icon="two_thumbs_up" style="width: 48px;" class=""></md-icon>
-                            <md-tooltip md-direction="top">Two thumbs up!</md-tooltip>
-                        </md-button>
-                        <md-button class="" aria-label="Two thumbs down!" ng-click="VC.throttledRate('down')"
-                                   ng-class="{'md-primary':VC.canRate.down}">
-                            {{VC.film.rateDownCount || 0}}
-                            <md-icon md-svg-icon="two_thumbs_down" style="width: 48px;"></md-icon>
-                            <md-tooltip md-direction="top">Two thumbs down!</md-tooltip>
-                        </md-button>
-                        <md-button aria-label="Display share card" class="" ng-click="VC.toggleShare()">
-                            <md-icon md-menu-origin md-svg-icon="share"></md-icon>
-                            Share
-                        </md-button>
-                        <span flex></span>
-                    </div>
-                    <div layout="row" ng-show="VC.displayShare">
-                        <md-button socialshare socialshare-provider="facebook"
-                                   socialshare-url="{{::window.location.href}}"
-                                   socialshare-via="150687055270744"
-                                   socialshare-media="{{::VC.film.thumbnail_url}}">
-                            <md-icon md-svg-icon="facebook" ></md-icon>
-                        </md-button>
-                        <md-button socialshare socialshare-provider="twitter"
-                                   socialshare-url="{{::window.location.href}}">
-                            <md-icon md-svg-icon="twitter" ></md-icon>
-                        </md-button>
-                        <md-button socialshare socialshare-provider="google+"
-                                   socialshare-url="{{::window.location.href}}">
-                            <md-icon md-svg-icon="google-plus" ></md-icon>
-                        </md-button>
-                        <md-button socialshare socialshare-provider="reddit"
-                                   socialshare-url="{{::window.location.href}}">
-                            <md-icon md-svg-icon="reddit" ></md-icon>
-                        </md-button>
-                        <md-button socialshare socialshare-provider="pinterest"
-                                   socialshare-url="{{::window.location.href}}">
-                            <md-icon md-svg-icon="pinterest" ></md-icon>
-                        </md-button>
-                    </div>
-                </md-card-content>
-            </md-card>
-            <md-card>
-                <md-card-content style="padding:2px 8px;">
-                    <div layout="row">
-                        <md-button ng-show="!VC.toggleReactionsList" class="md-accent md-hue-2" aria-label="Reaction"
-                                   ng-click="VC.toggleReactions()">
-                            <span ng-show="VC.canReact===true">I feel ...</span>
-                        <span ng-show="VC.canReact!==true&&VC.canReact != 'login'">
-                            &lt;!&ndash;<md-icon md-svg-icon="{{VC.canReactIcon()}}" style="width:24px;height:24px;"></md-icon>&ndash;&gt;
-                            <span class="black-text">I Feel:</span> {{VC.canReact.emotion}}
-                        </span>
-
-                        </md-button>
-                        <div ng-show="VC.toggleReactionsList" layout="row">
-                            <md-autocomplete flex focus-on="!!VC.toggleReactionsList"
-                                             md-selected-item="VC.selectedReaction"
-                                             md-selected-item-change="VC.react(item)"
-                                             md-search-text="VC.searchReactionsText"
-                                             md-items="item in VC.emotions|filter:VC.searchReactionsText|orderBy:'name'"
-                                             md-item-text="item.name" md-no-cache="true"
-                                             placeholder="Search a feeling" md-min-length="0" md-autofocus="true">
-                                <md-item-template>
-                                    <md-icon md-svg-icon="{{item.icon}}" style="width:24px;height:24px;"></md-icon>
-                                    <span md-highlight-text="VC.searchReactionsText" md-highlight-flags="^i">{{item.name}}</span>
-                                </md-item-template>
-                                <md-not-found>
-                                    No matches found.
-                                </md-not-found>
-                            </md-autocomplete>
-                            <md-button flex class="md-icon-button" ng-click="VC.toggleReactions()">
-                                <md-icon md-svg-icon="close"></md-icon>
-                            </md-button>
-                        </div>
-                        <span flex></span>
-
-                        <md-button class="md-primary" aria-label="Judge it" ng-if="VC.film && VC.canCritique"
-                                   ng-disabled="VC.canCritique!==true" ng-click="VC.showCritiqueDialog()">
-                            <md-icon md-svg-icon="grade"></md-icon>
-                            <span ng-show="VC.canCritique===true">Judge it</span>
-                            <span ng-show="VC.canCritique!==true&&VC.canCritique != 'login'">Judged <span
-                                    class="orange-text">{{VC.canCritique.overall}}</span></span>
-                        </md-button>
-
-                    </div>
-                </md-card-content>
-            </md-card>
-            <div layout="column" layout-gt-sm="row">
-                <div flex-gt-sm="70" flex-gt-sm="60" flex-order="2" flex-order-gt-sm="1">
-                    <md-card>
-                        <md-tabs md-dynamic-height="true" md-border-bottom class="md-padding" md-stretch-tabs="always">
-                            <md-tab label="Comments &middot; {{VC.film.commentCount||0}}">
-                                <comments-block comments="VC.comments" disable="VC.film.disableComments"
-                                                parent="commentsParent"></comments-block>
-                            </md-tab>
-                            <md-tab label="Critiques &middot; {{VC.film.critiqueCount||0}}">
-                                <md-content class="md-padding" ng-if="!VC.film.disableCritique">
-                                    <md-card ng-repeat-start="c in VC.critiques|orderBy:'createdAt'" class="no-shadow">
-                                        <md-card-content>
-                                            <section layout="row" class="md-padding">
-                                                <div flex="60">
-                                                    <h6>Critique by
-                                                        <a ui-sref="user({id: c.author.id})"
-                                                           ng-bind="::c.author.first_name+' '+c.author.last_name"></a>
-                                                    </h6>
-
-                                                    <abbr title="{{::c.createdAt|date:'medium'}}" class="md-caption"
-                                                          ng-bind="::c.createdAt|date:'short'"></abbr> <span
-                                                        class="grey-text"
-                                                        ng-if="c.editedAt && !Body.isSame(c.createdAt, c.editedAt)">Edited:
-                                                <abbr title="{{::c.editedAt|date:'medium'}}"
-                                                      class="md-caption"
-                                                      ng-bind="::c.editedAt|date:'short'"></abbr></span>
-
-                                                    <p class="md-body-1" ng-bind="::c.body"></p>
-                                                </div>
-                                                <div flex="40">
-                                                    <div flex
-                                                         ng-if="::c.private && AppData.User.id != c.author.id">
-                                                        <h3 class="text-center">Private</h3>
-
-                                                        <div layout class="md-accent md-hue-2">
-                                                            <div flex layout layout-align="center center">
-                                                                <span class="md-body-1">IndieWise Rating</span>
-                                                            </div>
-                                                            <div flex layout layout-align="center center">
-                                                                <span class="md-body-2">{{::c.overall|number:1}}</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div flex
-                                                         ng-if="::!c.private||AppData.User.id == c.author.id">
-                                                        <div layout>
-                                                            <div flex layout layout-align="center center">
-                                                                <span class="md-body-1">Originality</span>
-                                                            </div>
-                                                            <span flex class="md-body-1 text-center">{{::c.originality}}</span>
-                                                        </div>
-                                                        <div layout>
-                                                            <div flex layout layout-align="center center">
-                                                                <span class="md-body-1">Direction</span>
-                                                            </div>
-                                                <span flex
-                                                      class="md-body-1 text-center">{{::c.direction}}</span>
-                                                        </div>
-                                                        <div layout>
-                                                            <div flex layout layout-align="center center">
-                                                                <span class="md-body-1">Writing</span>
-                                                            </div>
-                                                <span flex
-                                                      class="md-body-1 text-center">{{::c.writing}}</span>
-                                                        </div>
-                                                        <div layout>
-                                                            <div flex layout layout-align="center center">
-                                                                <span class="md-body-1">Cinematography</span>
-                                                            </div>
-                                                            <span flex class="md-body-1 text-center">{{::c.cinematography}}</span>
-                                                        </div>
-                                                        <div layout>
-                                                            <div flex layout layout-align="center center">
-                                                                <span class="md-body-1">Acting</span>
-                                                            </div>
-                                                            <span flex class="md-body-1 text-center">{{::c.performances}}</span>
-                                                        </div>
-                                                        <div layout>
-                                                            <div flex layout layout-align="center center">
-                                                                <span class="md-body-1">Production Value</span>
-                                                            </div>
-                                                            <span flex class="md-body-1 text-center">{{::c.production}}</span>
-                                                        </div>
-                                                        <div layout>
-                                                            <div flex layout layout-align="center center">
-                                                                <span class="md-body-1">Pacing</span>
-                                                            </div>
-                                                <span flex
-                                                      class="md-body-1 text-center">{{::c.pacing}}</span>
-                                                        </div>
-                                                        <div layout>
-                                                            <div flex layout layout-align="center center">
-                                                                <span class="md-body-1">Editing</span>
-                                                            </div>
-                                                <span flex
-                                                      class="md-body-1 text-center">{{::c.structure}}</span>
-                                                        </div>
-                                                        <div layout>
-                                                            <div flex layout layout-align="center center">
-                                                                <span class="md-body-1">Sound Quality</span>
-                                                            </div>
-                                                <span flex
-                                                      class="md-body-1 text-center">{{::c.audio}}</span>
-                                                        </div>
-                                                        <div layout>
-                                                            <div flex layout layout-align="center center">
-                                                                <span class="md-body-1">Music</span>
-                                                            </div>
-                                                <span flex
-                                                      class="md-body-1 text-center">{{::c.music}}</span>
-                                                        </div>
-                                                        <md-divider></md-divider>
-                                                        <div layout class="md-accent md-hue-2">
-                                                            <div flex layout layout-align="center center">
-                                                                <span class="md-body-1">IndieWise Rating</span>
-                                                            </div>
-                                                            <div flex layout layout-align="center center">
-                                                                <span class="md-body-2">{{::c.overall|number:1}}</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </section>
-                                            <md-divider></md-divider>
-
-                                        </md-card-content>
-                                        <div class="md-actions" layout="row" layout-align="end center">
-                                            <p>{{::c.commentCount||0}} comments</p>
-                                            <span flex></span>
-                                            <md-button class="md-warn"
-                                                       ng-if="::c.author.id === AppData.User.id"
-                                                       ng-click="VC.deleteCritique(c, $event)">Delete
-                                            </md-button>
-                                            <md-button class="md-accent md-hue-2"
-                                                       ng-if="::c.author.id === AppData.User.id"
-                                                       ng-click="Body.toPage('video_critique-edit', {video_id:VC.film.id, id:c.id})">
-                                                Edit
-                                            </md-button>
-                                            <md-button class="md-primary md-raised md-hue-2"
-                                                           ui-sref="video_critique({video_id:VC.film.id, id:c.id})">
-                                                View
-                                            </md-button>
-                                        </div>
-                                    </md-card>
-                                    <md-divider ng-repeat-end></md-divider>
-                                </md-content>
-                                <md-content class="md-padding" ng-if="VC.film.disableCritique">
-                                    <h3 class="md-subhead">Critiques are disabled by Uploader</h3>
-                                </md-content>
-
-                            </md-tab>
-                            <md-tab label="Awards">
-                                <md-tab-label>
-                                    Awards
-                                    <help-info text="'You need at least 5 nominations for the same award to Win'"></help-info>
-                                </md-tab-label>
-                                <md-tab-body>
-                                    <md-content class="md-padding">
-                                        <md-tabs md-dynamic-height md-border-bottom class="md-padding">
-                                            <md-tab label="Nominations &middot; {{VC.film.nominationCount||0}}">
-                                                <md-content class="md-padding">
-                                                    <md-list>
-                                                        <md-list-item class="md-2-line"
-                                                                      ng-repeat="nom in VC.nominations">
-                                                            &lt;!&ndash;<img ng-src="{{::nom.author.avatar}}" class="md-avatar" ng-if="::nom.author.avatar">&ndash;&gt;
-                                                            <md-icon class="md-avatar" md-svg-icon="stars"></md-icon>
-                                                            <div class="md-list-item-text">
-                                                                <h3>
-                                                                    Nominated for <a
-                                                                        ui-sref="browse({awards: nom.awardPntr.slug})"
-                                                                        ng-bind="::nom.awardPntr.name"></a>
-                                                                    by
-                                                                    <a ui-sref="user({id: c.author.id})"
-                                                                       ng-bind="::nom.nominator.first_name+' '+nom.nominator.last_name"></a>
-                                                                </h3>
-                                                                &lt;!&ndash;<p ng-bind="::nom.body"></p>&ndash;&gt;
-                                                                <time ng-bind="::nom.createdAt|date:'short'"></time>
-                                                            </div>
-                                                        </md-list-item>
-                                                    </md-list>
-                                                </md-content>
-                                            </md-tab>
-                                            <md-tab label="Wins &middot; {{VC.wins.length||0}}">
-                                                <md-content class="md-padding">
-                                                    <md-list>
-                                                        <md-list-item class="" ng-repeat="win in VC.wins">
-                                                            &lt;!&ndash;<img ng-src="{{::nom.author.avatar}}" class="md-avatar" ng-if="::nom.author.avatar">&ndash;&gt;
-                                                            <md-icon class="md-avatar-icon"
-                                                                     md-svg-icon="stars"></md-icon>
-                                                            <p ng-bind="::win.award.name"></p>
-                                                        </md-list-item>
-                                                    </md-list>
-
-                                                </md-content>
-                                            </md-tab>
-                                        </md-tabs>
-                                    </md-content>
-
-                                </md-tab-body>
-                            </md-tab>
-                        </md-tabs>
-                    </md-card>
-                </div>
-                <div flex-gt-sm="30" flex-gt-sm="40" flex-order="1" flex-order-gt-sm="2">
-                    <md-card ng-hide="true">
-                        <md-card-header>
-                            <md-card-header-text>
-                                <span class="md-subhead">Details</span>
-                            </md-card-header-text>
-                        </md-card-header>
-
-                        <md-card-content>
-                            <table>
-                                <tbody>
-                                <tr ng-show="VC.film.type.name">
-                                    <td>Type</td>
-                                    <td ng-bind="::VC.film.type.name"></td>
-                                </tr>
-                                <tr ng-show="VC.film.producers">
-                                    <td>Producers</td>
-                                    <td ng-bind="::VC.film.producers"></td>
-                                </tr>
-                                <tr ng-show="VC.film.director">
-                                    <td>Director</td>
-                                    <td ng-bind="::VC.film.director"></td>
-                                </tr>
-                                <tr ng-show="VC.film.writer">
-                                    <td>Writer</td>
-                                    <td ng-bind="::VC.film.writer"></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </md-card-content>
-                    </md-card>
-
-                    <md-card>
-                        <md-list>
-                            <md-list-item>
-                                <p class="md-subhead">
-                                    IndieWise Avg.
-                                    <help-info
-                                            text="'This is the Average of all Ratings you\'ve received on this Video.'"></help-info>
-                                    <span ng-if="VC.critiqueAverage" class="badge indigo white-text">{{VC.critiqueAverage|number:1}}</span>
-                                    <span ng-if="!VC.critiqueAverage" class="badge indigo white-text">N/A</span>
-                                </p>
-                            </md-list-item>
-                        </md-list>
-                    </md-card>
-
-                    <md-card ng-if="VC.wins.length"
-                    <md-list>
-                        <md-list-item ng-repeat="win in VC.wins">
-                            <md-icon class="md-avatar-icon blue-text" md-svg-icon="stars"></md-icon>
-                            <p class="">
-                                {{::win.award.name}}
-                            </p>
-                        </md-list-item>
-                    </md-list>
-                    </md-card>
-
-                    <md-card ng-if="VC.film.reactionCount">
-                        <md-list>
-                            <md-list-item>
-                                <md-icon class="md-avatar-icon white" md-svg-icon="emotion"></md-icon>
-                                <p class="md-subhead">Reactions &middot; {{VC.film.reactionCount}}</p>
-                                &lt;!&ndash;<md-icon ng-if="AppData.User.id !== VC.film.owner.id"
-                                         class="md-secondary md-accent md-hue-2" ng-click="VC.toggleMessageInput()"
-                                         aria-label="Message Author" md-svg-icon="email"></md-icon>&ndash;&gt;
-                            </md-list-item>
-                            <md-list-item ng-repeat="(key, count) in VC.chartedReactions">
-                                <md-icon aria-label="{{::VC.getEmoticonByEmotion(key).name}}"
-                                         md-svg-icon="{{::VC.getEmoticonByEmotion(key).icon}}"></md-icon>
-                                <md-progress-linear md-mode="determinate"
-                                                    value="{{(count/VC.reactions.length)*100}}"></md-progress-linear>
-                                <md-tooltip md-direction="top">{{count}} {{::VC.getEmoticonByEmotion(key).name}}
-                                </md-tooltip>
-                            </md-list-item>
-                            &lt;!&ndash;<form layout="row" layout-lt-md="column" class="md-padding" ng-submit="VC.postMessage()"
-                                  ng-if="!!VC.showMessageInput">
-                                <md-input-container flex>
-                                    <label>Message Author</label>
-                                    <textarea ng-model="VC.myMessage" columns="1" md-maxlength="500" required></textarea>
-                                </md-input-container>
-                                <md-button flex="5" flex-sm type="submit" class="md-primary" style="text-align: center;">
-                                    Send
-                                </md-button>
-                            </form>&ndash;&gt;
-                        </md-list>
-
-                    </md-card>
-
-                </div>
-            </div>
-        </md-content>
-    </section>
-</div>-->
 <div id="overlay"></div>
 
 <!--breadcrumbs-->
@@ -530,33 +8,43 @@
                 <ul class="breadcrumbs">
                     <li><i class="fa fa-home"></i><a ui-sref="home">Home</a></li>
                     <!--<li><a href="#">Animation</a></li>-->
-                    <li ui-sref="user.about({id: VC.film.owner.id})">{{::VC.film.owner.firstName+'
-                        '+VC.film.owner.lastName}}
+                    <li>
+                        <a ui-sref="user.about({url_id: VC.film.ownerUrlId})">{{VC.film.owner.firstName+' '+VC.film.owner.lastName}}</a>
                     </li>
                     <li>
                         <span class="show-for-sr">Current: </span> {{::VC.film.name}}
                     </li>
-                    <!--<a class="pull-right show-for-large">
-                        <a ng-click="VC.toggleWidthMode()">
-                            <i ng-show="VC.playerResponsiveMode" class="fa fa-arrows-h"></i>
+                    <span class="pull-right" style="position: relative;z-index: 11;font-size: 13px;">
+                        <a class="lights-toggle-button" ng-click="VC.toggleLights()" style="color: #ffffff;">
+                            <i class="fa fa-lightbulb-o" ng-class="{ 'light-on': VC.lightsOff }"></i>
+                            <span ng-if="!VC.lightsOff">Lights Off</span>
+                            <span ng-if="VC.lightsOff">Lights On</span>
                         </a>
-                    </a>-->
+                        <span class="show-for-large">&nbsp;|&nbsp;</span>
+                        <a class="show-for-large" ng-click="VC.toggleWidthMode()"
+                           style="position: relative;z-index: 11;font-size: 13px;color: #ffffff;">
+                            <i ng-show="!VC.playerResponsiveMode" class="fa fa-expand"></i>
+                            <i ng-show="VC.playerResponsiveMode" class="fa fa-compress"></i>
+                            <span ng-show="!VC.playerResponsiveMode">Widescreen</span>
+                            <span ng-show="VC.playerResponsiveMode">Center</span>
+                        </a>
+                    </span>
                 </ul>
             </nav>
         </div>
     </div>
 </section><!--end breadcrumbs-->
 <!-- full width Video -->
-<section class="fullwidth-single-video">
-    <div class="row">
-        <div class="large-12 columns">
+<section class="fullwidth-single-video" ng-class="{'no-padding': VC.playerResponsiveMode}">
+    <div class="row" ng-class="{'no-max-width': VC.playerResponsiveMode}">
+        <div class="large-12" ng-class="{'columns': !VC.playerResponsiveMode}">
             <div class="flex-video widescreen">
                 <!--<div class="switch"></div>-->
                 <!--<iframe width="560" height="315" src="https://www.youtube.com/embed/YE7VzlLtp-4" allowfullscreen></iframe>-->
                 <embed-video ng-if="VC.loaded && Body.checkContains(['other'], VC.type)" ng-href="{{VC.film.video_url}}"
                              width="560" height="500" embed-watcher></embed-video>
-                <elite-player ng-if="VC.loaded && Body.checkContains(['youtube', 'vimeo', 'hosted'], VC.type)"
-                              film="{{::VC.film}}" type="{{::VC.type}}"></elite-player>
+                <elite-player ng-if="VC.loaded && Body.checkContains(['youtube', 'vimeo', 'HTML5'], VC.type)"
+                              film="VC.film" type="VC.type" lights-off="VC.lightsOff"></elite-player>
             </div>
         </div>
     </div>
@@ -565,7 +53,7 @@
     <!-- left side content area -->
     <div class="large-8 columns">
         <!-- single post stats -->
-        <section class="SinglePostStats">
+        <section class="SinglePostStats" id="SinglePostStats">
             <!-- newest video -->
             <div class="row secBg">
                 <div class="large-12 columns">
@@ -573,12 +61,12 @@
                         <div class="media-object-section">
                             <div class="author-img-sec">
                                 <div class="thumbnail author-single-post">
-                                    <a ui-sref="user.about({id: VC.film.owner.id})"><img
-                                            src="{{::VC.film.owner.avatar}}" alt="post"></a>
+                                    <a ui-sref="user.about({url_id: VC.film.ownerUrlId})"><img
+                                            src="{{VC.film.ownerAvatar}}" alt="post"></a>
                                 </div>
                                 <p class="text-center">
-                                    <a ui-sref="user.about({id: VC.film.owner.id})">
-                                        {{::VC.film.owner.firstName+' '+VC.film.owner.lastName}}
+                                    <a ui-sref="user.about({url_id: VC.film.ownerUrlId})">
+                                        {{VC.film.ownerFullName}}
                                     </a>
                                 </p>
                             </div>
@@ -586,8 +74,7 @@
                         <div class="media-object-section object-second">
                             <div class="author-des clearfix">
                                 <div class="post-title">
-                                    <h4>{{::VC.film.name}}</h4>
-
+                                    <h4>{{::VC.film.name}} <span ng-if="::VC.film.nsfw" style="padding: 5px;cursor: default;color: #CC181E;border-color: #CC181E" class="button tiny alert hollow">Mature</span></h4>
                                     <p>
                                         <span>
                                             <i class="fa fa-clock-o"></i>
@@ -598,61 +85,85 @@
                                                 class="fa fa-thumbs-o-up"></i>{{VC.film.rateUpCount||0}}</span>
                                         <span class="double-thumbs"><i class="fa fa-thumbs-o-down"></i><i
                                                 class="fa fa-thumbs-o-down"></i>{{VC.film.rateDownCount||0}}</span>
-                                        <span><i class="fa fa-commenting"></i>{{VC.film.commentCount||0}}</span>
+                                        <!--<span><i class="fa fa-commenting"></i>{{VC.film.commentCount||0}}</span>-->
                                     </p>
                                 </div>
                                 <div class="subscribe">
                                     <form>
                                         <button ng-click="VC.openReactionDialog()">
+                                            <span ng-if="VC.canReact===true" class="fa fa-smile-o"></span>
                                             <span ng-if="VC.canReact===true">I'm feeling ...</span>
                                             <span ng-if="VC.canReact!==true&&VC.canReact != 'login'">
+                                                <!--[if gte IE 9]><!-->
                                                 <md-icon class="emoticon" md-svg-icon="{{VC.canReactIcon()}}"></md-icon>
+                                                <!--<![endif]-->
                                                 I'm feeling {{VC.canReact.emotion}}
                                             </span>
                                         </button>
-                                        <button ng-click="VC.openCritiqueDialog()" ng-disabled="VC.canCritique!==true">
+                                        <a class="primary button tiny show-for-small-only"
+                                           ng-click="VC.openCritiqueDialog()" ng-if="VC.canCritique">
+                                            <span class="fa fa-star"></span>
                                             <span ng-if="VC.canCritique===true">Judge</span>
                                             <span ng-if="VC.canCritique!==true&&VC.canCritique != 'login'">
                                                 Judged: <span>{{VC.canCritique.overall}}</span>
                                             </span>
-                                        </button>
+                                        </a>
+                                        <a class="primary button small hide-for-small-only" ng-cloak
+                                           ng-click="VC.openCritiqueDialog()" ng-if="VC.canCritique">
+                                            <span class="fa fa-star"></span>
+                                            <span ng-if="VC.canCritique===true">Judge</span>
+                                            <span ng-if="VC.canCritique!==true&&VC.canCritique != 'login'">
+                                                Judged: <span>{{VC.canCritique.overall}}</span>
+                                            </span>
+                                        </a>
                                     </form>
                                 </div>
                             </div>
-                            <div class="social-share">
+                            <div class="social-share hide-for-small-only">
                                 <div class="post-like-btn clearfix">
                                     <form>
-                                        <button class="double-thumbs" ng-click="VC.throttledRate('up')"
-                                                ng-class="{'active':VC.canRate.up}">
+                                        <a class="double-thumbs primary button tiny" ng-click="VC.rate('up')"
+                                           ng-class="{'active':VC.canRate.up}">
                                             <i class="fa fa-thumbs-o-up"></i><i class="fa fa-thumbs-o-up"></i>
-                                        </button>
-                                        <button class="double-thumbs" ng-click="VC.throttledRate('down')"
-                                                ng-class="{'active':VC.canRate.down}">
+                                        </a>
+                                        <a class="double-thumbs primary button tiny" ng-click="VC.rate('down')"
+                                           ng-class="{'active':VC.canRate.down}">
                                             <i class="fa fa-thumbs-o-down"></i><i class="fa fa-thumbs-o-down"></i>
-                                        </button>
-                                        <dropdown-toggle>
-                                            <toggle>
-                                                <button><i class="fa fa-heart"></i>Add to</button>
-                                            </toggle>
-                                            <pane>
-                                                <ul class="menu vertical">
-                                                    <li class="checkbox">
-                                                        <input type="checkbox" id="isFaved" ng-model="VC.isFaved" ng-false-value="false||'login'" ng-change="VC.toFavorites()">
-                                                        <label class="customLabel" for="isFaved">Favorites</label>
-                                                    </li>
-                                                    <li class="checkbox">
-                                                        <input type="checkbox" id="isSaved" ng-model="VC.isSaved" ng-false-value="false||'login'" ng-change="VC.toWatchLater()">
-                                                        <label class="customLabel" for="isSaved">Watch Later</label>
-                                                    </li>
-                                                </ul>
-                                            </pane>
-                                        </dropdown-toggle>
-                                        <button ng-click="VC.openShareDialog()"><i class="fa fa-share"></i>Share
-                                        </button>
+                                        </a>
+                                        <playlists project="VC.film"></playlists>
+                                        <a class="button tiny" ng-click="VC.openShareDialog()"><i
+                                                class="fa fa-share"></i>Share
+                                        </a>
+                                        <a class="button tiny alert" ng-click="VC.reportDialog()">
+                                            <i class="fa fa-flag"></i> Report
+                                        </a>
                                     </form>
                                 </div>
                             </div>
                         </div>
+                        <div class="social-share show-for-small-only">
+                            <div class="post-like-btn clearfix">
+                                <form>
+                                    <a class="double-thumbs primary button tiny" ng-click="VC.throttledRate('up')"
+                                       ng-class="{'active':VC.canRate.up}">
+                                        <i class="fa fa-thumbs-o-up"></i><i class="fa fa-thumbs-o-up"></i>
+                                    </a>
+                                    <a class="double-thumbs primary button tiny" ng-click="VC.throttledRate('down')"
+                                       ng-class="{'active':VC.canRate.down}">
+                                        <i class="fa fa-thumbs-o-down"></i><i class="fa fa-thumbs-o-down"></i>
+                                    </a>
+                                    <playlists project="VC.film"></playlists>
+                                    <a class="button tiny" ng-click="VC.openShareDialog()"><i
+                                            class="fa fa-share"></i>Share
+                                    </a>
+                                    <a class="button tiny alert" ng-click="VC.reportDialog()">
+                                        <i class="fa fa-flag"></i> Report
+                                    </a>
+
+                                </form>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -667,375 +178,89 @@
                         <h5>Description</h5>
                     </div>
                     <div class="description showmore_one" toggle-show-more>
-                        <p ng-bind="::VC.film.description"></p>
+                        <p ng-if="::VC.film.description" ng-bind="::VC.film.description"></p>
 
-                        <div class="row">
+                        <div class="row" ng-if="::VC.film.keyCast">
                             <div class="columns small-6">
-                                <span>
-                                    <b>Director</b><br>
-                                    <span ng-bind="::VC.film.director"></span>
-                                </span><br>
-                                <span>
-                                    <b>Writer</b><br>
-                                    <span ng-bind="::VC.film.writer"></span>
-                                </span><br>
-                                <span>
-                                    <b>Producer(s)</b><br>
-                                    <span ng-bind="::VC.film.producers"></span>
-                                </span><br>
-                                <span>
-                                    <b>Date of Completion</b><br>
-                                    <span ng-bind="::VC.film.completionDate|date:'fullDate'"></span>
-                                </span><br>
-                            </div>
-                            <div class="columns small-6">
-                                <span>
-                                    <b>Synopsis</b><br>
-                                    <span ng-bind="::VC.film.synopsis"></span>
-                                </span><br>
                                 <span>
                                     <b>Key Cast</b><br>
                                     <span ng-bind="::VC.film.keyCast"></span>
                                 </span><br>
-                                <span>
-                                    <b>Past Festivals/Awards</b><br>
-                                    <span ng-bind="::VC.film.pastAwards"></span>
-                                </span><br>
-                                <span>
-                                    <b>Country of Filming</b><br>
-                                    <span ng-bind="::VC.film.filmingCountry.name.common"></span>
-                                </span><br>
                             </div>
+                        </div>
+
+                        <div class="categories">
+                            <button><i class="fa fa-chevron-right"></i>Director</button>
+                            <a ui-sref="browse({q: VC.film.director})" class="inner-btn" ng-bind="::VC.film.director"></a>
+                        </div>
+                        <div class="categories">
+                            <button><i class="fa fa-chevron-right"></i>Writer</button>
+                            <a ui-sref="browse({q: VC.film.writer})" class="inner-btn" ng-bind="::VC.film.writer"></a>
+                        </div>
+                        <div class="categories">
+                            <button><i class="fa fa-chevron-right"></i>Producer(s)</button>
+                            <a ui-sref="browse({q: VC.film.producers})" class="inner-btn" ng-bind="::VC.film.producers"></a>
+                        </div>
+                        <div class="categories">
+                            <button><i class="fa fa-chevron-right"></i>Country of Filming</button>
+                            <a ui-sref="browse({q: VC.film.filmingCountryName})" class="inner-btn" ng-bind="::VC.film.filmingCountryName"></a>
+                        </div>
+                        <div class="categories">
+                            <button><i class="fa fa-chevron-right"></i>Year of Completion</button>
+                            <a ui-sref="browse({q: (VC.film.completionDate|date:'yyyy':'UTC')})" class="inner-btn" ng-bind="::(VC.film.completionDate|date:'yyyy':'UTC')||'N/A'"></a>
                         </div>
                         <div class="categories">
                             <button><i class="fa fa-chevron-right"></i>Type</button>
-                            <a href="#" class="inner-btn" ng-bind="::VC.film.type.name"></a>
+                            <a ui-sref="browse({types: VC.film.type.name})" class="inner-btn" ng-bind="::VC.film.type.name"></a>
                         </div>
                         <div class="categories">
                             <button><i class="fa fa-chevron-right"></i>Genres</button>
-                            <a ng-repeat="g in VC.film.genres" href="#" class="inner-btn">{{::g.name}}</a>
+                            <a ng-repeat="g in VC.film.genres" ui-sref="browse({genres: g.name})" class="inner-btn">{{::g.name}}</a>
                         </div>
                         <div class="categories">
                             <button><i class="fa fa-chevron-right"></i>Running Time</button>
                             <a href="#" class="inner-btn"
                                ng-bind="::VC.film.runTime|secondsToDateTime|date:'HH:mm:ss'"></a>
                         </div>
-                        <!--<div class="tags">
+                        <div class="tags">
                             <button><i class="fa fa-tags"></i>Tags</button>
-                            <a href="#" class="inner-btn">3D Videos</a>
-                            <a href="#" class="inner-btn">Videos</a>
-                            <a href="#" class="inner-btn">HD</a>
-                            <a href="#" class="inner-btn">Movies</a>
-                        </div>-->
+                            <a class="inner-btn" ui-sref="browse({q: tag})" ng-repeat="tag in VC.tagsArray" style="margin-right: 2px;">{{::tag}}</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
         <!-- End single post description -->
 
-        <!-- related Posts -->
-        <!--<section class="content content-with-sidebar related">
-            <div class="row secBg">
+        <section id="randomMedia" style="padding: 0;border-bottom: none;">
+            <div class="random-media-head text-center row" style="background-color:#ffffff;border:1px solid #ececec;border-bottom:none;margin-bottom:0;">
                 <div class="large-12 columns">
-                    <div class="main-heading borderBottom">
-                        <div class="row padding-14">
-                            <div class="medium-12 small-12 columns">
-                                <div class="head-title">
-                                    <i class="fa fa-film"></i>
-                                    <h4>Related Videos</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row list-group">
-                        <div class="item large-4 columns end group-item-grid-default">
-                            <div class="post thumb-border">
-                                <div class="post-thumb">
-                                    <img src="http://placehold.it/370x220" alt="landing">
-                                    <a href="#" class="hover-posts">
-                                        <span><i class="fa fa-play"></i>Watch Video</span>
-                                    </a>
-                                    <div class="video-stats clearfix">
-                                        <div class="thumb-stats pull-left">
-                                            <h6>HD</h6>
-                                        </div>
-                                        <div class="thumb-stats pull-left">
-                                            <i class="fa fa-heart"></i>
-                                            <span>506</span>
-                                        </div>
-                                        <div class="thumb-stats pull-right">
-                                            <span>05:56</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="post-des">
-                                    <h6><a href="#">There are many variations of passage.</a></h6>
-                                    <div class="post-stats clearfix">
-                                        <p class="pull-left">
-                                            <i class="fa fa-user"></i>
-                                            <span><a href="#">admin</a></span>
-                                        </p>
-                                        <p class="pull-left">
-                                            <i class="fa fa-clock-o"></i>
-                                            <span>5 January 16</span>
-                                        </p>
-                                        <p class="pull-left">
-                                            <i class="fa fa-eye"></i>
-                                            <span>1,862K</span>
-                                        </p>
-                                    </div>
-                                    <div class="post-summary">
-                                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
-                                    </div>
-                                    <div class="post-button">
-                                        <a href="#" class="secondary-button"><i class="fa fa-play-circle"></i>watch video</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="item large-4 columns end group-item-grid-default">
-                            <div class="post thumb-border">
-                                <div class="post-thumb">
-                                    <img src="http://placehold.it/370x220" alt="landing">
-                                    <a href="#" class="hover-posts">
-                                        <span><i class="fa fa-play"></i>Watch Video</span>
-                                    </a>
-                                    <div class="video-stats clearfix">
-                                        <div class="thumb-stats pull-left">
-                                            <h6>HD</h6>
-                                        </div>
-                                        <div class="thumb-stats pull-left">
-                                            <i class="fa fa-heart"></i>
-                                            <span>506</span>
-                                        </div>
-                                        <div class="thumb-stats pull-right">
-                                            <span>05:56</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="post-des">
-                                    <h6><a href="#">There are many variations of passage.</a></h6>
-                                    <div class="post-stats clearfix">
-                                        <p class="pull-left">
-                                            <i class="fa fa-user"></i>
-                                            <span><a href="#">admin</a></span>
-                                        </p>
-                                        <p class="pull-left">
-                                            <i class="fa fa-clock-o"></i>
-                                            <span>5 January 16</span>
-                                        </p>
-                                        <p class="pull-left">
-                                            <i class="fa fa-eye"></i>
-                                            <span>1,862K</span>
-                                        </p>
-                                    </div>
-                                    <div class="post-summary">
-                                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
-                                    </div>
-                                    <div class="post-button">
-                                        <a href="#" class="secondary-button"><i class="fa fa-play-circle"></i>watch video</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="item large-4 columns end group-item-grid-default">
-                            <div class="post thumb-border">
-                                <div class="post-thumb">
-                                    <img src="http://placehold.it/370x220" alt="landing">
-                                    <a href="#" class="hover-posts">
-                                        <span><i class="fa fa-play"></i>Watch Video</span>
-                                    </a>
-                                    <div class="video-stats clearfix">
-                                        <div class="thumb-stats pull-left">
-                                            <h6>HD</h6>
-                                        </div>
-                                        <div class="thumb-stats pull-left">
-                                            <i class="fa fa-heart"></i>
-                                            <span>506</span>
-                                        </div>
-                                        <div class="thumb-stats pull-right">
-                                            <span>05:56</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="post-des">
-                                    <h6><a href="#">There are many variations of passage.</a></h6>
-                                    <div class="post-stats clearfix">
-                                        <p class="pull-left">
-                                            <i class="fa fa-user"></i>
-                                            <span><a href="#">admin</a></span>
-                                        </p>
-                                        <p class="pull-left">
-                                            <i class="fa fa-clock-o"></i>
-                                            <span>5 January 16</span>
-                                        </p>
-                                        <p class="pull-left">
-                                            <i class="fa fa-eye"></i>
-                                            <span>1,862K</span>
-                                        </p>
-                                    </div>
-                                    <div class="post-summary">
-                                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
-                                    </div>
-                                    <div class="post-button">
-                                        <a href="#" class="secondary-button"><i class="fa fa-play-circle"></i>watch video</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="item large-4 columns end group-item-grid-default">
-                            <div class="post thumb-border">
-                                <div class="post-thumb">
-                                    <img src="http://placehold.it/370x220" alt="landing">
-                                    <a href="#" class="hover-posts">
-                                        <span><i class="fa fa-play"></i>Watch Video</span>
-                                    </a>
-                                    <div class="video-stats clearfix">
-                                        <div class="thumb-stats pull-left">
-                                            <h6>HD</h6>
-                                        </div>
-                                        <div class="thumb-stats pull-left">
-                                            <i class="fa fa-heart"></i>
-                                            <span>506</span>
-                                        </div>
-                                        <div class="thumb-stats pull-right">
-                                            <span>05:56</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="post-des">
-                                    <h6><a href="#">There are many variations of passage.</a></h6>
-                                    <div class="post-stats clearfix">
-                                        <p class="pull-left">
-                                            <i class="fa fa-user"></i>
-                                            <span><a href="#">admin</a></span>
-                                        </p>
-                                        <p class="pull-left">
-                                            <i class="fa fa-clock-o"></i>
-                                            <span>5 January 16</span>
-                                        </p>
-                                        <p class="pull-left">
-                                            <i class="fa fa-eye"></i>
-                                            <span>1,862K</span>
-                                        </p>
-                                    </div>
-                                    <div class="post-summary">
-                                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
-                                    </div>
-                                    <div class="post-button">
-                                        <a href="#" class="secondary-button"><i class="fa fa-play-circle"></i>watch video</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="item large-4 columns end group-item-grid-default">
-                            <div class="post thumb-border">
-                                <div class="post-thumb">
-                                    <img src="http://placehold.it/370x220" alt="landing">
-                                    <a href="#" class="hover-posts">
-                                        <span><i class="fa fa-play"></i>Watch Video</span>
-                                    </a>
-                                    <div class="video-stats clearfix">
-                                        <div class="thumb-stats pull-left">
-                                            <h6>HD</h6>
-                                        </div>
-                                        <div class="thumb-stats pull-left">
-                                            <i class="fa fa-heart"></i>
-                                            <span>506</span>
-                                        </div>
-                                        <div class="thumb-stats pull-right">
-                                            <span>05:56</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="post-des">
-                                    <h6><a href="#">There are many variations of passage.</a></h6>
-                                    <div class="post-stats clearfix">
-                                        <p class="pull-left">
-                                            <i class="fa fa-user"></i>
-                                            <span><a href="#">admin</a></span>
-                                        </p>
-                                        <p class="pull-left">
-                                            <i class="fa fa-clock-o"></i>
-                                            <span>5 January 16</span>
-                                        </p>
-                                        <p class="pull-left">
-                                            <i class="fa fa-eye"></i>
-                                            <span>1,862K</span>
-                                        </p>
-                                    </div>
-                                    <div class="post-summary">
-                                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
-                                    </div>
-                                    <div class="post-button">
-                                        <a href="#" class="secondary-button"><i class="fa fa-play-circle"></i>watch video</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="item large-4 columns end group-item-grid-default">
-                            <div class="post thumb-border">
-                                <div class="post-thumb">
-                                    <img src="http://placehold.it/370x220" alt="landing">
-                                    <a href="#" class="hover-posts">
-                                        <span><i class="fa fa-play"></i>Watch Video</span>
-                                    </a>
-                                    <div class="video-stats clearfix">
-                                        <div class="thumb-stats pull-left">
-                                            <h6>HD</h6>
-                                        </div>
-                                        <div class="thumb-stats pull-left">
-                                            <i class="fa fa-heart"></i>
-                                            <span>506</span>
-                                        </div>
-                                        <div class="thumb-stats pull-right">
-                                            <span>05:56</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="post-des">
-                                    <h6><a href="#">There are many variations of passage.</a></h6>
-                                    <div class="post-stats clearfix">
-                                        <p class="pull-left">
-                                            <i class="fa fa-user"></i>
-                                            <span><a href="#">admin</a></span>
-                                        </p>
-                                        <p class="pull-left">
-                                            <i class="fa fa-clock-o"></i>
-                                            <span>5 January 16</span>
-                                        </p>
-                                        <p class="pull-left">
-                                            <i class="fa fa-eye"></i>
-                                            <span>1,862K</span>
-                                        </p>
-                                    </div>
-                                    <div class="post-summary">
-                                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
-                                    </div>
-                                    <div class="post-button">
-                                        <a href="#" class="secondary-button"><i class="fa fa-play-circle"></i>watch video</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <ul class="tabs">
+                        <li class="tabs-title" ng-class="{'is-active': VC.activeTab=='critiques'}">
+                            <a ng-click="VC.activeTab='critiques'">
+                                <i class="fa fa-star"></i>
+                                <ng-pluralize count="VC.critiques.length"
+                                              when="{'0': 'Critiques', 'one': ' 1 Critique', 'other': '{} Critiques'}">
+                                </ng-pluralize>
+                            </a>
+                        </li>
+                        <li class="tabs-title" ng-class="{'is-active': VC.activeTab=='awards'}">
+                            <a ng-click="VC.activeTab='awards'">
+                                <i class="fa fa-trophy"></i>
+                                <ng-pluralize count="VC.film.awardCount"
+                                              when="{'0': 'Awards', 'one': ' 1 Award', 'other': '{} Awards'}">
+                                </ng-pluralize>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </section>-->
-        <!--end related posts-->
+        </section>
 
-        <div class="sidebar customTabs">
+        <!--<div class="sidebar customTabs">
             <div class="widgetBox">
                 <div class="widgetContent">
                     <ul class="menu vertical medium-horizontal expanded profile-overview">
-                        <li class="clearfix"><a ng-class="{'active': VC.activeTab=='comments'}"
-                                                ng-click="VC.activeTab='comments'"><i class="fa fa-comments"></i>Comments<span
-                                class="float-right">{{VC.comments.totalRows||''}}</span></a></li>
                         <li class="clearfix"><a ng-class="{'active': VC.activeTab=='critiques'}"
                                                 ng-click="VC.activeTab='critiques'"><i
                                 class="fa fa-star"></i>Critiques<span
@@ -1046,17 +271,17 @@
                     </ul>
                 </div>
             </div>
-        </div>
+        </div>-->
 
         <!-- Comments -->
-        <comments-block ng-show="VC.activeTab=='comments'" comments="VC.comments" disable="VC.film.disableComments"
-                        parent="VC.film"></comments-block>
+        <!--<comments-block ng-show="VC.activeTab=='comments'" comments="VC.comments" disable="VC.film.disableComments"
+                        parent="VC.film"></comments-block>-->
         <!-- End Comments -->
 
-        <!-- Comments -->
-        <critiques-block ng-show="VC.activeTab=='critiques'" critiques="VC.critiques"
+        <!-- Critiques -->
+        <critiques-block ng-show="VC.activeTab=='critiques'" critiques="VC.critiques" parent-url-id="VC.film.url_id"
                          disable="VC.film.disableCritique"></critiques-block>
-        <!-- End Comments -->
+        <!-- End Critiques -->
 
         <!-- Awards -->
         <section class="content comments" ng-show="VC.activeTab=='awards'">
@@ -1066,7 +291,7 @@
                         <div class="row padding-14">
                             <div class="medium-12 small-12 columns">
                                 <div class="head-title">
-                                    <i class="fa fa-comments"></i>
+                                    <i class="fa fa-trophy"></i>
                                     <h4>Awards <span>({{VC.film.awardCount||0}})</span></h4>
                                 </div>
                             </div>
@@ -1075,13 +300,17 @@
                     <tabset>
                         <tab heading="Nominations {{VC.nominations.data.length||0}}" ng-init="sortOrderA='-createdAt'">
                             <br>
+
                             <div class="comment-sort text-right">
-                                <span>Sort By : <a ng-class="{'active':sortOrderA=='-createdAt'}" ng-click="sortOrderA='-createdAt'">newest</a> | <a ng-class="{'active':sortOrderA=='createdAt'}" ng-click="sortOrderA='createdAt'">oldest</a></span>
+                                <span>Sort By : <a ng-class="{'active':sortOrderA=='-createdAt'}"
+                                                   ng-click="sortOrderA='-createdAt'">newest</a> | <a
+                                        ng-class="{'active':sortOrderA=='createdAt'}" ng-click="sortOrderA='createdAt'">oldest</a></span>
                             </div>
 
                             <!-- main comment -->
                             <div class="main-comment showmore_one">
-                                <div class="media-object stack-for-small" ng-repeat="nom in VC.nominations.data|orderBy:sortOrderA">
+                                <div class="media-object stack-for-small"
+                                     ng-repeat="nom in VC.nominations.data|orderBy:sortOrderA">
                                     <div class="media-object-section comment-img text-center">
                                         <div class="comment-box-img">
                                             <img ng-src="{{::VC.nominations.relatedObjects.users[nom.nominator].avatar || './assets/img/avatar-1.png'}}"
@@ -1090,12 +319,12 @@
                                     </div>
                                     <div class="media-object-section comment-desc">
                                         <div class="comment-title">
-                                            <span class="name"><a ui-sref="user.about({id: nom.nominator.id})">
+                                            <span class="name"><a ui-sref="user.about({url_id: nom.nominator.url_id})">
                                                 {{::VC.nominations.relatedObjects.users[nom.nominator].firstName+'
                                                 '+VC.nominations.relatedObjects.users[nom.nominator].lastName}}</a> nominated this video for:
                                             </span>
                                             <span class="time float-right"><i class="fa fa-clock-o"></i>
-                                                <abbr title="{{::nom.createdAt|date:'medium'}}"
+                                                <abbr title="{{::nom.createdAt|amUtc|amLocal|amDateFormat:'lll'}}"
                                                       am-time-ago="::nom.createdAt"></abbr>
                                             </span>
                                         </div>
@@ -1107,16 +336,37 @@
                             </div>
                             <!-- End main comment -->
                         </tab>
-                        <tab heading="Wins {{VC.wins.data.length||0}}">
-                            <md-list>
-                                <md-list-item class="" ng-repeat="win in VC.wins.data">
-                                    &lt;!&ndash;<img ng-src="{{::nom.author.avatar}}" class="md-avatar"
-                                                     ng-if="::nom.author.avatar">&ndash;&gt;
-                                    <md-icon class="md-avatar-icon"
-                                             md-svg-icon="stars"></md-icon>
-                                    <p ng-bind="::win.award.name"></p>
-                                </md-list-item>
-                            </md-list>
+                        <tab heading="Wins {{VC.wins.data.length||0}}" ng-init="sortOrderA='-createdAt'">
+                            <br>
+
+                            <div class="comment-sort text-right">
+                                <span>Sort By : <a ng-class="{'active':sortOrderA=='-createdAt'}"
+                                                   ng-click="sortOrderA='-createdAt'">newest</a> | <a
+                                        ng-class="{'active':sortOrderA=='createdAt'}" ng-click="sortOrderA='createdAt'">oldest</a></span>
+                            </div>
+
+                            <div class="main-comment showmore_one">
+                                <div class="media-object stack-for-small" ng-repeat="win in VC.wins.data">
+                                    <div class="media-object-section comment-img text-center">
+                                        <div class="comment-box-img">
+                                            <img src="./assets/img/award_win_small.png"
+                                                 alt="award">
+                                        </div>
+                                    </div>
+                                    <div class="media-object-section comment-desc">
+                                        <div class="comment-title">
+                                            <span class="time float-right"><i class="fa fa-clock-o"></i>
+                                                <abbr title="{{::win.createdAt|amUtc|amLocal|amDateFormat:'lll'}}"
+                                                      am-time-ago="::win.createdAt"></abbr>
+                                            </span>
+                                        </div>
+                                        <div class="comment-text">
+                                            <h2>{{::VC.wins.relatedObjects.Award[win.award].name}}</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </tab>
                     </tabset>
 
@@ -1136,12 +386,15 @@
                 <div class="large-12 medium-7 medium-centered columns">
                     <div class="widgetBox">
                         <div class="widgetTitle">
-                            <h5 class="has-tip" tooltip="This is the Average of all Ratings you\'ve received on this Video." tooltip-placement="top" style="display: block;">
+                            <h5 class="has-tip"
+                                tooltip="This is the Average of all Ratings you've received on this Video."
+                                tooltip-placement="top" style="display: block;">
                                 IndieWise Average
                                 <span style="float: right;">
-                                    <span ng-if="VC.critiqueAverage"
-                                          class="label info">{{VC.critiqueAverage|number:1}}</span>
-                                    <span ng-if="!VC.critiqueAverage" class="label info">N/A</span>
+                                    <span ng-if="VC.critiqueAverage&&VC.film.critiqueCount>0" class="label info">{{VC.critiqueAverage|number:1}}</span>
+                                    <span ng-if="!VC.critiqueAverage&&VC.film.critiqueCount>0" class="label info">{{VC.film.iwRating|number:1}}</span>
+                                    <span ng-if="!VC.critiqueAverage&&VC.film.critiqueCount==0"
+                                          class="label info">N/A</span>
                                 </span>
 
                             </h5>
@@ -1153,16 +406,27 @@
                 <!-- End IndieWise Average Widget -->
 
                 <!-- Awards Widget -->
-                <div class="large-12 medium-7 medium-centered columns" ng-if="VC.film.awardCount>0">
+                <div class="large-12 medium-7 medium-centered columns">
                     <div class="widgetBox">
                         <div class="widgetTitle">
-                            <h5 class="has-tip" tooltip="You need at least 5 nominations of the same award to win" tooltip-placement="top" style="display: block;">
+                            <h5 class="has-tip" tooltip="You need at least 5 nominations of the same award to win"
+                                tooltip-placement="top" style="display: block;">
                                 Awards
                             </h5>
 
                         </div>
                         <div class="widgetContent">
-                            <!--ng-repeat="win in VC.wins"-->
+                            <ul>
+                                <li ng-repeat="win in VC.wins.data">
+                                    <h5>
+                                        <span class="fa-stack fa-lg">
+                                          <i class="fa fa-circle fa-stack-2x" style="color: #EEEEEE;"></i>
+                                          <i class="fa fa-trophy fa-stack-1x fa-inverse" style="color: #FFC10E;"></i>
+                                        </span>
+                                        {{::VC.wins.relatedObjects.Award[win.award].name}}</h5>
+                                </li>
+                            </ul>
+
                         </div>
 
                     </div>
@@ -1183,13 +447,15 @@
                             <ul>
                                 <li class="has-tip" style="display: block;border-bottom: none"
                                     ng-repeat="(key, count) in VC.chartedReactions"
-                                    tooltip="{{count}} {{::VC.getEmoticonByEmotion(key).name}}">
+                                    tooltip="{{count}} users feel {{::VC.getEmoticonByEmotion(key).name}}">
+                                    <!--[if gte IE 9]><!-->
                                     <md-icon class="emoticon" aria-label="{{::VC.getEmoticonByEmotion(key).name}}"
                                              md-svg-icon="{{::VC.getEmoticonByEmotion(key).icon}}"></md-icon>
+                                    <!--<![endif]-->
                                     {{::VC.getEmoticonByEmotion(key).name}}
                                     <div class="progress" role="progressbar" tabindex="0"
-                                         aria-valuenow="{{(count/VC.film.reactionCount)*100}}" aria-valuemin="0"
-                                         aria-valuetext="{{(count/VC.film.reactionCount)*100}} percent"
+                                         aria-valuenow="{{(count/VC.reactions.data.length)*100}}" aria-valuemin="0"
+                                         aria-valuetext="{{(count/VC.reactions.data.length)*100}} percent"
                                          aria-valuemax="100">
                                         <div class="progress-meter"
                                              style="width: {{(count/VC.film.reactionCount)*100}}%"></div>
@@ -1206,23 +472,31 @@
                 <div class="large-12 medium-7 medium-centered columns">
                     <div class="widgetBox">
                         <div class="widgetTitle">
-                            <h5></h5>
+                            <h5>Judge This Next...</h5>
                         </div>
                         <div class="widgetContent">
-                            <div class="video-box thumb-border">
+                            <div class="video-box thumb-border" ng-if="VC.relatedvideo.id">
                                 <div class="video-img-thumb">
-                                    <img src="http://placehold.it/300x190" alt="Recently Watched Videos">
-                                    <a href="#" class="hover-posts">
+                                    <img ng-src="{{VC.relatedvideo.thumbnail_url || 'http://placehold.it/300x190'}}"
+                                         alt="Recently Watched Videos">
+                                    <a ui-sref="video({id: VC.relatedvideo.id, url_id: VC.relatedvideo.url_id})"
+                                       class="hover-posts">
                                         <span><i class="fa fa-play"></i>Watch Video</span>
                                     </a>
                                 </div>
                                 <div class="video-box-content">
-                                    <h6><a href="#">There are many variations of passage. </a></h6>
+                                    <h6><a ui-sref="video({id: VC.relatedvideo.id, url_id: VC.relatedvideo.url_id})">{{::VC.relatedvideo.name}}</a>
+                                    </h6>
 
                                     <p>
-                                        <span><i class="fa fa-user"></i><a href="#">admin</a></span>
-                                        <span><i class="fa fa-clock-o"></i>5 January 16</span>
-                                        <span><i class="fa fa-eye"></i>1,862K</span>
+                                        <span>
+                                            <i class="fa fa-user"></i>
+                                            <a ui-sref="user.about({url_id: VC.relatedvideo.ownerUrlId})">
+                                                {{::VC.relatedvideo.ownerFullName}}
+                                            </a>
+                                        </span>
+                                        <!--<span><i class="fa fa-clock-o"></i>5 January 16</span>-->
+                                        <!--<span><i class="fa fa-eye"></i>1,862K</span>-->
                                     </p>
                                 </div>
                             </div>
@@ -1230,34 +504,6 @@
                     </div>
                 </div>
                 <!-- end most view Widget -->
-
-                <!-- categories -->
-                <div class="large-12 medium-7 medium-centered columns">
-                    <div class="widgetBox clearfix">
-                        <div class="widgetTitle">
-                            <h5>Tags</h5>
-                        </div>
-                        <div class="widgetContent clearfix">
-                            <ul>
-                                <li class="cat-item"><a href="#">Entertainment &nbsp; (6)</a></li>
-                                <li class="cat-item"><a href="#">Historical &amp; Archival &nbsp;(8)</a></li>
-                                <li class="cat-item"><a href="#">Technology&nbsp;(4)</a></li>
-                                <li class="cat-item"><a href="#">People&nbsp;(3)</a></li>
-                                <li class="cat-item"><a href="#">Fashion &amp; Beauty&nbsp;(2)</a></li>
-                                <li class="cat-item"><a href="#">Nature&nbsp;(1)</a></li>
-                                <li class="cat-item"><a href="#">Automotive&nbsp;(5)</a></li>
-                                <li class="cat-item"><a href="">Foods &amp; Drinks&nbsp;(5)</a></li>
-                                <li class="cat-item"><a href="#">Foods &amp; Drinks&nbsp;(10)</a></li>
-                                <li class="cat-item"><a href="#">Animals&nbsp;(12)</a></li>
-                                <li class="cat-item"><a href="#">Sports &amp; Recreation&nbsp;(14)</a></li>
-                                <li class="cat-item"><a href="">Places &amp; Landmarks&nbsp;(16)</a></li>
-                                <li class="cat-item"><a href="">Places &amp; Landmarks&nbsp;(1)</a></li>
-                                <li class="cat-item"><a href="#">Travel&nbsp;(2)</a></li>
-                                <li class="cat-item"><a href="#">Transportation&nbsp;(3)</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
 
 
                 <!-- ad banner widget -->
@@ -1268,7 +514,8 @@
                         </div>-->
                         <div class="widgetContent">
                             <div class="advBanner text-center">
-                                <a href="#"><img src="./assets/images/sideradv.png" alt="sidebar adv"></a>
+                                <broadstreet-zone zone="51349" width="300" height="250"></broadstreet-zone>
+                                <!--<a href="#"><img src="./assets/images/sideradv.png" alt="sidebar adv"></a>-->
                             </div>
                         </div>
                     </div>

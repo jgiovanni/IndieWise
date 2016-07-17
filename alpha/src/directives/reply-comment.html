@@ -8,7 +8,7 @@
         </div>
         <div class="media-object-section comment-textarea">
             <form name="replyForm" id="replyForm" ng-submit="postReply()">
-            <textarea name="commentText" placeholder="Reply to {{targetComment.author.firstName}}"
+            <textarea name="commentText" placeholder="Reply to {{targetComment.author.firstName||critique.userFullName}}"
                       linkify ng-model="myReply" ng-minlength="1" focus-on="!!showReplyInput"></textarea>
                 <input type="submit" value="send">
             </form>

@@ -5,8 +5,8 @@
                 <div class="row padding-14">
                     <div class="medium-12 small-12 columns">
                         <div class="head-title">
-                            <i class="fa fa-comments"></i>
-                            <h4>Critiques <span>({{critiques.totalRows}})</span></h4>
+                            <i class="fa fa-star"></i>
+                            <h4>Critiques <span>({{critiques.length||0}})</span></h4>
                         </div>
                     </div>
                 </div>
@@ -17,113 +17,113 @@
             </div>
 
             <!-- main comment -->
-            <div class="main-comment showmore_one" toggle-show-more>
-                <div class="media-object stack-for-small" ng-repeat="critique in critiques.data|orderBy:sortOrder"
+            <div class="main-comment showmore_one" toggle-show-more show-more-height="368">
+                <div class="media-object stack-for-small" ng-repeat="critique in critiques|orderBy:sortOrder"
                      ng-init="critique.replies=[];critique.showReplies=false;">
                     <div class="media-object-section comment-img text-center">
                         <div class="comment-box-img">
-                            <img ng-src="{{::critiques.relatedObjects.users[critique.author].avatar || './assets/img/avatar-1.png'}}" alt="comment">
+                            <img ng-src="{{::critique.userAvatar||'./assets/img/avatar-1.png'}}" alt="comment">
                         </div>
                     </div>
                     <div class="media-object-section comment-desc">
                         <div class="comment-title">
-                            <span class="name"><a ui-sref="user.about({id: critique.author})">
-                                {{::critiques.relatedObjects.users[critique.author].firstName+' '+critiques.relatedObjects.users[critique.author].lastName}}</a> Said:
+                            <span class="name"><a ui-sref="user.about({url_id: critique.userUrlId})">
+                                {{::critique.userFullName}}</a> Said:
                             </span>
                             <span class="time float-right"><i class="fa fa-clock-o"></i>
-                                <abbr title="{{::critique.createdAt|date:'medium'}}"
+                                <abbr title="{{::critique.createdAt|amUtc|amLocal|amDateFormat:'lll'}}"
                                       am-time-ago="::critique.createdAt"></abbr>
 
                                 <!--<span ng-if="critique.editedAt && !Body.isSame(critique.createdAt, critique.editedAt)">
-                                    |Edited: <abbr title="{{::critique.editedAt|date:'medium'}}"
+                                    |Edited: <abbr title="{{::critique.editedAt|amUtc|amLocal|amDateFormat:'lll'}}"
                                                    am-time-ago="::critique.editedAt"></abbr>
                                 </span>-->
                             </span>
                         </div>
                         <div class="comment-text">
                             <div class="row clearfix">
-                                <div class="columns medium-7">
+                                <div class="columns medium-7 small-5">
                                     <p ng-bind="::critique.body"></p>
                                 </div>
-                                <div class="columns medium-5">
-                                    <div class="row" ng-if="::critique.private && AppData.User.id != critique.author.id">
+                                <div class="columns medium-5 small-7">
+                                    <div class="row" ng-if="::isPrivate(critique) && !isOwnerOrAuthor(critique)">
                                         <h3 class="text-center">Private</h3>
 
                                         <div class="row columns">
-                                            <div class="columns small-6 text-right">
+                                            <div class="columns medium-8 small-9 text-right">
                                                 <span class="md-body-1">Overall Rating</span>
                                             </div>
-                                            <div class="columns small-6">
+                                            <div class="columns medium-4 small-3">
                                                 <span class="md-body-2">{{::critique.overall|number:1}}</span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row columns" ng-if="::!critique.private||AppData.User.id == critique.author.id">
+                                    <div class="row columns" ng-if="::!isPrivate(critique) || isOwnerOrAuthor(critique)">
                                         <div class="row columns">
-                                            <div class="columns medium-8 small-6 text-right">
+                                            <div class="columns medium-8 small-9 text-right">
                                                 <span class="md-body-1">Acting</span>
                                             </div>
-                                            <span class="columns medium-4 small-6">{{::critique.performances}}</span>
+                                            <span class="columns medium-4 small-3">{{::critique.performances}}</span>
                                         </div>
                                         <div class="row columns">
-                                            <div class="columns medium-8 small-6 text-right">
+                                            <div class="columns medium-8 small-9 text-right">
                                                 <span class="md-body-1">Cinematography</span>
                                             </div>
-                                            <span class="columns medium-4 small-6">{{::critique.cinematography}}</span>
+                                            <span class="columns medium-4 small-3">{{::critique.cinematography}}</span>
                                         </div>
                                         <div class="row columns">
-                                            <div class="columns medium-8 small-6 text-right">
+                                            <div class="columns medium-8 small-9 text-right">
                                                 <span class="md-body-1">Direction</span>
                                             </div>
-                                            <span class="columns medium-4 small-6">{{::critique.direction}}</span>
+                                            <span class="columns medium-4 small-3">{{::critique.direction}}</span>
                                         </div>
                                         <div class="row columns">
-                                            <div class="columns medium-8 small-6 text-right">
+                                            <div class="columns medium-8 small-9 text-right">
                                                 <span class="md-body-1">Editing</span>
                                             </div>
-                                            <span class="columns medium-4 small-6" >{{::critique.structure}}</span>
+                                            <span class="columns medium-4 small-3" >{{::critique.structure}}</span>
                                         </div>
                                         <div class="row columns">
-                                            <div class="columns medium-8 small-6 text-right">
+                                            <div class="columns medium-8 small-9 text-right">
                                                 <span class="md-body-1">Music</span>
                                             </div>
-                                            <span class="columns medium-4 small-6" >{{::critique.music}}</span>
+                                            <span class="columns medium-4 small-3" >{{::critique.music}}</span>
                                         </div>
                                         <div class="row columns">
-                                            <div class="columns medium-8 small-6 text-right">
+                                            <div class="columns medium-8 small-9 text-right">
                                                 <span class="md-body-1">Originality</span>
                                             </div>
-                                            <span class="columns medium-4 small-6">{{::critique.originality}}</span>
+                                            <span class="columns medium-4 small-3">{{::critique.originality}}</span>
                                         </div>
                                         <div class="row columns">
-                                            <div class="columns medium-8 small-6 text-right">
+                                            <div class="columns medium-8 small-9 text-right">
                                                 <span class="md-body-1">Pacing</span>
                                             </div>
-                                            <span class="columns medium-4 small-6" >{{::critique.pacing}}</span>
+                                            <span class="columns medium-4 small-3" >{{::critique.pacing}}</span>
                                         </div>
                                         <div class="row columns">
-                                            <div class="columns medium-8 small-6 text-right">
+                                            <div class="columns medium-8 small-9 text-right">
                                                 <span class="md-body-1">Production Value</span>
                                             </div>
-                                            <span class="columns medium-4 small-6">{{::critique.production}}</span>
+                                            <span class="columns medium-4 small-3">{{::critique.production}}</span>
                                         </div>
                                         <div class="row columns">
-                                            <div class="columns medium-8 small-6 text-right">
+                                            <div class="columns medium-8 small-9 text-right">
                                                 <span class="md-body-1">Sound Quality</span>
                                             </div>
-                                            <span class="columns medium-4 small-6" >{{::critique.audio}}</span>
+                                            <span class="columns medium-4 small-3" >{{::critique.audio}}</span>
                                         </div>
                                         <div class="row columns" style="border-bottom: 1px solid #ddd;">
-                                            <div class="columns medium-8 small-6 text-right">
+                                            <div class="columns medium-8 small-9 text-right">
                                                 <span class="md-body-1">Writing</span>
                                             </div>
-                                            <span class="columns medium-4 small-6">{{::critique.writing}}</span>
+                                            <span class="columns medium-4 small-3">{{::critique.writing}}</span>
                                         </div>
                                         <div class="row columns">
-                                            <div class="columns medium-8 small-6 text-right">
+                                            <div class="columns medium-8 small-9 text-right">
                                                 <span class="md-body-1">Overall Rating</span>
                                             </div>
-                                            <div class="columns medium-4 small-6">
+                                            <div class="columns medium-4 small-3">
                                                 <span class="md-body-2">{{::critique.overall|number:1}}</span>
                                             </div>
                                         </div>
@@ -132,16 +132,24 @@
                             </div>
                         </div>
                         <div class="comment-btns">
-                            <span>{{::c.attributes.commentCount||0}} comments</span>
-                            <span ng-if="::critique.author === AppData.User.userId">
-                                <a ng-click="VC.deleteCritique(critique, $event)"><i class="fa fa-close"></i>Delete</a>
+                            <span>{{critique.commentCount||0}} comments
+                            &nbsp;
+                            <!--<a ng-click="showQuickReply =! showQuickReply"><i class="fa fa-comment"></i> Quick Reply</a>-->
                             </span>
-                            <span ng-if="::critique.author === AppData.User.userId">
-                                <a ng-click="Body.toPage('video_critique-edit', {video_id:critique.parent, id:critique.id})"><i class="fa fa-pencil"></i>Edit</a>
+                            <span><a ui-sref="video_critique({video_url_id: parentUrlId, url_id:critique.url_id})"><i class="fa fa-comments"></i>View Details</a></span>
+                            <span ng-if="::isPrivate(critique)" class="has-tip" style="margin-right: 0" tooltip="Private"><i class="fa fa-lock"></i></span>
+                            &nbsp;
+                            <span ng-if="critique.author === isLoggedIn.userId">
+                                <a ui-sref="video_critique-edit({video_url_id: parentUrlId, url_id:critique.url_id})"><i class="fa fa-pencil"></i>Edit</a>
                             </span>
-                            <span><a ui-sref="video_critique({video_id:critique.parent, id:critique.id})"><i class="fa fa-comments"></i>View</a></span>
+                            <!--<span ng-if="critique.author === isLoggedIn.userId">
+                                <a ng-click="Vcritique.deleteCritique(critique, $event)"><i class="fa fa-close"></i>Delete</a>
+                            </span>-->
                         </div>
 
+                    </div>
+                    <div class="media-object stack-for-small reply-comment">
+                        <quick-reply-block ng-show="showQuickReply"></quick-reply-block>
                     </div>
                 </div>
             </div>
@@ -159,7 +167,7 @@
                     <div class="medium-12 small-12 columns">
                         <div class="head-title">
                             <i class="fa fa-comments"></i>
-                            <h4>Comments are disabled by Uploader</h4>
+                            <h4>Critiques disabled by Uploader</h4>
                         </div>
                     </div>
                 </div>

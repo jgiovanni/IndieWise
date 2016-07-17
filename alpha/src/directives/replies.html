@@ -2,14 +2,14 @@
     <div class="media-object stack-for-small reply-comment" ng-repeat-start="reply in comment.replies">
         <div class="media-object-section comment-img text-center">
             <div class="comment-box-img">
-                <img ng-src="{{::reply.author.avatar || './assets/img/avatar-1.png'}}" alt="comment">
+                <img ng-src="{{::reply.ownerAvatar || './assets/img/avatar-1.png'}}" alt="comment">
             </div>
         </div>
         <div class="media-object-section comment-desc">
             <div class="comment-title">
-                <span class="name"><a ui-sref="user.about({id: reply.author.id})">{{::reply.author.firstName+' '+reply.author.lastName}}</a> Said:</span>
+                <span class="name"><a ui-sref="user.about({url_id: reply.ownerUrlId})">{{::reply.ownerFullName}}</a> Said:</span>
             <span class="time float-right"><i class="fa fa-clock-o"></i>
-                <abbr title="{{::reply.createdAt|date:'medium'}}" am-time-ago="::reply.createdAt"></abbr>
+                <abbr title="{{::reply.createdAt|amUtc|amLocal|amDateFormat:'lll'}}" am-time-ago="::reply.createdAt"></abbr>
             </span>
             </div>
             <div class="comment-text">
@@ -20,7 +20,6 @@
             <span><a href="#"><i class="fa fa-thumbs-o-up"></i></a> | <a href="#"><i
                     class="fa fa-thumbs-o-down"></i></a></span>
                 <span><a ng-click="toggleReplyInput(reply)"><i class="fa fa-share"></i>Reply</a></span>
-                <!--<span toggle-replies class='reply float-right'></span>-->
             </div>
         </div>
     </div>

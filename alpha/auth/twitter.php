@@ -5,9 +5,9 @@
  * Date: 1/6/2016
  * Time: 2:42 AM
  */
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
 
 //Path to autoload.php from current location
 require_once '../vendor/autoload.php';

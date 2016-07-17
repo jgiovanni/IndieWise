@@ -1,0 +1,44 @@
+<!-- single post description -->
+<section class="profile-videos">
+    <div class="row secBg">
+        <div class="large-12 columns">
+            <div class="heading">
+                <i class="fa fa-video-camera"></i>
+                <h4>My Playlists</h4>
+            </div>
+            <label>Select Playlist
+                <select ng-options="pl.id as pl.name for pl in ProfilePlaylistsCtrl.playlists.data"
+                        ng-model="ProfilePlaylistsCtrl.selectedPlaylist" ng-change="ProfilePlaylistsCtrl.loadPlaylistItems()">
+                </select>
+            </label>
+            <hr>
+            <div class="profile-video" ng-repeat="video in ProfilePlaylistsCtrl.playlistItems">
+                <div class="media-object stack-for-small">
+                    <div class="media-object-section media-img-content">
+                        <div class="video-img" ui-sref="video({url_id: video.projectUrlId})">
+                            <img ng-src="{{::video.projectThumbnailUrl||'./assets/img/default_video_thumbnail.jpg'}}" alt="video thumbnail">
+                        </div>
+                    </div>
+                    <div class="media-object-section media-video-content">
+                        <div class="video-content">
+                            <h5><a ui-sref="video({url_id: video.projectUrlId})">{{::video.projectName}}</a></h5>
+                            <p>{{::video.projectDescription}}</p>
+                        </div>
+                        <div class="video-detail clearfix">
+                            <div class="video-stats">
+                                <span><i class="fa fa-user"></i><a ui-sref="user.about({url_id:video.ownerUrlId})">{{::video.ownerFullName}}</a></span>
+                                <span><i class="fa fa-clock-o"></i>{{::video.projectCreatedAt|date:'fullDate'}}</span>
+                            </div>
+                            <div class="video-btns">
+                                <a class="video-btn" ng-click="ProfilePlaylistsCtrl.removeItem(video.id)">
+                                    <i class="fa fa-times"></i> Remove item
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End single post description -->

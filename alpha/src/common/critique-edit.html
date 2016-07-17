@@ -1,189 +1,175 @@
-<div class="grey lighten-3">
-    <section class="container" layout="row" layout-align="center center">
-    <md-content flex id="content" class="grey lighten-3">
-        <md-card>
-            <md-card-header>
-                <!--<md-card-avatar>
-                    <img class="md-user-avatar" src="img/100-2.jpeg"/>
-                </md-card-avatar>-->
-                <md-card-header-text>
-                    <span class="md-title">
-                        <a ui-sref="video({id:VCEC.VCEC.editedCritique.attributes.parent.id})" class="md-primary">{{::VCEC.VCEC.editedCritique.attributes.parent.attributes.name}}</a>
-                        by
-                        <a ui-sref="user({id:VCEC.VCEC.editedCritique.attributes.parent.attributes.owner.id})">
-                            {{::VCEC.VCEC.editedCritique.attributes.parent.attributes.owner.attributes.first_name}} {{::VCEC.VCEC.editedCritique.attributes.parent.attributes.owner.attributes.last_name}}
-                        </a>
-                    </span>
-                    <span class="md-subhead">
-                        Critique by
-                        <a ui-sref="user({id:VCEC.VCEC.editedCritique.attributes.author.id})">
-                            {{::VCEC.VCEC.editedCritique.attributes.author.attributes.first_name}} {{::VCEC.VCEC.editedCritique.attributes.author.attributes.last_name}}
-                        </a>
-                    </span>
-                </md-card-header-text>
-            </md-card-header>
-            <md-card-content>
-                <section layout="column" class="md-padding">
-                    <div layout="column" layout-gt-sm="row">
-                        <div flex layout layout-align="center center">
-                            <span class="md-body-1">Originality</span>
-                        </div>
-                        <div class="stars" flex layout="row">
-                            <input class="star star-{{$index}}" id="ori{{$index}}" type="radio" ng-model="VCEC.editedCritique.originality" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
-                            <label flex class="star material-icons star-{{$index}}" for="ori{{$index}}" ng-repeat-end></label>
-                        </div>
-                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.originality" step="1" min="0" max="10"
-                                   aria-label="Originality/Creativity">
-                        </md-slider>-->
-                    </div>
-                    <div layout="column" layout-gt-sm="row">
-                        <div flex layout layout-align="center center">
-                            <span class="md-body-1">Direction</span>
-                        </div>
-                        <div class="stars" flex layout="row">
-                            <input class="star star-{{$index}}" id="dir{{$index}}" type="radio" ng-model="VCEC.editedCritique.direction" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
-                            <label flex class="star material-icons star-{{$index}}" for="dir{{$index}}" ng-repeat-end></label>
-                        </div>
-                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.direction" step="1" min="0" max="10"-->
-                        <!--aria-label="Direction">-->
-                        <!--</md-slider>-->
-                    </div>
-                    <div layout="column" layout-gt-sm="row">
-                        <div flex layout layout-align="center center">
-                            <span class="md-body-1">Writing</span>
-                        </div>
-                        <div class="stars" flex layout="row">
-                            <input class="star star-{{$index}}" id="wri{{$index}}" type="radio" ng-model="VCEC.editedCritique.writing" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
-                            <label flex class="star material-icons star-{{$index}}" for="wri{{$index}}" ng-repeat-end></label>
-                        </div>
-                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.writing" step="1" min="0" max="10"-->
-                        <!--aria-label="Writing">-->
-                        <!--</md-slider>-->
-                    </div>
-                    <div layout="column" layout-gt-sm="row">
-                        <div flex layout layout-align="center center">
-                            <span class="md-body-1">Cinematography</span>
-                        </div>
-                        <div class="stars" flex layout="row">
-                            <input class="star star-{{$index}}" id="cinema{{$index}}" type="radio" ng-model="VCEC.editedCritique.cinematography" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
-                            <label flex class="star material-icons star-{{$index}}" for="cinema{{$index}}" ng-repeat-end></label>
-                        </div>
-                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.cinematography" step="1" min="0"
-                                   max="10" aria-label="Cinematography">
-                        </md-slider>-->
-                    </div>
-                    <div layout="column" layout-gt-sm="row">
-                        <div flex layout layout-align="center center">
-                            <span class="md-body-1">Acting</span>
-                        </div>
-                        <div class="stars" flex layout="row">
-                            <input class="star star-{{$index}}" id="perf{{$index}}" type="radio" ng-model="VCEC.editedCritique.performances" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
-                            <label flex class="star material-icons star-{{$index}}" for="perf{{$index}}" ng-repeat-end></label>
-                        </div>
-                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.performances" step="1" min="0" max="10"
-                                   aria-label="Performances">
-                        </md-slider>-->
-                    </div>
-                    <div layout="column" layout-gt-sm="row">
-                        <div flex layout layout-align="center center">
-                            <span class="md-body-1">Production Value</span>
-                        </div>
-                        <div class="stars" flex layout="row">
-                            <input class="star star-{{$index}}" id="prod{{$index}}" type="radio" ng-model="VCEC.editedCritique.production" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
-                            <label flex class="star material-icons star-{{$index}}" for="prod{{$index}}" ng-repeat-end></label>
-                        </div>
-                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.production" step="1" min="0" max="10"
-                                   aria-label="Production Value">
-                        </md-slider>-->
-                    </div>
-                    <div layout="column" layout-gt-sm="row">
-                        <div flex layout layout-align="center center">
-                            <span class="md-body-1">Pacing</span>
-                        </div>
-                        <div class="stars" flex layout="row">
-                            <input class="star star-{{$index}}" id="pace{{$index}}" type="radio" ng-model="VCEC.editedCritique.pacing" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
-                            <label flex class="star material-icons star-{{$index}}" for="pace{{$index}}" ng-repeat-end></label>
-                        </div>
-                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.pacing" step="1" min="0" max="10"
-                                   aria-label="Pacing">
-                        </md-slider>-->
-                    </div>
-                    <div layout="column" layout-gt-sm="row">
-                        <div flex layout layout-align="center center">
-                            <span class="md-body-1">Editing</span>
-                        </div>
-                        <div class="stars" flex layout="row">
-                            <input class="star star-{{$index}}" id="struc{{$index}}" type="radio" ng-model="VCEC.editedCritique.structure" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
-                            <label flex class="star material-icons star-{{$index}}" for="struc{{$index}}" ng-repeat-end></label>
-                        </div>
-                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.structure" step="1" min="0" max="10"
-                                   aria-label="Editing">
-                        </md-slider>-->
-                    </div>
-                    <div layout="column" layout-gt-sm="row">
-                        <div flex layout layout-align="center center">
-                            <span class="md-body-1">Sound Quality</span>
-                        </div>
-                        <div class="stars" flex layout="row">
-                            <input class="star star-{{$index}}" id="audio{{$index}}" type="radio" ng-model="VCEC.editedCritique.audio" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
-                            <label flex class="star material-icons star-{{$index}}" for="audio{{$index}}" ng-repeat-end></label>
-                        </div>
-                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.audio" step="1" min="0" max="10"
-                                   aria-label="Sound Quality">
-                        </md-slider>-->
-                    </div>
-                    <div layout="column" layout-gt-sm="row">
-                        <div flex layout layout-align="center center">
-                            <span class="md-body-1">Music</span>
-                        </div>
-                        <div class="stars" flex layout="row">
-                            <input class="star star-{{$index}}" id="music{{$index}}" type="radio" ng-model="VCEC.editedCritique.music" ng-change="VCEC.calcOverall()" ng-value="i.num" ng-repeat-start="i in VCEC.starArray track by $index"/>
-                            <label flex class="star material-icons star-{{$index}}" for="music{{$index}}" ng-repeat-end></label>
-                        </div>
-                        <!--<md-slider flex class="md-accent" md-discrete ng-model="VCEC.editedCritique.music" step="1" min="0" max="10"
-                                   aria-label="Music">
-                        </md-slider>-->
-                    </div>
-                    <md-divider></md-divider>
-                    <div layout class="md-accent md-hue-2">
-                        <div flex layout layout-align="center center">
-                            <span class="md-body-1">Overall Rating</span>
-                        </div>
-                        <div flex layout layout-align="center center">
-                            <span class="md-body-2">{{VCEC.editedCritique.overall|number:1}}/10</span>
+<div class="content comments">
+    <div class="row secBg">
+        <div class="large-12 columns">
+            <div class="main-heading borderBottom">
+                <div class="row padding-14">
+                    <div class="medium-12 small-12 columns">
+                        <div class="head-title">
+                            <i class="fa fa-comments"></i>
+                            <h4>Editing Critique</h4>
                         </div>
                     </div>
-                    <md-divider></md-divider>
-                    <div layout="column" layout-padding>
-                        <div layout layout-lt-md="column">
-                            <md-input-container flex>
-                                <label>Care to elaborate?</label>
-                                <textarea ng-model="VCEC.editedCritique.body" columns="1" md-maxlength="5000"></textarea>
-                            </md-input-container>
-                        </div>
-                        <md-switch ng-model="VCEC.editedCritique.private" aria-label="Private">
-                            Make private?
-                        </md-switch>
-                        <i class="md-caption">By choosing this "Make private" Option, individual rating categories, such as "Production Value", "Originality", etc. will not be publicly visible to users other than you and the project author. However, the overall rating generated from these individual results will always be publicly visible. </i>
-
-                        <!--<div layout="column">
-                            <md-select placeholder="Is this award worthy? Nominate it!" ng-model="dialogModel.awardId"
-                                       md-on-open="getAwards()" required style="min-width: 200px;">
-                                <md-option ng-click="dialogModel.awardId=null">None</md-option>
-                                <md-option ng-value="a.id" ng-repeat="a in awardsList|orderBy:'attributes.name'"
-                                           class="md-accent" ng-bind="::a.attributes.name"></md-option>
-                            </md-select>
-                        </div>-->
-                    </div>
-                </section>
-                <md-divider></md-divider>
-            </md-card-content>
-            <div class="md-actions" layout="row" layout-align="end center">
-                <md-button class="md-warn" ng-click="VCEC.cancelled()">Cancel</md-button>
-                <span flex></span>
-                <md-button class="md-primary md-raised" ng-click="VCEC.update()">Update</md-button>
+                </div>
             </div>
-        </md-card>
-    </md-content>
-</section>
+
+            <div class="main-comment">
+                <div class="media-object stack-for-small">
+                    <div class="media-object-section comment-img text-center">
+                        <div class="comment-box-img">
+                            <img ng-src="{{::critiques.relatedObjects.users[editedCritique.author].avatar || './assets/img/avatar-1.png'}}"
+                                 alt="comment">
+                        </div>
+                    </div>
+                    <div class="media-object-section comment-desc" >
+                        <div class="row" style="border-left: 1px solid #CCCCCC">
+                            <div class="columns row">
+                                <div class="columns small-4 text-right">
+                                    <span class="">Acting</span>
+                                </div>
+                                <div class="columns small-8">
+                                    <rating value="editedCritique.performances" max="ratingMax"
+                                            on-hover="(value)"
+                                            on-leave="overStar = null"></rating>
+                                </div>
+                            </div>
+                            <div class="columns row">
+                                <div class="columns small-4 text-right">
+                                    <span class="">Cinematography</span>
+                                </div>
+                                <div class="columns small-8">
+                                    <rating value="editedCritique.cinematography" max="ratingMax"
+                                            on-hover="hoveringOver(value)"
+                                            on-leave="overStar = null"></rating>
+                                </div>
+                            </div>
+                            <div class="columns row">
+                                <div class="columns small-4 text-right">
+                                    <span class="">Direction</span>
+                                </div>
+                                <div class="columns small-8">
+                                    <rating value="editedCritique.direction" max="ratingMax"
+                                            on-hover="hoveringOver(value)"
+                                            on-leave="overStar = null"></rating>
+                                </div>
+                            </div>
+                            <div class="columns row">
+                                <div class="columns small-4 text-right">
+                                    <span class="">Editing</span>
+                                </div>
+                                <div class="columns small-8">
+                                    <rating value="editedCritique.structure" max="ratingMax"
+                                            on-hover="hoveringOver(value)"
+                                            on-leave="overStar = null"></rating>
+                                </div>
+                            </div>
+                            <div class="columns row">
+                                <div class="columns small-4 text-right">
+                                    <span class="">Music</span>
+                                </div>
+                                <div class="columns small-8">
+                                    <rating value="editedCritique.music" max="ratingMax" on-hover="hoveringOver(value)"
+                                            on-leave="overStar = null"></rating>
+                                </div>
+                            </div>
+                            <div class="columns row">
+                                <div class="columns small-4 text-right">
+                                    <span class="">Originality</span>
+                                </div>
+                                <div class="columns small-8">
+                                    <rating value="editedCritique.originality" max="ratingMax"
+                                            on-hover="hoveringOver(value)"
+                                            on-leave="overStar = null"></rating>
+                                </div>
+                            </div>
+                            <div class="columns row">
+                                <div class="columns small-4 text-right">
+                                    <span class="">Pacing</span>
+                                </div>
+                                <div class="columns small-8">
+                                    <rating value="editedCritique.pacing" max="ratingMax" on-hover="hoveringOver(value)"
+                                            on-leave="overStar = null"></rating>
+                                </div>
+                            </div>
+                            <div class="columns row">
+                                <div class="columns small-4 text-right">
+                                    <span class="">Production Value</span>
+                                </div>
+                                <div class="columns small-8">
+                                    <rating value="editedCritique.production" max="ratingMax"
+                                            on-hover="hoveringOver(value)"
+                                            on-leave="overStar = null"></rating>
+                                </div>
+                            </div>
+                            <div class="columns row">
+                                <div class="columns small-4 text-right">
+                                    <span class="">Sound Quality</span>
+                                </div>
+                                <div class="columns small-8">
+                                    <rating value="editedCritique.audio" max="ratingMax" on-hover="hoveringOver(value)"
+                                            on-leave="overStar = null"></rating>
+                                </div>
+                            </div>
+                            <div class="columns row">
+                                <div class="columns small-4 text-right">
+                                    <span class="">Writing</span>
+                                </div>
+                                <div class="columns small-8">
+                                    <rating value="editedCritique.writing" max="ratingMax" on-hover="hoveringOver(value)"
+                                            on-leave="overStar = null"></rating>
+                                </div>
+                            </div>
+                            <hr class="thin">
+                            <div class="columns row">
+                                <div class="columns small-4 text-right">
+                                    <span class="">Overall Rating</span>
+                                </div>
+                                <div class="columns small-4">
+                                    <span class="">{{editedCritique.overall|number:1}}/10</span>
+                                </div>
+                            </div>
+                            <hr class="thin">
+                            <br>
+
+                            <div class="columns">
+                                <div class="input">
+                                    <label for="desc">Care to elaborate?</label>
+                                        <textarea id="desc" ng-model="editedCritique.body" columns="1" rows="5"
+                                                  ng-maxlength="5000"></textarea>
+                                </div>
+                                <div class="checkbox">
+                                    <input id="checkboxPrivate" type="checkbox" ng-model="editedCritique.private">
+
+                                    <label class="customLabel" for="checkboxPrivate" style="margin-left: 0;margin-right: 0;font-size: 0.875rem;">Make Private?</label>
+                            <span class="warning badge" ng-init="helpToggle=false" ng-click="helpToggle=!helpToggle"><i
+                                    class="fa fa-question"></i></span>
+                                </div>
+                                <p ng-show="helpToggle" class="help-text">By choosing this "Make private" Option,
+                                    individual
+                                    rating categories, such as "Production Value", "Originality", etc. will not be
+                                    publicly
+                                    visible to users other than you and the project author. However, the overall
+                                    rating
+                                    generated from these individual results will always be publicly visible.</p>
+
+                                <div class="input">
+                                    <label>
+                                        <span class="has-tip"
+                                      tooltip="A project needs 5 or more Nominations, for the exact same Award, by different users in order to secure a win for that particular award.">Award Worthy? Nominate it!</span>
+                                        <select ng-model="dialogModel.awardId" disabled style="min-width: 200px;">
+                                            <option value="">No</option>
+                                            <option value="{{a.id}}" ng-repeat="a in awardsList.data|orderBy:'name'"
+                                                    ng-bind="::a.name"></option>
+                                        </select>
+                                    </label>
+
+                                </div>
+                            </div>
+                            <button class="button tiny" ui-sref="video_critique({video_url_id: $stateParams.video_url_id, url_id: critique.url_id}) ">Cancel</button>
+                            <button class="button tiny primary pull-right" ng-click="update()">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>

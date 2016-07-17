@@ -1,320 +1,3 @@
-<!--<md-content flex id="content" class="md-padding" xmlns:>
-    <md-icon ng-if="!AppData.UserData.avatar" md-svg-icon="avatar1" class="avatar"></md-icon>
-    <img ng-src="{{AppData.UserData.avatar || './assets/img/avatar-1.png'}}" class="avatar" alt="{{AppData.User.fullName}}">
-    <h2 class="md-display-1">{{AppData.User.fullName}}</h2>
-    <h4 class="md-title">About</h4>
-    <p class="md-body-1">{{AppData.UserData.bio}}</p>
-
-    <md-button class="contact" ui-sref="profile_edit" aria-label="Edit Profile">
-        <md-tooltip>Edit Profile</md-tooltip>
-        <md-icon md-svg-icon="mode_edit"></md-icon>
-    </md-button>
-    &lt;!&ndash;<md-button class="contact" ng-click="" aria-label="Contact User">
-        <md-tooltip>Contact {{AppData.User.first_name}} {{AppData.User.last_name}}</md-tooltip>
-        <md-icon md-svg-icon="email"></md-icon>
-    </md-button>&ndash;&gt;
-
-    <md-tabs md-dynamic-height md-border-bottom>
-        <md-tab label="Projects &middot; {{::Profile.projects.totalRows}}">
-            <md-content class="md-padding">
-                <section layout="row" layout-lt-md="column" layout-wrap layout-align="space-around flex-start">
-                    <project-card flex-sm="100" flex-md="40" flex-lg="30" flex-gt-lg="20" ng-repeat="video in Profile.projects.data" video="video"></project-card>
-                </section>
-            </md-content>
-        </md-tab>
-        <md-tab label="Favorites &middot; {{::Profile.favorites.totalRows}}">
-            <md-content class="md-padding">
-                <section layout="row" layout-lt-md="column" layout-wrap layout-align="center flex-start">
-                    <project-card flex-sm="100" flex-md="40" flex-lg="30" flex-gt-lg="20" ng-repeat="video in Profile.favorites.data" video="video"></project-card>
-                </section>
-            </md-content>
-        </md-tab>
-        <md-tab label="Watch Later &middot; {{::Profile.watchlaters.length}}">
-            <md-content class="md-padding">
-                <section layout="row" layout-lt-md="column" layout-wrap layout-align="center flex-start">
-                    <project-card flex-sm="100" flex-md="40" flex-lg="30" flex-gt-lg="20" ng-repeat="video in Profile.watchlaters" video="video.project"></project-card>
-                </section>
-            </md-content>
-        </md-tab>
-        <md-tab label="Critiques &middot; {{Profile.myCritiques.length + Profile.myCritiqued.length}}">
-            <md-content class="md-padding">
-                <md-tabs md-dynamic-height md-border-bottom class="md-padding">
-                    <md-tab label="Given &middot; {{::Profile.myCritiques.length}}">
-                        <md-card ng-repeat="c in Profile.myCritiques|orderBy:'createdAt'">
-                            <md-card-content>
-                                <section layout="row" class="md-padding">
-                                    <div flex="60">
-                                        <h6>
-                                            <a ui-sref="video({id: c.parent.id})" ng-bind="::c.parent.name"></a>
-                                        </h6>
-                                        <abbr title="{{::c.createdAt|date:'medium'}}" class="md-caption"
-                                              ng-bind="::c.createdAt|date:'short'"></abbr> <span class="grey-text" ng-if="!Body.isSame(c.createdAt, c.updatedAt)">Edited:
-                                                <abbr title="{{::c.updatedAt|date:'medium'}}" class="md-caption"
-                                                      ng-bind="::c.updatedAt|date:'short'"></abbr></span>
-                                        <p class="md-body-1" ng-bind="::c.body"></p>
-
-                                    </div>
-                                    <div flex="40">
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Originality</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.originality}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Direction</span>
-                                            </div>
-
-                                            <span flex class="md-body-1 text-center">{{::c.direction}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Writing</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.writing}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Cinematography</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.cinematography}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Acting</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.performances}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Production Value</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.production}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Pacing</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.pacing}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Editing</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.structure}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Sound Quality</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.audio}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Music</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.music}}</span>
-                                        </div>
-                                        <hr>
-                                        <div layout class="md-accent md-hue-2">
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">IndieWise Rating</span>
-                                            </div>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-2">{{c.overall|number:1}}</span>
-                                            </div>
-                                        </div>
-                                        <hr>
-
-                                    </div>
-                                </section>
-                                <md-divider></md-divider>
-                                <p>{{::c.commentCount||0}} comments</p>
-                            </md-card-content>
-                            <div class="md-actions" layout="row" layout-align="end center">
-                                &lt;!&ndash;<md-button class="md-warn" ng-if="::c.author.id === AppData.User.id"
-                                           ng-click="VC.deleteCritique(c, $event)">Delete
-                                </md-button>&ndash;&gt;
-                                <span flex></span>
-                                <md-button class="md-accent md-hue-2" ui-sref="profile_critique-edit({profile_id:AppData.User.id, id:c.id})">Edit</md-button>
-                                <md-button class="md-primary md-hue-2" ui-sref="profile_critique({profile_id:AppData.User.id, id:c.id})">
-                                    View
-                                </md-button>
-                            </div>
-
-                        </md-card>
-                    </md-tab>
-                    <md-tab label="Received &middot; {{::Profile.myCritiqued.length}}">
-                        <md-card ng-repeat="c in Profile.myCritiqued|orderBy:'createdAt'">
-                            <md-card-content>
-                                <section layout="row" class="md-padding">
-                                    <div flex>
-                                        <h6>
-                                            <a ui-sref="video({id: c.parent.id})" ng-bind="::c.parent.name"></a>
-                                            critique by {{::c.author.first_name}}
-                                            {{::c.author.last_name}}</h6>
-
-                                        <abbr title="{{::c.createdAt|date:'medium'}}" class="md-caption" ng-bind="::c.createdAt|date:'short'"></abbr>
-                                        <p class="md-body-1" ng-bind="::c.body"></p>
-
-                                    </div>
-                                    <div flex>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Originality</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.originality}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Direction</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.direction}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Writing</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.writing}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Cinematography</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.cinematography}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Acting</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.performances}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Production Value</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.production}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Pacing</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.pacing}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Editing</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.structure}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Sound Quality</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.audio}}</span>
-                                        </div>
-                                        <div layout>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">Music</span>
-                                            </div>
-                                            <span flex class="md-body-1 text-center">{{::c.music}}</span>
-                                        </div>
-                                        <hr>
-                                        <div layout class="md-accent md-hue-2">
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-1">IndieWise Rating</span>
-                                            </div>
-                                            <div flex layout layout-align="center center">
-                                                <span class="md-body-2">{{c.overall|number:1}}</span>
-                                            </div>
-                                        </div>
-                                        <hr>
-
-                                    </div>
-                                </section>
-                            </md-card-content>
-                            <div class="md-actions" layout="row" layout-align="end center">
-                                <md-button class="md-accent md-hue-2" ng-click="Body.toPage('profile_critique', {profile_id:AppData.User.id, id:c.id})">Reply</md-button>
-                                <md-button class="md-primary md-hue-2" ui-sref="profile_critique({profile_id:AppData.User.id, id:c.id})">
-                                    View
-                                </md-button>
-                            </div>
-                        </md-card>
-                    </md-tab>
-                </md-tabs>
-            </md-content>
-        </md-tab>
-        <md-tab label="Reactions &middot; {{Profile.myReactions.length + Profile.myReacted.length}}">
-            <md-content class="md-padding">
-                <md-tabs md-dynamic-height md-border-bottom class="md-padding">
-                    <md-tab label="Given &middot; {{Profile.myReactions.length}}">
-                        <md-list>
-                            <md-list-item class="md-2-line" ng-repeat="c in Profile.myReactions|orderBy:'createdAt'" ui-sref="video({id: c.parent.id})">
-                                <md-icon aria-label="{{::Profile.getEmoticonByEmotion(c.emotion).name}}" md-svg-icon="{{::Profile.getEmoticonByEmotion(c.emotion).icon}}"></md-icon>
-                                <div class="md-list-item-text" ng-class="{'md-offset': $index == 2 }">
-                                    <h3> {{::c.parent.name}} <abbr title="{{::c.createdAt|date:'medium'}}" class="md-caption" ng-bind="::c.createdAt|date:'short'"></abbr></h3>
-                                    <p> Made you feel {{::c.emotion}}.</p>
-                                </div>
-                            </md-list-item>
-                        </md-list>
-                    </md-tab>
-                    <md-tab label="Received &middot; {{::Profile.myReacted.length}}">
-                        <md-list>
-                            <md-list-item class="md-2-line" ng-repeat="c in Profile.myReacted|orderBy:'createdAt'" ui-sref="video({id: c.parent.id})">
-                                <md-icon aria-label="{{::Profile.getEmoticonByEmotion(c.emotion).name}}" md-svg-icon="{{::Profile.getEmoticonByEmotion(c.emotion).icon}}"></md-icon>
-                                <div class="md-list-item-text">
-                                    <h3> {{::c.parent.name}} <abbr title="{{::c.createdAt|date:'medium'}}" class="md-caption" ng-bind="::c.createdAt|date:'short'"></abbr></h3>
-                                    <p> Made
-                                        {{::c.user.first_name}} {{::c.user.last_name}}
-                                        feel {{::c.emotion}}.</p>
-                                </div>
-                            </md-list-item>
-                        </md-list>
-                        </md-card>
-                    </md-tab>
-                </md-tabs>
-            </md-content>
-        </md-tab>
-        <md-tab label="Awards">
-            <md-content class="md-padding">
-                <md-tabs md-dynamic-height md-border-bottom class="md-padding">
-                    <md-tab label="Nominations &middot; {{::Profile.film.nominationCount}}">
-                        <md-content class="md-padding">
-                            <md-list>
-                                <md-list-item class="md-2-line" ng-repeat="nom in Profile.nominations">
-                                    &lt;!&ndash;<img ng-src="{{::nom.author.avatar}}" class="md-avatar" ng-if="::nom.author.avatar">&ndash;&gt;
-                                    <md-icon class="md-avatar" md-svg-icon="stars"></md-icon>
-                                    <div class="md-list-item-text">
-                                        <h3>
-                                            Nominated for {{::nom.awardPntr.name}} by
-                                            {{::nom.nominator.first_name+' '+nom.nominator.last_name}}
-                                        </h3>
-                                        &lt;!&ndash;<p ng-bind="::nom.body"></p>&ndash;&gt;
-                                        <small ng-bind="::nom.createdAt|date:'mediumDate'"></small>
-                                    </div>
-                                </md-list-item>
-                            </md-list>
-                        </md-content>
-                    </md-tab>
-                    <md-tab label="Wins &middot; {{::Profile.myWins.length}}">
-                        <md-content class="md-padding">
-                            <md-list>
-                                <md-list-item class="" ng-repeat="win in Profile.myWins">
-                                    <md-icon class="md-avatar-icon" md-svg-icon="stars"></md-icon>
-                                    <p ng-bind="::win.award.name"></p>
-                                </md-list-item>
-                            </md-list>
-
-                        </md-content>
-                    </md-tab>
-                </md-tabs>
-            </md-content>
-        </md-tab>
-
-    </md-tabs>
-</md-content>-->
-
 <!--breadcrumbs-->
 <section id="breadcrumb">
     <div class="row">
@@ -323,7 +6,7 @@
                 <ul class="breadcrumbs">
                     <li><i class="fa fa-home"></i><a ui-sref="home">Home</a></li>
                     <li>
-                        <span class="show-for-sr">Current: </span> {{::Profile.user.firstName+' '+Profile.user.lastName}} Profile
+                        <span class="show-for-sr">Current: </span> {{Profile.user.firstName}}&nbsp;{{Profile.user.lastName}} Profile
                     </li>
                 </ul>
             </nav>
@@ -332,55 +15,56 @@
 </section><!--end breadcrumbs-->
 
 <!-- profile top section -->
-<section class="topProfile">
-    <div class="main-text text-center">
-        <div class="row">
-            <!--<div class="large-12 columns">
-                <h3>World’s Biggest</h3>
-                <h1>Powerfull Video Theme</h1>
+<section class="topProfile topProfile-inner"
+         flow-init="{query:{upload_preset:'jmy7rdcs',public_id: Profile.generatePublicId('cover')}}"
+         flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]" flow-files-submitted="$flow.upload()"
+         flow-file-success="Profile.updateCoverPhoto($file, $message, $flow)"
+         style="background-image: url({{Profile.user.coverPhotos||'./assets/images/profile-bg_demo.png'}});">
+    <div class="row">
+        <div class="large-12 columns">
+            <!--<div class="upload-bg">
+                <form>
+                    <label for="topfileupload" class="btn-upload has-tip no-border"
+                           tooltip="Recommended dimensions: 1280x280">
+                        <i class="fa fa-camera"></i><span>update cover image</span>
+                    </label>
+                    <input type="file" id="topfileupload" class="show-for-sr" flow-btn flow-attrs="{accept:'image/*'}">
+                </form>
             </div>-->
+        </div>
+    </div>
+    <div class="main-text text-center" style="padding-top: 20px;padding-bottom: 30px">
+        <div class="row">
+            <div class="large-7 columns">
+
+            </div>
         </div>
     </div>
     <div class="profile-stats">
         <div class="row secBg">
             <div class="large-12 columns">
-                <div class="profile-author-img">
-                    <img ng-src="{{::Profile.user.avatar || './assets/img/avatar-1.png'}}" alt="profile author img">
+                <div class="profile-author-img"
+                     flow-init="{query:{upload_preset:'r0kuyqef',public_id: Profile.generatePublicId('avatar')}}"
+                     flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
+                     flow-files-submitted="$flow.upload()"
+                     flow-file-success="Profile.updateAvatar($file, $message, $flow)">
+                    <img ng-hide="$flow.files.length" ng-src="{{Profile.user.avatar||'./assets/img/avatar-1.png'}}"/>
+                    <img ng-show="$flow.files.length" flow-img="$flow.files[0]"/>
+
+                    <form>
+                        <label for="imgfileupload" class="btn-upload has-tip no-border"
+                               tooltip="Recommended dimensions: 120x120">
+                            <i class="fa fa-camera"></i><span>update Avatar</span>
+                        </label>
+                        <input type="file" id="imgfileupload" class="show-for-sr"
+                               flow-btn flow-attrs="{accept:'image/*'}">
+                    </form>
                 </div>
-                <!--<div class="profile-subscribe">
-                    <span><i class="fa fa-comment"></i>6</span>
-                    <button type="submit" name="subscribe" ng-click="">message</button>
-                </div>-->
-                <!--<div class="profile-share">-->
-                    <!--<div class="easy-share" data-easyshare data-easyshare-http data-easyshare-url="">-->
-                        <!--&lt;!&ndash; Facebook &ndash;&gt;-->
-                        <!--<button data-easyshare-button="facebook">-->
-                            <!--<span class="fa fa-facebook"></span>-->
-                            <!--<span>Share</span>-->
-                        <!--</button>-->
-                        <!--<span data-easyshare-button-count="facebook">0</span>-->
-
-                        <!--&lt;!&ndash; Twitter &ndash;&gt;-->
-                        <!--<button data-easyshare-button="twitter" data-easyshare-tweet-text="">-->
-                            <!--<span class="fa fa-twitter"></span>-->
-                            <!--<span>Tweet</span>-->
-                        <!--</button>-->
-                        <!--<span data-easyshare-button-count="twitter">0</span>-->
-
-                        <!--&lt;!&ndash; Google+ &ndash;&gt;-->
-                        <!--<button data-easyshare-button="google">-->
-                            <!--<span class="fa fa-google-plus"></span>-->
-                            <!--<span>+1</span>-->
-                        <!--</button>-->
-                        <!--<span data-easyshare-button-count="google">0</span>-->
-
-                        <!--<div data-easyshare-loader>Loading...</div>-->
-                    <!--</div>-->
-                <!--</div>-->
                 <div class="clearfix">
                     <div class="profile-author-name float-left">
                         <h4>{{::Profile.user.firstName+' '+Profile.user.lastName}}</h4>
-                        <p>Join Date : <span>{{::Profile.user.createdAt|date:'fullDate'}}</span></p>
+
+                        <p>Join Date : <span>{{::Profile.user.createdAt|amUtc|amLocal|amDateFormat:'LL'}}</span></p>
                     </div>
                     <div class="profile-author-stats float-right">
                         <ul class="menu">
@@ -389,35 +73,44 @@
                                     <i class="fa fa-video-camera"></i>
                                 </div>
                                 <div class="li-text float-left">
-                                    <p class="number-text">36</p>
+                                    <p class="number-text">{{::Profile.userStats.projectCount}}</p>
                                     <span>Videos</span>
                                 </div>
                             </li>
                             <li>
                                 <div class="icon float-left">
-                                    <i class="fa fa-heart"></i>
+                                    <i class="fa fa-star"></i>
                                 </div>
                                 <div class="li-text float-left">
-                                    <p class="number-text">50</p>
-                                    <span>favorites</span>
+                                    <p class="number-text">{{::Profile.userStats.critiqueCount}}</p>
+                                    <span>Critiques</span>
                                 </div>
                             </li>
                             <li>
                                 <div class="icon float-left">
-                                    <i class="fa fa-users"></i>
+                                    <i class="fa fa-smile-o"></i>
                                 </div>
                                 <div class="li-text float-left">
-                                    <p class="number-text">6</p>
-                                    <span>followers</span>
+                                    <p class="number-text">{{::Profile.userStats.reactionCount}}</p>
+                                    <span>Reactions</span>
                                 </div>
                             </li>
-                            <li>
+                            <!--<li>
                                 <div class="icon float-left">
-                                    <i class="fa fa-comments-o"></i>
+                                    <i class="fa fa-trophy"></i>
                                 </div>
                                 <div class="li-text float-left">
-                                    <p class="number-text">26</p>
-                                    <span>comments</span>
+                                    <p class="number-text">{{::Profile.userStats.nomCount}}</p>
+                                    <span>Nominations</span>
+                                </div>
+                            </li>-->
+                            <li>
+                                <div class="icon float-left">
+                                    <i class="fa fa-trophy"></i>
+                                </div>
+                                <div class="li-text float-left">
+                                    <p class="number-text">{{::Profile.userStats.winCount}}</p>
+                                    <span>Awards</span>
                                 </div>
                             </li>
                         </ul>
@@ -428,10 +121,45 @@
     </div>
 </section>
 <!-- End profile top section -->
+<section class="hide-for-large" id="randomMedia" style="padding: 0;">
+    <div class="random-media-head text-center">
+        <div class="row">
+            <div class="large-12 columns">
+                <ul class="tabs" data-tabs id="media">
+                    <li class="tabs-title" ui-sref-active="is-active">
+                        <a ui-sref="profile.about({id: Profile.user.id})"><i class="fa fa-user"></i></a>
+                    </li>
+                    <li class="tabs-title" ui-sref-active="is-active">
+                        <a ui-sref="profile.playlists({id: Profile.user.id})"><i class="fa fa-heart"></i></a>
+                    </li>
+                    <li class="tabs-title" ui-sref-active="is-active">
+                        <a ui-sref="profile.videos({id: Profile.user.id})"><i class="fa fa-video-camera"></i></a>
+                    </li>
+                    <li class="tabs-title" ui-sref-active="is-active">
+                        <a ui-sref="profile.critiques({id: Profile.user.id})"><i class="fa fa-star"></i></a>
+                    </li>
+                    <li class="tabs-title" ui-sref-active="is-active">
+                        <a ui-sref="profile.reactions({id: Profile.user.id})"><i class="fa fa-smile-o"></i></a>
+                    </li>
+                    <li class="tabs-title" ui-sref-active="is-active">
+                        <a ui-sref="profile.awards({id: Profile.user.id})"><i class="fa fa-trophy"></i></a>
+                    </li>
+                    <li class="tabs-title" ui-sref-active="is-active">
+                        <a ui-sref="profile.settings({id: Profile.user.id})"><i class="fa fa-gears"></i></a>
+                    </li>
+                    <li class="tabs-title" ui-sref-active="is-active">
+                        <a ui-sref="profile.upload({id: Profile.user.id})"><i class="fa fa-upload"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
 
 <div class="row">
     <!-- left sidebar -->
-    <div class="large-4 columns">
+    <div class="large-4 columns show-for-large">
         <aside class="secBg sidebar">
             <div class="row">
                 <!-- profile overview -->
@@ -442,26 +170,66 @@
                         </div>
                         <div class="widgetContent">
                             <ul class="profile-overview">
-                                <li class="clearfix"><a ui-sref="profile.about({id: Profile.user.id})" ui-sref-active="active"><i class="fa fa-user"></i>about me</a></li>
-                                <li class="clearfix"><a ui-sref="profile.videos({id: Profile.user.id})" ui-sref-active="active"><i class="fa fa-video-camera"></i>Videos <span class="float-right">36</span></a></li>
-                                <li class="clearfix"><a ui-sref="profile.critiques({id: Profile.user.id})" ui-sref-active="active"><i class="fa fa-heart"></i>Critiques<span class="float-right">50</span></a></li>
-                                <li class="clearfix"><a ui-sref="profile.reactions({id: Profile.user.id})" ui-sref-active="active"><i class="fa fa-users"></i>Reactions<span class="float-right">6</span></a></li>
-                                <li class="clearfix"><a ui-sref="profile.awards({id: Profile.user.id})" ui-sref-active="active"><i class="fa fa-trophy"></i>Awards<span class="float-right">26</span></a></li>
-                                <li class="clearfix"><a ui-sref="profile.upload({id: Profile.user.id})" ui-sref-active="active"><i class="fa fa-upload"></i>Upload Video</a></li>
-                                <li class="clearfix"><a ui-sref="profile.settings({id: Profile.user.id})" ui-sref-active="active"><i class="fa fa-gears"></i>Settings</a></li>
-                                <li class="clearfix"><a ng-click="Body.doSignOut()"><i class="fa fa-sign-out"></i>Logout</a></li>
+                                <li class="clearfix">
+                                    <a ui-sref="profile.about({id: Profile.user.id})" ui-sref-active="active">
+                                        <i class="fa fa-user"></i>about me
+                                    </a>
+                                </li>
+                                <li class="clearfix">
+                                    <a ui-sref="profile.playlists({id: Profile.user.id})" ui-sref-active="active">
+                                        <i class="fa fa-heart"></i>Playlists
+                                    </a>
+                                </li>
+                                <li class="clearfix">
+                                    <a ui-sref="profile.videos({id: Profile.user.id})" ui-sref-active="active">
+                                        <i class="fa fa-video-camera"></i>Videos
+                                        <span class="float-right">{{::Profile.userStats.projectCount}}</span>
+                                    </a>
+                                </li>
+                                <li class="clearfix">
+                                    <a ui-sref="profile.critiques({id: Profile.user.id})" ui-sref-active="active">
+                                        <i class="fa fa-star"></i>Critiques
+                                        <span class="float-right">{{::Profile.userStats.critiqueCount}}</span>
+                                    </a>
+                                </li>
+                                <li class="clearfix">
+                                    <a ui-sref="profile.reactions({id: Profile.user.id})" ui-sref-active="active"><i
+                                        class="fa fa-smile-o"></i>Reactions
+                                        <span class="float-right">{{::Profile.userStats.reactionCount}}</span>
+                                    </a>
+                                </li>
+                                <li class="clearfix">
+                                    <a ui-sref="profile.awards({id: Profile.user.id})" ui-sref-active="active">
+                                        <i class="fa fa-trophy"></i>Awards
+                                        <span class="float-right">{{::Profile.userStats.winCount}}</span>
+                                    </a>
+                                </li>
+                                <li class="clearfix">
+                                    <a ui-sref="profile.upload({id: Profile.user.id})"
+                                       ui-sref-active="active"><i class="fa fa-upload"></i>Upload Video</a>
+                                </li>
+                                <li class="clearfix">
+                                    <a ui-sref="profile.settings({id: Profile.user.id})"
+                                       ui-sref-active="active"><i class="fa fa-gears"></i>Settings</a>
+                                </li>
+                                <li class="clearfix">
+                                    <a ng-click="Body.doSignOut()"><i class="fa fa-sign-out"></i>Logout</a>
+                                </li>
                             </ul>
                             <!--<a ui-sref="upload" class="button"><i class="fa fa-plus-circle"></i>Upload Video</a>-->
                         </div>
                     </div>
-                </div><!-- End profile overview -->
+                </div>
+                <!-- End profile overview -->
             </div>
         </aside>
-    </div><!-- end sidebar -->
+    </div>
+    <!-- end sidebar -->
     <!-- right side content area -->
-    <div ui-view class="large-8 columns profile-inner">
+    <div class="ui-view-container small-12 large-8 columns profile-inner">
+        <div ui-view class=""></div>
+        <!-- end left side content area -->
+    </div>
 
-
-    </div><!-- end left side content area -->
 
 </div>

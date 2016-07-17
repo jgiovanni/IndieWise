@@ -22,6 +22,13 @@ use Flow\Config;
 use Flow\Request;
 use Flow\Basic;
 
+\Cloudinary::config(array(
+    "cloud_name" => "indiewise",
+    "api_key" => "199931534948115",
+    "api_secret" => "BB0K3mPQYfFLLyqg4x0YgfAPj48"
+));
+
+
 Flow\Autoloader::register();
 
 if (1 == mt_rand(1, 100)) {
@@ -50,13 +57,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 if ($file->validateFile()) {
     // This is final chunk, upload complete
+
+    \Cloudinary\Uploader::upload($file->getChunkPath(1),
+        array(
+            "public_id" => $_GET['public_id'],
+            "upload_preset" => $_GET['upload_preset']
+        ));
+
+
     // Image Optimizations
-    $request = new Flow\Request();
+    /*$request = new Flow\Request();
     $thumb = new Imagick($file->getChunkPath(1));
 
     $thumb->resizeImage(200,200,Imagick::FILTER_LANCZOS ,1, true);
     $thumb->cropThumbnailImage(200, 200);
-    $thumb->writeImage($file->getChunkPath(1));
+    $thumb->writeImage($file->getChunkPath(1));*/
 
     //$thumb->destroy();
 

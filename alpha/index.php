@@ -1,84 +1,92 @@
 <?php
+define('REST_URL', 'https://api.backand.com:443');
+
 header("Access-Control-Allow-Origin: *");
 header('Access-Control-Allow-Credentials: true');
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Authorization, Content-Type, Accept");
 header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS');
 require_once __DIR__ . '/vendor/autoload.php';
-
-// Instantiate a new client, find your API keys here https://getstream.io/dashboard/
-$client = new GetStream\Stream\Client('pftnxtwf4yuz', 'k563yw7srhjeubw6xbx26def8xta47ume75uqaaewh6k4qyzj4mr3cfcmbts6cf3');
-
-// Set API endpoint location
-$client->setLocation('us-east');
-
-// Instantiate a feed object
-$user_feed_all = $client->feed('user', 'all');
-
 ?>
 <!DOCTYPE html>
 <html lang="en" ng-app="IndieWise" class="no-js">
 <head>
-    <title ng-cloak>IndieWise: {{metadata.title}}</title>
+    <title>IndieWise</title>
+<!--    <title>IndieWise<: {{metadata.title}}</title>-->
     <base href="http://getindiewise.com/alpha/">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="robots" content="NONE">
     <meta property="fb:app_id" content="150687055270744"/>
 
-    <!--Favicon-->
-    <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
-    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="/favicon-194x194.png" sizes="194x194">
-    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
-    <link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
-    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
-    <link rel="manifest" href="/manifest.json">
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-    <meta name="msapplication-TileColor" content="#2b5797">
-    <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+    <!--Favicon - http://realfavicongenerator.net/ -->
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png?v=dLL8Gal3KG">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png?v=dLL8Gal3KG">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png?v=dLL8Gal3KG">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png?v=dLL8Gal3KG">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png?v=dLL8Gal3KG">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png?v=dLL8Gal3KG">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png?v=dLL8Gal3KG">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png?v=dLL8Gal3KG">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png?v=dLL8Gal3KG">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png?v=dLL8Gal3KG" sizes="32x32">
+    <link rel="icon" type="image/png" href="/android-chrome-192x192.png?v=dLL8Gal3KG" sizes="192x192">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png?v=dLL8Gal3KG" sizes="96x96">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png?v=dLL8Gal3KG" sizes="16x16">
+    <link rel="manifest" href="/manifest.json?v=dLL8Gal3KG">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg?v=dLL8Gal3KG" color="#5bbad5">
+    <link rel="shortcut icon" href="/favicon.ico?v=dLL8Gal3KG">
+    <meta name="msapplication-TileColor" content="#00aba9">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.png?v=dLL8Gal3KG">
     <meta name="theme-color" content="#ffffff">
 
-    <script src="https://cdn.jsdelivr.net/g/underscorejs@1.8.3,js-sha1@0.3.0,jquery@2.2.1,momentjs@2.13.0,momentjs.timezone@0.5.4(moment-timezone-with-data.min.js)"></script>
+    <script
+        src="https://cdn.jsdelivr.net/g/underscorejs@1.8.3,js-sha1@0.3.0,jquery@1.11.2,momentjs@2.13.0,momentjs.timezone@0.5.4(moment-timezone-with-data.min.js),fastclick@1.0.6"></script>
+    <script>
+        // Underscore noConflict();
+        var ___ = _.noConflict();
+    </script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
+    <link rel="stylesheet" href="./app/bower_components/foundation-datepicker/css/foundation-datepicker.min.css"/>
     <link rel="stylesheet" href="./app/bower_components/animate.css/animate.min.css"/>
 
-    <!-- Elite Video Player -->
-    <link rel="stylesheet" href="./app/eliteplayer/deploy/css/elite.css" type="text/css" media="screen"/>
-    <link rel="stylesheet" href="./app/eliteplayer/deploy/css/elite-font-awesome.css" type="text/css">
-    <link rel="stylesheet" href="./app/eliteplayer/deploy/css/jquery.mCustomScrollbar.css" type="text/css">
-    <script src="./app/eliteplayer/deploy/js/froogaloop.js" type="text/javascript"></script>
-    <script src="./app/eliteplayer/deploy/js/jquery.mCustomScrollbar.js" type="text/javascript"></script>
-    <script src="./app/eliteplayer/deploy/js/THREEx.FullScreen.js"></script>
+    <!-- Elite Video Player Scripts-->
+    <script type="text/javascript" src="./app/eliteplayer/deploy/js/froogaloop.js"></script>
+    <script type="text/javascript" src="./app/eliteplayer/deploy/js/jquery.mCustomScrollbar.js"></script>
+    <script type="text/javascript" src="./app/eliteplayer/deploy/js/THREEx.FullScreen.js"></script>
     <script type="text/javascript" src="./app/eliteplayer/deploy/js/videoPlayer.js"></script>
     <script type="text/javascript" src="./app/eliteplayer/deploy/js/Playlist.js"></script>
     <script type="text/javascript" src="./app/eliteplayer/deploy/js/ZeroClipboard.js"></script>
 
-<!--    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Allofthelights.js/2.0/jquery.allofthelights-min.js"></script>-->
+<!--    <link rel="stylesheet" href="./app/bower_components/foundation-apps/dist/css/foundation-apps.min.css">-->
+
+<!--    <script src="./app/bower_components/foundation-apps/dist/js/foundation-apps.min.js"></script>-->
+
+<!--    <script src="./app/bower_components/foundation-apps/dist/js/foundation-apps-templates.min.js"></script>-->
 
     <!-- BeTube Styles-->
     <link rel="stylesheet" href="./assets/css/app.css">
     <link rel="stylesheet" href="./assets/css/theme.css">
     <link rel="stylesheet" href="./assets/css/font-awesome.min.css">
-    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="./assets/layerslider/css/layerslider.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" type="text/css">
+    <link rel="stylesheet" href="./assets/layerslider/css/layerslider.css" type="text/css">
     <link rel="stylesheet" href="./assets/css/owl.carousel.min.css">
     <link rel="stylesheet" href="./assets/css/owl.theme.default.min.css">
     <link rel="stylesheet" href="./assets/css/jquery.kyco.easyshare.css">
     <link rel="stylesheet" href="./assets/css/responsive.css">
+    <!-- Elite Video Player Styles-->
+    <link rel="stylesheet" href="./app/eliteplayer/deploy/css/elite.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="./app/eliteplayer/deploy/css/elite-font-awesome.css" type="text/css">
+    <link rel="stylesheet" href="./app/eliteplayer/deploy/css/jquery.mCustomScrollbar.css" type="text/css">
     <!-- Custom Styles  -->
     <link rel="stylesheet" href="./assets/app.css"/>
 
+    <script src="//api.filepicker.io/v1/filepicker.js"></script>
+    <script src="http://cdn.broadstreetads.com/init.js"></script>
 </head>
 
 <body ng-controller="BodyCtrl as Body">
@@ -86,21 +94,24 @@ $user_feed_all = $client->feed('user', 'all');
 <div class="off-canvas-wrapper">
     <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
         <!--header-->
-        <div class="off-canvas position-left light-off-menu" id="offCanvas-responsive" data-off-canvas>
+        <div class="off-canvas position-left light-off-menu" id="offCanvas-responsive" data-off-canvas data-close-on-click="false">
             <div class="off-menu-close">
                 <h3>Menu</h3>
                 <span data-toggle="offCanvas-responsive"><i class="fa fa-times"></i></span>
             </div>
-            <ul class="vertical menu off-menu" data-responsive-menu="drilldown">
-                <li>
-                    <a ui-sref="home" ui-sref-active="active"><i class="fa fa-home"></i>Home</a>
-                </li>
-                <li><a ui-sref="browse" ui-sref-active="active"><i class="fa fa-th"></i>Browse</a></li>
+            <ul class="vertical menu off-menu" off-canvas-nav>
+                <li><a ui-sref="home" ui-sref-active="active" title="Home"><i class="fa fa-home"></i>Home</a></li>
+                <li><a ui-sref="browse" ui-sref-active="active" title="Browse"><i class="fa fa-th"></i>Browse</a></li>
+                <li><a ui-sref="latest" ui-sref-active="active" title="Home"><i class="fa fa-bolt"></i>Latest</a></li>
+                <li ng-if="AppData.User"><a ui-sref="profile.about" ui-sref-active="active"><i class="fa fa-user"></i>Profile</a></li>
+                <li ng-if="AppData.User"><a ui-sref="messages" ui-sref-active="active"><i class="fa fa-envelope"></i>Messages</a></li>
+                <li><a ui-sref="profile.upload" ui-sref-active="active"><i class="fa fa-upload"></i>Upload</a></li>
             </ul>
             <div class="responsive-search">
-                <form method="post">
+                <form ng-submit="Body.startSearch(AppData.searchText)">
                     <div class="input-group">
-                        <input class="input-group-field" type="text" placeholder="Search Here">
+                        <input class="input-group-field" ng-model="AppData.searchText" my-enter="Body.startSearch(AppData.searchText)" type="text" placeholder="Search Anything">
+
                         <div class="input-group-button">
                             <button type="submit" name="search"><i class="fa fa-search"></i></button>
                         </div>
@@ -108,25 +119,48 @@ $user_feed_all = $client->feed('user', 'all');
                 </form>
             </div>
             <div class="off-social">
-                <h6>Get Socialize</h6>
+                <h6>Get Social</h6>
                 <a class="secondary-button" href="https://www.facebook.com/getindiewise"><i class="fa fa-facebook"></i></a>
                 <a class="secondary-button" href="https://twitter.com/getindiewise"><i class="fa fa-twitter"></i></a>
                 <a class="secondary-button" href="https://www.instagram.com/getindiewise/"><i class="fa fa-instagram"></i></a>
             </div>
             <div class="top-button">
-                <ul class="menu">
+                <ul class="menu" off-canvas-nav>
                     <li class="dropdown-login" ng-if="!AppData.User">
                         <a ui-sref="sign_in">login/Register</a>
+                    </li>
+                    <li class="dropdown-login" ng-if="AppData.User">
+                        <a ng-click="Body.doSignOut();">logout</a>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="off-canvas position-right light-off-menu" data-off-canvas id="NotificationsArea">
+        <div class="off-canvas position-right light-off-menu" id="NotificationsArea" data-off-canvas data-close-on-click="false">
             <div class="off-menu-close">
                 <h3>Notifications</h3>
                 <span class="right-off-canvas-toggle"><i class="fa fa-times"></i></span>
             </div>
-            <ul class="vertical menu off-menu" data-responsive-menu="drilldown" ng-include="Body.notificationsTemplate">
+            <ul class="vertical menu off-menu notification-list">
+                <li ng-repeat="notice in AppData.Notifications.list" ng-click="Body.markAsRead(notice)">
+                    <a ng-show="::notice.verb === 'react'" ui-sref="video({url_id:notice.projectUrlId})">
+                        <i class="notificon fa fa-smile-o"></i>&nbsp;Your video made <b>{{::notice.actorFullName}}</b> feel <b>{{::notice.reactionEmotion}}</b>.
+                    </a>
+                    <a ng-show="::notice.verb === 'nominate'" ui-sref="video({url_id:notice.projectUrlId})">
+                        <i class="notificon fa fa-smile-o"></i>&nbsp;Your video made <b>{{::notice.actorFullName}}</b> feel <b>{{::notice.reactionEmotion}}</b>.
+                    </a>
+                    <a ng-show="::notice.verb === 'comment'" ui-sref="video_critique({video_url_id: notice.projectUrlId, url_id:notice.critiqueUrlId})">
+                        <i class="notificon fa fa-comment"></i>&nbsp;<b>{{::notice.actorFullName}}</b> posted a comment on your critique.
+                    </a>
+                    <a ng-show="::notice.verb === 'reply'" ui-sref="video_critique({video_url_id: notice.projectUrlId, url_id:notice.critiqueUrlId})">
+                        <i class="notificon fa fa-comment"></i>&nbsp;<b>{{::notice.actorFullName}}</b> replied to your comment.
+                    </a>
+                    <a ng-show="notice.verb === 'like'" ui-sref="video({url_id:notice.projectUrlId})">
+                        <i class="notificon fa fa-thumbs-up"></i>&nbsp;<b>{{::notice.actorFullName}}</b> gave your video two thumbs up.
+                    </a>
+                    <a ng-show="notice.verb === 'unlike'" ui-sref="video({url_id:notice.projectUrlId})">
+                        <i class="notificon fa fa-thumbs-down"></i>&nbsp;<b>{{::notice.actorFullName}}</b> gave your video two thumbs down.
+                    </a>
+                </li>
             </ul>
         </div>
         <div class="off-canvas-content" data-off-canvas-content>
@@ -150,16 +184,20 @@ $user_feed_all = $client->feed('user', 'all');
                                     <li class="dropdown-login">
                                         <a ng-if="!AppData.User" ui-sref="sign_in">login/Register</a>
                                         <a ng-if="AppData.User" ng-click="Body.doSignOut();">logout</a>
+
                                         <div class="login-form">
                                             <h6 class="text-center">Great to have you back!</h6>
+
                                             <form method="post">
                                                 <div class="input-group">
                                                     <span class="input-group-label"><i class="fa fa-user"></i></span>
-                                                    <input class="input-group-field" type="text" placeholder="Enter username">
+                                                    <input class="input-group-field" type="text"
+                                                           placeholder="Enter username">
                                                 </div>
                                                 <div class="input-group">
                                                     <span class="input-group-label"><i class="fa fa-lock"></i></span>
-                                                    <input class="input-group-field" type="text" placeholder="Enter password">
+                                                    <input class="input-group-field" type="text"
+                                                           placeholder="Enter password">
                                                 </div>
                                                 <div class="checkbox">
                                                     <input id="check1" type="checkbox" name="check" value="check">
@@ -167,47 +205,57 @@ $user_feed_all = $client->feed('user', 'all');
                                                 </div>
                                                 <input type="submit" name="submit" value="Login Now">
                                             </form>
-                                            <p class="text-center">New here? <a class="newaccount" ui-sref="register">Create a new Account</a></p>
+                                            <p class="text-center">New here? <a class="newaccount" ui-sref="register">Create
+                                                    a new Account</a></p>
                                         </div>
                                     </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                </section><!-- End Top -->
+                </section>
+                <!-- End Top -->
                 <!--Navber-->
                 <section id="navBar">
                     <nav class="sticky-container" data-sticky-container>
-                        <div class="sticky topnav" data-sticky data-top-anchor="navBar" data-btm-anchor="footer-bottom:bottom" data-margin-top="0" data-margin-bottom="0" style="width: 100%; background: #fff;" data-sticky-on="large">
+                        <div class="sticky topnav" data-sticky data-top-anchor="navBar"
+                             data-btm-anchor="footer-bottom:bottom" data-margin-top="0" data-margin-bottom="0"
+                             style="width: 100%; background: #fff;" data-sticky-on="large">
                             <div class="row">
                                 <div class="large-12 columns">
                                     <div class="title-bar" data-responsive-toggle="beNav" data-hide-for="large">
-                                        <button class="menu-icon" type="button" data-toggle="offCanvas-responsive"></button>
-                                        <div class="title-bar-title"><img src="./assets/img/Logo_alt2_web_87x45.png" alt="logo"></div>
-                                        <!--<div class="title-bar-right">
-                                            <a class="fa fa-user fa-2x"></a>
-                                            <a class="fa fa-bell fa-2x"></a>
-                                        </div>-->
+                                        <button class="menu-icon" type="button"
+                                                data-toggle="offCanvas-responsive"></button>
+                                        <div class="title-bar-title">
+                                            <img src="./assets/img/Logo_alt2_web_87x45.png" alt="logo">
+                                        </div>
+                                        <div class="title-bar-right">
+                                            <a ng-if="AppData.User" class="fa fa-bell menu-icon right-off-canvas-toggle"></a>
+                                        </div>
                                     </div>
 
                                     <div class="top-bar show-for-large" id="beNav" style="width: 100%;">
                                         <div class="top-bar-left  search-btn">
                                             <ul class="menu">
                                                 <li class="menu-text">
-                                                    <a ui-sref="home"><img src="./assets/img/Logo_alt2_web_87x45.png" alt="logo"></a>
+                                                    <a ui-sref="home">
+                                                        <img src="./assets/img/Logo_alt2_web_87x45.png" alt="logo">
+                                                    </a>
                                                 </li>
                                                 <li class="search end">
                                                     <i class="fa fa-search"></i>
                                                 </li>
-
                                             </ul>
                                         </div>
                                         <div class="top-bar-right search-btn">
                                             <ul class="menu dropdown" dropdown-menu>
                                                 <li ng-if="AppData.User" class="search" ui-sref="profile.about">
                                                     <i class="fa fa-user"></i>
+                                                </li>
                                                 <li ng-if="AppData.User" class="search right-off-canvas-toggle">
-                                                    <i class="fa fa-bell"></i>
+                                                    <i class="fa fa-bell-o" ng-show="AppData.Notifications.loaded === 'indeterminate' || !AppData.Notifications.unseen"></i>
+                                                    <i class="fa fa-bell" ng-show="AppData.Notifications.unseen"></i>
+                                                    <span ng-show="AppData.Notifications.unseen>0" class="alert badge">{{AppData.Notifications.unseen}}</span>
                                                 </li>
                                                 <li ng-if="AppData.User" class="search" ui-sref="messages">
                                                     <i class="fa fa-envelope"></i>
@@ -218,13 +266,16 @@ $user_feed_all = $client->feed('user', 'all');
                                             </ul>
                                         </div>
                                         <div class="top-bar-right">
-                                            <ul class="menu vertical medium-horizontal" data-responsive-menu="drilldown medium-dropdown">
+                                            <ul class="menu vertical medium-horizontal"
+                                                data-responsive-menu="drilldown medium-dropdown">
                                                 <li ui-sref-active="active">
                                                     <a ui-sref="home"><i class="fa fa-home"></i>Home</a>
                                                 </li>
-                                                <li ui-sref-active="active"><a ui-sref="browse"><i class="fa fa-th"></i>Browse</a></li>
-                                                <li ui-sref-active="active"><a ui-sref="latest"><i class="fa fa-bolt"></i>Latest</a></li>
-<!--                                                <li ng-if="AppData.User"><a href="#"><i class="fa fa-user"></i>{{AppData.User.fullName}}</a></li>-->
+                                                <li ui-sref-active="active"><a ui-sref="browse"><i class="fa fa-th"></i>Browse</a>
+                                                </li>
+                                                <li ui-sref-active="active"><a ui-sref="latest"><i
+                                                            class="fa fa-bolt"></i>Latest</a></li>
+                                                <!--                                                <li ng-if="AppData.User"><a href="#"><i class="fa fa-user"></i>{{AppData.User.fullName}}</a></li>-->
                                             </ul>
                                         </div>
                                     </div>
@@ -233,15 +284,15 @@ $user_feed_all = $client->feed('user', 'all');
                             <div id="search-bar" class="clearfix search-bar-light">
                                 <form ng-submit="Body.startSearch(AppData.searchText)">
                                     <div class="search-input float-left">
-                                        <angucomplete-alt id="members"
+                                        <!--<angucomplete-alt id="members"
                                                           placeholder="Search"
                                                           pause="400"
                                                           selected-object="AppData.searchSelected"
                                                           remote-url="https://api.backand.com:443/1/objects/Search?pageSize=20&pageNumber=1&exclude=metadata%2C%20totalRows&search="
                                                           remote-url-data-field="data"
                                                           title-field="term"
-                                                          input-class="form-control form-control-small"/>
-<!--                                        <input type="search" ng-model="AppData.searchText" ng-keydown="Body.checkIfEnterKeyWasPressed($event)" placeholder="Search Here your video">-->
+                                                          input-class="form-control form-control-small"/>-->
+                                        <input type="search" ng-model="AppData.searchText" my-enter="Body.startSearch(AppData.searchText)" placeholder="Search Anything">
                                     </div>
                                     <div class="search-btn float-right text-right">
                                         <button class="button" type="submit">search now</button>
@@ -251,9 +302,18 @@ $user_feed_all = $client->feed('user', 'all');
                         </div>
                     </nav>
                 </section>
-            </header><!-- End Header -->
+            </header>
+            <!-- End Header -->
+            <!--<div class="callout alert-box warning" data-closable>
+                <strong>Yo!</strong> We are experiencing technical difficulties, check back later!
+                <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>-->
 
-            <ui-view ng-cloak></ui-view>
+            <div class="ui-view-container">
+                <ui-view class="" ng-cloak></ui-view>
+            </div>
 
             <!-- footer -->
             <footer ng-cloak>
@@ -264,7 +324,9 @@ $user_feed_all = $client->feed('user', 'all');
                                 <h5>About IndieWise</h5>
                             </div>
                             <div class="textwidget">
-                                The purpose of IndieWise is to allow for an open forum of independent filmmakers and artists who seek feedback on their work from peers and wish to also participate in the feedback and judging of other projects or works.
+                                The purpose of IndieWise is to allow for an open platform of Independent Filmmakers,
+                                Artists, and Art Lovers, who seek Objective Feedback on their work from peers, and wish
+                                to also participate in providing feedback and judging other projects or works.
                             </div>
                             <hr>
                             <div class="">
@@ -282,19 +344,23 @@ $user_feed_all = $client->feed('user', 'all');
                                 <h5>Recent Videos</h5>
                             </div>
                             <div class="widgetContent">
-                                <div class="media-object">
+                                <div class="media-object" ng-repeat="video in Body.footerRecentVideos.data|limitTo:3">
                                     <div class="media-object-section">
                                         <div class="recent-img">
-                                            <img src= "http://placehold.it/80x80" alt="recent">
-                                            <a href="#" class="hover-posts">
+                                            <img ng-src="{{::video.thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}" alt="recent">
+                                            <a ui-sref="video({url_id: video.url_id})" class="hover-posts">
                                                 <span><i class="fa fa-play"></i></span>
                                             </a>
                                         </div>
                                     </div>
                                     <div class="media-object-section">
                                         <div class="media-content">
-                                            <h6><a href="#">The lorem Ipsumbeen the industry's standard.</a></h6>
-                                            <p><i class="fa fa-user"></i><span>admin</span><i class="fa fa-clock-o"></i><span>5 january 16</span></p>
+                                            <h6><a ui-sref="video({url_id: video.url_id})">{{::video.name|truncate:50}}</a></h6>
+
+                                            <p>
+                                                <i class="fa fa-user"></i><span><a ui-sref="user.about({url_id: video.ownerUrlId})">{{::video.ownerFullName}}</a></span>
+                                                <i class="fa fa-clock-o"></i><span class="md-caption" am-time-ago="::video.createdAt"></span>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -304,14 +370,17 @@ $user_feed_all = $client->feed('user', 'all');
                     <div class="large-3 medium-6 columns">
                         <div class="widgetBox">
                             <div class="widgetTitle">
-                                <h5>Tags</h5>
+                                <h5>We're a Social Bunch</h5>
                             </div>
-                            <div class="tagcloud">
-                                <a href="#">3D Videos</a>
-                                <a href="#">Videos</a>
-                                <a href="#">HD</a>
-                                <a href="#">Movies</a>
-                                <a href="#">Sports</a>
+                            <div class="widgetContent">
+                                <div class="social-links">
+                                    <a class="secondary-button" href="https://www.facebook.com/getindiewise"><i
+                                            class="fa fa-facebook"></i></a>
+                                    <a class="secondary-button" href="https://twitter.com/getindiewise"><i
+                                            class="fa fa-twitter"></i></a>
+                                    <a class="secondary-button" href="https://www.instagram.com/getindiewise/"><i
+                                            class="fa fa-instagram"></i></a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -323,20 +392,24 @@ $user_feed_all = $client->feed('user', 'all');
                             <div class="widgetContent">
                                 <form data-abide ng-submit="Body.newsletterRegister(Body.notifyMe)" name="notifyMe">
                                     <p>Subscribe to get exclusive videos</p>
+
                                     <div class="input">
-                                        <input type="text" name="fname" ng-model="Body.notifyMe.fname" placeholder="First Name" required>
+                                        <input type="text" name="fname" ng-model="Body.notifyMe.fname"
+                                               placeholder="First Name" required>
                                         <span class="form-error">
                                             Yo, you had better fill this out, it's required.
                                         </span>
                                     </div>
                                     <div class="input">
-                                        <input type="text" name="lname" ng-model="Body.notifyMe.lname" placeholder="Last Name" required>
+                                        <input type="text" name="lname" ng-model="Body.notifyMe.lname"
+                                               placeholder="Last Name" required>
                                         <span class="form-error">
                                             Yo, you had better fill this out, it's required.
                                         </span>
                                     </div>
                                     <div class="input">
-                                        <input type="email" name="email" ng-model="Body.notifyMe.email" placeholder="Email address" required >
+                                        <input type="email" name="email" ng-model="Body.notifyMe.email"
+                                               placeholder="Email address" required>
                                         <span class="form-error">
                                           I'm required!
                                         </span>
@@ -345,7 +418,7 @@ $user_feed_all = $client->feed('user', 'all');
                                         <select name="country" ng-model="Body.notifyMe.country" required>
                                             <option selected>Select Country</option>
                                             <option value="AF">Afghanistan</option>
-                                            <option value="AX">Åland Islands</option>
+                                            <option value="AX">ï¿½land Islands</option>
                                             <option value="AL">Albania</option>
                                             <option value="DZ">Algeria</option>
                                             <option value="AS">American Samoa</option>
@@ -398,10 +471,10 @@ $user_feed_all = $client->feed('user', 'all');
                                             <option value="CD">Congo, the Democratic Republic of the</option>
                                             <option value="CK">Cook Islands</option>
                                             <option value="CR">Costa Rica</option>
-                                            <option value="CI">Côte d'Ivoire</option>
+                                            <option value="CI">Cï¿½te d'Ivoire</option>
                                             <option value="HR">Croatia</option>
                                             <option value="CU">Cuba</option>
-                                            <option value="CW">Curaçao</option>
+                                            <option value="CW">Curaï¿½ao</option>
                                             <option value="CY">Cyprus</option>
                                             <option value="CZ">Czech Republic</option>
                                             <option value="DK">Denmark</option>
@@ -524,11 +597,11 @@ $user_feed_all = $client->feed('user', 'all');
                                             <option value="PT">Portugal</option>
                                             <option value="PR">Puerto Rico</option>
                                             <option value="QA">Qatar</option>
-                                            <option value="RE">Réunion</option>
+                                            <option value="RE">Rï¿½union</option>
                                             <option value="RO">Romania</option>
                                             <option value="RU">Russian Federation</option>
                                             <option value="RW">Rwanda</option>
-                                            <option value="BL">Saint Barthélemy</option>
+                                            <option value="BL">Saint Barthï¿½lemy</option>
                                             <option value="SH">Saint Helena, Ascension and Tristan da Cunha</option>
                                             <option value="KN">Saint Kitts and Nevis</option>
                                             <option value="LC">Saint Lucia</option>
@@ -598,12 +671,6 @@ $user_feed_all = $client->feed('user', 'all');
                                     </div>
                                     <button class="button" type="submit">Sign up Now</button>
                                 </form>
-                                <div class="social-links">
-                                    <h5>We're a Social Bunch</h5>
-                                    <a class="secondary-button" href="https://www.facebook.com/getindiewise"><i class="fa fa-facebook"></i></a>
-                                    <a class="secondary-button" href="https://twitter.com/getindiewise"><i class="fa fa-twitter"></i></a>
-                                    <a class="secondary-button" href="https://www.instagram.com/getindiewise/"><i class="fa fa-instagram"></i></a>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -616,196 +683,48 @@ $user_feed_all = $client->feed('user', 'all');
                     <img src="./assets/img/Logo_alt2_web_87x45_white.png" alt="footer logo">
                 </div>
                 <div class="btm-footer-text text-center">
-                    <p>2015 - <?php echo date('Y');?> &copy; IndieWise</p>
+                    <p>2015 - <?php echo date('Y'); ?> &copy; IndieWise</p>
                 </div>
             </div>
-        </div><!--end off canvas content-->
-    </div><!--end off canvas wrapper inner-->
-</div><!--end off canvas wrapper-->
-
-
-<!--<div flex layout="column" tabIndex="-1" role="main" class="">
-
-    <header>
-        <md-toolbar layout="row" class="">
-            <nav class="md-toolbar-tools nav-wrapper indigo">
-                <a ui-sref="home" hide-xs class="" style="line-height: 12px;">
-                    <img src="./assets/img/Logo_alt2_web_87x45.png" alt="IndieWise"/>
-                </a>&nbsp;
-                <a hide-gt-md class="button-collapse" ng-click="Body.toggleList()"><i class="material-icons">menu</i></a>
-                <md-autocomplete class="" flex flex-gt-sm="33" md-selected-item="selectedItem" hide-xs hide-sm
-                                 md-search-text="AppData.searchText"
-                                 md-items="item in Body.getMatches(AppData.searchText)"
-                                 md-item-text="item.attributes.name||item.attributes.term"
-                                 md-selected-item-change="Body.startSearch(selectedItem)"
-                                 ng-keydown="Body.checkIfEnterKeyWasPressed($event)" md-no-cache="true"
-                                 placeholder="Search project name or user" md-min-length="2" md-input-minlength="2">
-                    <md-item-template>
-                        <span md-highlight-text="AppData.searchText" md-highlight-flags="^i">{{item.attributes.name||item.attributes.term}}</span>
-                    </md-item-template>
-                    <md-not-found>
-                        No matches found.
-                    </md-not-found>
-                </md-autocomplete>
-                <md-button hide-xs hide-sm class="md-icon-button" aria-label="Advanced Search" ui-sref="advanced-search">
-                    <md-icon md-svg-icon="settings" class="white-text"></md-icon>
-                    <md-tooltip md-direction="bottom">Advanced Search</md-tooltip>
-                </md-button>
-                <div flex align="right">
-                    <ul class="right">
-                        <li ng-if="!AppData.User">
-                            <a class="md-accent md-hue-2" aria-label="Join" ui-sref="register">Join</a>
-                        </li>
-                        <li ng-if="AppData.User">
-                            <a class="md-icon-button" aria-label="Messages" ui-sref="messages">
-                                <md-icon md-svg-icon="message-outline" class="black-text" ng-if="!AppData.MessageNotifications.unseen"></md-icon>
-                                <md-icon md-svg-icon="message-text" class="black-text" ng-if="AppData.MessageNotifications.unseen"></md-icon>
-                                <span class="badge new" ng-if="AppData.MessageNotifications.unseen>0" ng-bind="AppData.MessageNotifications.unseen"></span>
-                                <md-tooltip md-direction="bottom">Messages</md-tooltip>
-                            </a>
-                        </li>
-                        <li ng-if="AppData.User">
-                            <a class="md-icon-button" aria-label="Notifications" ng-click="Body.openNotificationsMenu()">
-                                <md-icon md-svg-icon="notifications_none" ng-if="!AppData.RawNotifications.unseen"></md-icon>
-                                <md-icon md-svg-icon="notifications_active" ng-if="AppData.RawNotifications.unseen"></md-icon>
-                                <span class="badge new" ng-if="AppData.RawNotifications.unseen>0" ng-bind="AppData.RawNotifications.unseen"></span>
-                                <md-tooltip md-direction="bottom">Notifications</md-tooltip>
-                            </a>
-                        </li>
-                        <li>
-                            <a ng-if="!AppData.User" class="md-accent" aria-label="Sign In" ui-sref="sign_in">Sign in</a>
-                            <md-menubar ng-if="AppData.User">
-                                <md-menu md-position-mode="target-right target">
-                                    <a aria-label="Open phone interactions menu" class="action-link" style="line-height: 12px;" ng-click="$mdOpenMenu($event)">
-                                        <img ng-src="{{AppData.UserData.avatar||'./assets/img/avatar-1.png'}}" class="circle responsive-img md-avatar"
-                                             alt="{{AppData.UserData.firstName}} {{AppData.UserData.lastName}}" style="margin: 10px 0; height: 44px;"/>
-                                    </a>
-
-                                    <md-menu-content width="6">
-                                        <md-menu-item style="height: auto">
-                                            <md-list>
-                                                <md-list-item class="md-2-line">
-                                                    <img ng-src="{{AppData.UserData.avatar||'./assets/img/avatar-1.png'}}" class="md-avatar"
-                                                         alt="{{AppData.UserData.firstName}} {{AppData.UserData.lastName}}"/>
-
-                                                    <div class="md-list-item-text" layout="column">
-                                                        <h3>{{AppData.UserData.firstName}}
-                                                            {{AppData.UserData.lastName}}</h3>
-                                                        <p>{{ item.notes }}</p>
-                                                    </div>
-                                                </md-list-item>
-                                            </md-list>
-                                        </md-menu-item>
-                                        <md-menu-item>
-                                            <md-button ui-sref="profile" class="black-text">
-                                                Profile
-                                            </md-button>
-                                        </md-menu-item>
-                                        <md-menu-item>
-                                            <md-button ng-click="Body.doSignOut()" class="black-text">
-                                                Sign Out
-                                            </md-button>
-                                        </md-menu-item>
-                                    </md-menu-content>
-                                </md-menu>
-                            </md-menubar>
-                        </li>
-                    </ul>
-                    <ul class="right hide-on-med-and-down">
-                        <li ui-sref-active="active">
-                            <a ui-sref="home">Home</a>
-                        </li>
-                        <li ui-sref-active="active">
-                            <a ui-sref="browse" ui-sref-active="md-accent">Browse</a>
-                        </li>
-                        <li ui-sref-active="active">
-                            <a class="md-icon-button" aria-label="Upload a video" ui-sref="upload">
-                                <md-icon md-svg-icon="file_upload"></md-icon>
-                                <md-tooltip md-direction="bottom">Upload a video</md-tooltip>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </md-toolbar>
-    </header>
-    <md-sidenav md-component-id="left" class="md-sidenav-left">
-        <md-toolbar class="md-theme-light">
-            <h1 class="md-toolbar-tools">
-                <a ui-sref="home" class="" style="line-height: 12px;">
-                    <img src="./assets/img/Logo_alt2_web_87x45.png" alt="IndieWise"/>
-                </a>&nbsp;Menu
-            </h1>
-        </md-toolbar>
-        <md-content>
-            <md-list>
-                <md-list-item class="">
-                    <md-autocomplete flex="85" md-selected-item="selectedItem"
-                                     md-search-text="AppData.searchText"
-                                     md-items="item in Body.getMatches(AppData.searchText)"
-                                     md-item-text="item.attributes.name||item.attributes.term"
-                                     md-selected-item-change="Body.startSearch(selectedItem)"
-                                     ng-keydown="Body.checkIfEnterKeyWasPressed($event)" md-no-cache="true"
-                                     placeholder="Search project name or user" md-min-length="2" md-input-minlength="2">
-                        <md-item-template>
-                            <span md-highlight-text="AppData.searchText" md-highlight-flags="^i">{{item.attributes.name||item.attributes.term}}</span>
-                        </md-item-template>
-                        <md-not-found>
-                            No matches found.
-                        </md-not-found>
-                    </md-autocomplete>
-                    <md-button flex="15" class="md-icon-button" aria-label="Advanced Search" ui-sref="advanced-search">
-                        <md-icon md-svg-icon="settings" class="white-text"></md-icon>
-                        <md-tooltip md-direction="bottom">Advanced Search</md-tooltip>
-                    </md-button>
-                </md-list-item>
-                <md-list-item ui-sref-active="active" ng-click="Body.toPage('home');Body.closeLeftMenu()">
-                    Home
-                </md-list-item>
-                <md-list-item ui-sref-active="active" ng-click="Body.toPage('browse');Body.closeLeftMenu()">
-                    Browse
-                </md-list-item>
-                <md-list-item ui-sref-active="active" ng-click="Body.toPage('upload');Body.closeLeftMenu()">
-                    Upload
-                </md-list-item>
-            </md-list>
-        </md-content>
-    </md-sidenav>
-    <main ui-view class="grey lighten-3"></main>
-
-
-</div>
-<md-sidenav class="md-sidenav-right md-whiteframe-1dp" md-component-id="right">
-    <md-toolbar class="md-theme-light">
-        <div class="md-toolbar-tools">
-            <h3>Notifications</h3>
-            <span flex></span>
-            <md-button class="md-icon-button" ng-click="Body.markAllAsRead()" aria-label="Mark all as read">
-                <md-icon md-svg-icon="eye"></md-icon>
-                <md-tooltip md-direction="left">Mark all as read</md-tooltip>
-            </md-button>
-            <!--<md-button class="md-icon-button" aria-label="More">
-                <md-icon md-svg-icon="more_vert"></md-icon>
-            </md-button>--
         </div>
-    </md-toolbar>
-    <md-content>
-        <md-progress-linear md-mode="{{AppData.RawNotifications.loaded}}" class="md-accent"></md-progress-linear>
-        <md-list ng-include="Body.notificationsTemplate">
-        </md-list>
-    </md-content>
-</md-sidenav>-->
+        <!--end off canvas content-->
+    </div>
+    <!--end off canvas wrapper inner-->
+</div>
+<!--end off canvas wrapper-->
 
-<!--<script src="./app/bower_components/underscore/underscore-min.js"></script>-->
-<!--<script src="./app/bower_components/momentjs/moment.js"></script>-->
-<script src="./src/parse-1.6.12.min.js"></script>
-<script src="./src/getstream-parse.min.js"></script>
-<!--<script src="./app/bower_components/localforage/dist/localforage.min.js"></script>-->
-<script src="./app/bower_components/getstream/dist/js_min/getstream.js"></script>
-<!--<script src="./src/sha1.js"></script>-->
+<div id="alerts" ng-cloak>
+    <!--<div class="callout alert-box success">
+        <strong>Yo!</strong> Alert Success
+        <a href="#" class="close">?</a>
+    </div>
+    <div class="callout alert-box alert">
+        <strong>Yo!</strong> Alert Alert
+        <a href="#" class="close">?</a>
+    </div>
+    <div class="callout alert-box info">
+        <strong>Yo!</strong> Alert Info
+        <a href="#" class="close">?</a>
+    </div>
+    <div class="callout alert-box warning">
+        <strong>Yo!</strong> Alert Warning
+        <a href="#" class="close">?</a>
+    </div>
+    <div class="callout alert-box large">
+        <strong>Yo!</strong> Large Alert
+        <a href="#" class="close">?</a>
+    </div>
+    <div class="callout alert-box small">
+        <strong>Yo!</strong> Small Alert
+        <a href="#" class="close">?</a>
+    </div>
+
+
+    -->
+</div>
+
 <!-- Async Social SDKs -->
 <div id="fb-root"></div>
-
 <script type="text/javascript">
     (function (doc, script) {
         var js,
@@ -820,27 +739,36 @@ $user_feed_all = $client->feed('user', 'all');
                 fjs.parentNode.insertBefore(js, fjs);
             };
         // Facebook SDK
-        add('//connect.facebook.net/en_US/all.js', 'facebook-jssdk');
+        add('//connect.facebook.net/en_US/sdk.js', 'facebook-jssdk');
     }(document, 'script'));
 </script>
 
 <!-- AngularJs Components -->
-<script src="https://cdn.jsdelivr.net/g/angularjs@1.5.5(angular.min.js+angular-animate.min.js+angular-aria.min.js+angular-messages.min.js),angular.moment@1.0.0-beta.6,angular.flow@2.7.1(ng-flow-standalone.min.js),angular.material@1.1.0-rc1,localforage@1.4.0"></script>
+<script src="./app/bower_components/lodash/lodash.js"></script>
+<script src="./app/bower_components/foundation-datepicker/js/foundation-datepicker.min.js"></script>
+<script
+    src="https://cdn.jsdelivr.net/g/angularjs@1.5.5(angular.js+angular-animate.min.js+angular-aria.min.js+angular-messages.min.js),angular.moment@1.0.0-beta.6,localforage@1.4.0,angular.translate@2.11.0"></script>
+<script src="./app/bower_components/angular-filepicker/dist/angular_filepicker.min.js"></script>
+<script src="./app/bower_components/ng-flow/dist/ng-flow-standalone.js"></script>
 <script src="./app/bower_components/ngAnimate-animate.css/animate.js"></script>
-<script src="./app/bower_components/angular-foundation/mm-foundation-tpls.js"></script>
+<script src="./app/bower_components/angular-foundation-6/dist/angular-foundation.js"></script>
 <script src="./app/bower_components/angucomplete-alt/dist/angucomplete-alt.min.js"></script>
 <script src="./app/bower_components/cloudinary-core/cloudinary-core.min.js" type="text/javascript"></script>
-<sciprt src="./app/bower_components/cloudinary_ng/js/angular.cloudinary.min.js" type="text/javascript"></sciprt>
+<script src="./app/bower_components/angular-material/angular-material.min.js"></script>
+<script src="./app/bower_components/cloudinary_ng/js/angular.cloudinary.min.js" type="text/javascript"></script>
+<script src="./app/bower_components/angular-localforage/dist/angular-localForage.min.js"></script>
+<script src="./app/bower_components/ng-videosharing-embed/build/ng-videosharing-embed.min.js"></script>
+<script src="./app/bower_components/angular-google-analytics/dist/angular-google-analytics.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.0-alpha.5/angular-ui-router.min.js"></script>
 <!--[if lte IE 9]>
 <script src="//cdnjs.cloudflare.com/ajax/libs/Base64/0.3.0/base64.min.js"></script>
 <![endif]-->
 <!-- Backand SDK for Angular -->
-<script src="//cdn.backand.net/backand/dist/1.8.6/backand.min.js"></script>
+<script src="./app/bower_components/angularbknd-sdk/dist/backand.min.js"></script>
 <!-- Backand Realtime -->
-<!--<script src="https://api.backand.com:4000/socket.io/socket.io.js"></script>-->
+<script src="https://api.backand.com:4000/socket.io/socket.io.js"></script>
 
 <!-- BeTube script files -->
-<!--<script src="bower_components/jquery/dist/jquery.js"></script>-->
 <script src="./app/bower_components/what-input/what-input.js"></script>
 <script src="./app/bower_components/foundation-sites/dist/foundation.js"></script>
 <script src="./assets/js/jquery.showmore.src.js" type="text/javascript"></script>
@@ -850,16 +778,10 @@ $user_feed_all = $client->feed('user', 'all');
 <script src="./assets/layerslider/js/layerslider.transitions.js" type="text/javascript"></script>
 <script src="./assets/layerslider/js/layerslider.kreaturamedia.jquery.js" type="text/javascript"></script>
 <script src="./assets/js/owl.carousel.min.js"></script>
-<script src="./assets/js/inewsticker.js" type="text/javascript"></script>
-<script src="./assets/js/jquery.kyco.easyshare.js" type="text/javascript"></script>
+<!--<script src="./assets/js/inewsticker.js" type="text/javascript"></script>-->
+<!--<script src="./assets/js/jquery.kyco.easyshare.js" type="text/javascript"></script>-->
 
-
-<script src="./app/bower_components/angular-localforage/dist/angular-localForage.min.js"></script>
-<script src="./app/bower_components/ng-videosharing-embed/build/ng-videosharing-embed.min.js"></script>
-<script src="./app/bower_components/ui-router/release/angular-ui-router.min.js"></script>
-<script src="./app/bower_components/angularjs-socialshare/dist/angular-socialshare.min.js"></script>
-<!--<script src="./app/bower_components/ng-flow/dist/ng-flow-standalone.min.js"></script>-->
-<script src="./src/parse-angular.js"></script>
+<script src="./app/bower_components/angular-socialshare/dist/angular-socialshare.min.js"></script>
 <script src="./src/utils.js"></script>
 
 <script src="./src/directives.js"></script>
@@ -867,9 +789,5 @@ $user_feed_all = $client->feed('user', 'all');
 <script src="./src/controllers.js"></script>
 <script src="./src/app.js"></script>
 
-
-<script>
-    window.getStreamToken = '<?php echo($user_feed_all->getReadonlyToken()); ?>' || null;
-</script>
 </body>
 </html>

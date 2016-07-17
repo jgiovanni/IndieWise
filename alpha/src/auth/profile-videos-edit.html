@@ -1,0 +1,350 @@
+<!--<section layout="column" layout-align="center center">
+    <md-content layout-padding>
+        <form ng-submit="VEC.submitNewVideo()" name="NewVideoForm">
+            <fieldset>
+                <legend>Video Upload/URL</legend>
+                <div layout layout-lt-md="column">
+                    <md-radio-group ng-model="VEC.uploadType">
+                        <md-radio-button value="1" disabled>Upload Video (coming soon)</md-radio-button>
+                        <md-radio-button value="2">Video Link (YouTube, Vimeo, DailyMotion, Youku, Vine)
+                        </md-radio-button>
+                    </md-radio-group>
+                </div>
+                <div layout="column" ng-if="VEC.uploadType == 2">
+                    <div class="large-12 columns">
+                        <md-input-container flex>
+                            <label>Video URL</label>
+                            <input type="url" ng-model="VEC.editedProject.video_url" ng-required="VEC.uploadType == 2"
+                                   ng-change="VEC.getThumbnailUrl(VEC.editedProject.video_url)">
+                        </md-input-container>
+                        <div flex>
+                            <hr>
+                            <embed-video ng-if="VEC.editedProject.video_url != ''" ng-href="{{VEC.editedProject.video_url}}"
+                                         width="100%" height="200"></embed-video>
+                        </div>
+                    </div>
+                    <div class="large-12 columns">
+                        <md-switch ng-model="uploadOwnArt" aria-label="Private" style="margin: 0;">
+                            Upload your own video thumbnail/artwork ?
+                        </md-switch>
+                    </div>
+                    <div class="large-12 columns" layout-align="center top" ng-if="!uploadOwnArt">
+                        <md-input-container flex>
+                            <label>Poster Artwork/Video Thumbnail URL</label>
+                            <input type="url" ng-model="VEC.editedProject.thumbnailUrl">
+                        </md-input-container>
+                        <div flex>
+                            <hr>
+                            <img ng-if="VEC.editedProject.thumbnailUrl != ''" ng-src="{{VEC.editedProject.thumbnailUrl}}"
+                                 alt="Video Thumbnail URL">
+                        </div>
+                    </div>
+                    <div class="large-12 columns" layout-align="center top" ng-if="!!uploadOwnArt">
+                        <md-card flow-init="{target: 'utils/upload_artwork.php',}" flow
+                                 flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
+                                 flow-files-submitted="$flow.upload()" flow-complete="VEC.uploadArtwork($flow)">
+                            <img ng-hide="$flow.files.length"
+                                 ng-src="{{VEC.editedProject.thumbnailUrl||'./assets/img/default_video_thumbnail.jpg'}}"
+                                 class="md-card-image" alt="Avatar" style="max-width: 560px"/>
+                            <img ng-show="$flow.files.length" flow-img="$flow.files[0]" class="md-card-image"
+                                 style="max-width: 560px"/>
+                            <md-card-actions layout="row" layout-align="end center">
+                                <button class="" ng-hide="$flow.files.length" flow-btn
+                                           flow-attrs="{accept:'image/*'}">Select image
+                                </button>
+                                <button class="" ng-show="$flow.files.length" flow-btn
+                                           flow-attrs="{accept:'image/*'}">Change
+                                </button>
+                                <button class="" ng-show="$flow.files.length" ng-click="$flow.cancel()">
+                            </md-card-actions>
+                        </md-card>
+                    </div>
+                </div>
+            </fieldset>
+            <br>
+            <fieldset>
+                <legend>Optional Details</legend>
+                <div layout layout-lt-md="column">
+                    <md-chips flex
+                              ng-model="VEC.editedProject.tags"
+                              placeholder="Enter a tag"
+                              delete-button-label="Remove Tag"
+                              delete-hint="Press delete to remove tag"
+                              secondary-placeholder="Tags"></md-chips>
+                    <br/>
+                    &lt;!&ndash;<md-select flex placeholder="Country of Origin" ng-model="VEC.editedProject.originCountry"
+                               md-on-open="VEC.getCountries()" style="min-width: 200px;">
+                        <md-option ng-value="c.id" ng-repeat="c in countryList|orderBy:'attributes.name.common'"
+                                   class="md-accent">
+                            {{c.attributes.name.common}}
+                        </md-option>
+                    </md-select>&ndash;&gt;
+                </div>
+            </fieldset>
+
+            <div class="md-actions" layout="row" layout-align="right center">
+                <button class="md-warn" ui-sref="home">Cancel</button>
+                <span flex></span>
+                <button type="submit" class="md-raised md-accent md-hue-2" ng-disabled="">
+                    Submit
+                </button>
+            </div>
+
+        </form>
+
+    </md-content>
+</section>-->
+
+<!-- profile settings -->
+<section class="submit-post">
+    <div class="row secBg">
+        <div class="large-12 columns">
+            <div class="heading">
+                <i class="fa fa-pencil-square-o"></i>
+                <h4>Edit Video</h4>
+            </div>
+            <div class="row">
+                <div class="large-12 columns">
+
+                    <form data-abide ng-submit="VEC.updateProject()" name="NewVideoForm">
+                        <div data-abide-error class="alert callout" style="display: none;">
+                            <p><i class="fa fa-exclamation-triangle"></i>
+                                There are some errors in your form.</p>
+                        </div>
+                        <div class="row">
+                            <div class="large-12 columns">
+                                <label>Title <sup class="fa fa-asterisk req" aria-hidden="true"></sup>
+                                    <input type="text" ng-model="VEC.editedProject.name"
+                                           placeholder="enter your video title..." required>
+                                    <span class="form-error">
+                                        Yo, you had better fill this out, it's required.
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="large-12 columns">
+                                <h6 class="borderBottom">Choose Video Method:</h6>
+
+                                <!--<p><strong>Note:</strong> Please choose one of the following ways to embed the video
+                                    into your post, the video is determined in the order: Video Code > Video URL > Video
+                                    File.</p>-->
+                            </div>
+                            <div class="large-12 columns">
+                                <div class="radio" style="margin-bottom: 20px;">
+                                    <input type="radio" ng-model="VEC.uploadType" value="2" name="videolink" id="videolink1" checked>
+                                    <label class="customLabel" for="videolink1">Video Link From YouTube/Vimeo/DailyMotion/Youku/Vine</label>
+                                </div>
+                            </div>
+                            <div layout="large-12 columns row" ng-if="VEC.uploadType == 2">
+                                <div class="large-12 columns">
+                                    <label>Video URL <sup class="fa fa-asterisk req" aria-hidden="true"></sup>
+                                        <input type="url" ng-model="VEC.editedProject.video_url" ng-required="VEC.uploadType == 2"
+                                               ng-change="VEC.getThumbnailUrl(VEC.editedProject.video_url)">
+                                    </label>
+                                    <hr>
+                                    <embed-video ng-if="VEC.editedProject.video_url != ''" ng-href="{{VEC.editedProject.video_url}}"
+                                                 width="100%" height="200"></embed-video>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="large-12 columns row">
+                                <div class="large-12 columns">
+                                    <div class="checkbox">
+                                        <input id="uploadOwnArt" type="checkbox" ng-model="uploadOwnArt">
+                                        <label class="customLabel" style="padding-left: 20px;" for="uploadOwnArt">Upload your own video thumbnail/artwork ?</label>
+                                    </div>
+                                </div>
+                                <div class="large-12 columns" ng-if="!uploadOwnArt">
+                                    <label>Poster Artwork/Video Thumbnail URL
+                                        <input type="url" ng-model="VEC.editedProject.thumbnail_url">
+                                    </label>
+                                    <hr>
+                                    <img ng-if="VEC.editedProject.thumbnail_url != ''" ng-src="{{VEC.editedProject.thumbnail_url}}"
+                                         alt="Video Thumbnail URL">
+                                </div>
+                                <div class="large-12 columns" ng-if="!!uploadOwnArt">
+                                    <div flow-init="{upload_preset:'dzachn6p'}"
+                                         flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
+                                         flow-files-submitted="$flow.upload()" flow-file-success="VEC.uploadArtwork($message)">
+                                        <img ng-hide="$flow.files.length"
+                                             ng-src="{{VEC.editedProject.thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}"
+                                             class="md-card-image" alt="Avatar" style="max-width: 560px"/>
+                                        <img ng-show="$flow.files.length" flow-img="$flow.files[0]" class="md-card-image"
+                                             style="max-width: 560px"/>
+                                        <br>
+                                        <div class="row">
+                                            <div class="large-12 columns">
+                                                <button type="button" class="tiny button" ng-hide="$flow.files.length" flow-btn
+                                                        flow-attrs="{accept:'image/*'}">Select image
+                                                </button>
+                                                <button type="button" class="tiny button" ng-show="$flow.files.length" flow-btn
+                                                        flow-attrs="{accept:'image/*'}">Change
+                                                </button>
+                                                <button type="button" class="tiny button" ng-show="$flow.files.length" ng-click="$flow.cancel()">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="large-12 columns">
+                                <label>Year of Completion <sup class="fa fa-asterisk req" aria-hidden="true"></sup>
+                                    <input type="text" placeholder="----" ng-model="VEC.editedProject.completionDate" ng-maxlength="4" required/>
+                                    <span class="form-error">
+                                        Yo, you had better fill this out, it's required.
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="large-12 columns">
+                                <label>Description
+                                    <textarea ng-model="VEC.editedProject.description" ng-maxlength="3000"></textarea>
+                                </label>
+                            </div>
+                            <div class="large-12 columns row">
+                                <div class="large-4 columns">
+                                    <label>Director <sup class="fa fa-asterisk req" aria-hidden="true"></sup>
+                                        <input type="text" ng-model="VEC.editedProject.director" required>
+                                    </label>
+
+                                </div>
+                                <div class="large-4 columns">
+                                    <label>Writer <sup class="fa fa-asterisk req" aria-hidden="true"></sup>
+                                        <input type="text" ng-model="VEC.editedProject.writer" required>
+                                    </label>
+
+                                </div>
+                                <div class="large-4 columns">
+                                    <label>Producers <sup class="fa fa-asterisk req" aria-hidden="true"></sup>
+                                        <input type="text" ng-model="VEC.editedProject.producers" required>
+                                    </label>
+
+                                </div>
+                            </div>
+                            <div class="large-12 columns">
+                                <div class="post-meta">
+                                    <label>Key Cast:
+                                        <textarea ng-model="VEC.editedProject.keyCast" placeholder="Key Cast"></textarea>
+                                    </label>
+                                </div>
+                            </div>
+                            <fieldset class="large-12 columns row">
+                                <legend style="margin-left: 20px">Video Duration <sup class="fa fa-asterisk req" aria-hidden="true"></sup></legend>
+                                <div class="large-4 columns">
+                                    <label>Hours
+                                        <input type="number" ng-model="VEC.runtime.hours" min="0"
+                                               ng-change="VEC.runtimeToSeconds()" required>
+                                    </label>
+
+                                </div>
+                                <div class="large-4 columns">
+                                    <label>Minutes
+                                        <input type="number" ng-model="VEC.runtime.mins" min="0" max="60"
+                                               ng-change="VEC.runtimeToSeconds()" required>
+                                    </label>
+
+                                </div>
+                                <div class="large-4 columns">
+                                    <label>Seconds
+                                        <input type="number" ng-model="VEC.runtime.secs" min="0" max="60"
+                                               ng-change="VEC.runtimeToSeconds()" required>
+                                    </label>
+
+                                </div>
+                            </fieldset>
+                            <div class="large-12 columns">
+                                <!--<div class="post-category">
+                                    <label>Genres: <sup class="fa fa-asterisk req" aria-hidden="true"></sup>
+                                    </label>
+                                    <small class="help-text">Hold Ctrl/Command key to select multiple genres.</small>
+                                        <select multiple ng-model="VEC.editedProject.genres"
+                                                ng-options="g.id as g.name for g in VEC.genresList|orderBy:'name'"></select>
+                                </div>-->
+                                <h6 class="borderBottom" style="margin-bottom: 10px;">Genres:</h6>
+                                <div class="radio" style="margin-bottom: 20px;">
+                                    <input type="checkbox" ng-repeat-start="g in VEC.genresList|orderBy:'name'"
+                                           ng-model="bool" name="genre{{$index}}" id="genre{{$index}}"
+                                           ng-click="VEC.syncGenres(bool, g)" ng-checked="VEC.isCheckedGenre(g.id)">
+                                    <label ng-repeat-end class="customLabel" for="genre{{$index}}">{{::g.name}}</label>
+                                </div>
+                                <!--<pre>{{VEC.genresArr}}</pre>-->
+
+                                <div class="post-category">
+                                    <label>Type: <sup class="fa fa-asterisk req" aria-hidden="true"></sup>
+                                        <select ng-model="VEC.editedProject.type"
+                                                ng-options="t.id as t.name for t in VEC.typesList|orderBy:'name'" required>
+                                            <option value="">Select a type</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="post-category">
+                                    <label>Language: <sup class="fa fa-asterisk req" aria-hidden="true"></sup>
+                                        <select ng-model="VEC.editedProject.language" required>
+                                            <optgroup>
+                                                <option value="00000000-0000-6b6e-4371-305344643451">English</option>
+                                            </optgroup>
+                                            <optgroup>
+                                                <option ng-value="l.id" ng-repeat="l in VEC.languageList|orderBy:'English'" ng-bind="l.English">Select Language</option>
+                                            </optgroup>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="post-category">
+                                    <label>Country of Filming: <sup class="fa fa-asterisk req" aria-hidden="true"></sup>
+                                        <select ng-model="VEC.editedProject.filmingCountry" ng-options="c.id as c.name for c in VEC.countryList|orderBy:'name'" required>
+                                            <option value="">Select Country</option>
+                                        </select>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="large-12 columns">
+                                <div class="medium-12 columns">
+                                    <div class="checkbox">
+                                        <input id="nsfw" type="checkbox" ng-model="VEC.editedProject.nsfw" aria-describedby="nsfwHelpText">
+                                        <label class="customLabel" style="padding-left: 20px;" for="nsfw">Contains mature content?</label>
+                                        <p class="help-text" id="nsfwHelpText">Mature content = Violence, Drug Use, Sexual Content, Nudity, Strong Language
+                                            <br>
+                                            <b>NOTE: We reserve the right to Remove content that is Excessively Violent, Pornographic, Racially Offensive, etc.</b>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="medium-12 columns">
+                                    <div class="checkbox">
+                                        <input id="check4" type="checkbox" ng-model="VEC.editedProject.copyrightOwner">
+                                        <label for="check4" style="">Do you own the rights to this content?</label>
+                                        <input id="copyrightOwnYes" type="checkbox" ng-model="VEC.editedProject.copyrightOwner" ng-click="VEC.editedProject.copyrightOwner=true">
+                                        <label class="customLabel" style="padding-left: 20px;display: inline-block;" for="copyrightOwnYes">Yes</label>
+                                        <input id="copyrightOwnNo" type="checkbox" ng-model="VEC.editedProject.copyrightOwner" ng-click="VEC.editedProject.copyrightOwner=false" ng-true-value="false" ng-false-value="true">
+                                        <label class="customLabel" style="padding-left: 20px;display: inline-block;" for="copyrightOwnNo">No</label>
+                                        <br>
+                                    </div>
+                                </div>
+                                <div class="medium-6 columns">
+                                    <div class="checkbox">
+                                        <input id="check3" type="checkbox" ng-model="VEC.editedProject.unlist">
+                                        <label class="customLabel" style="padding-left: 20px;" for="check3">Unlist Video</label>
+                                    </div>
+                                </div>
+                                <div class="medium-6 columns">
+                                    <div class="checkbox">
+                                        <input id="check2" type="checkbox" ng-model="VEC.editedProject.disableCritique">
+                                        <label class="customLabel" style="padding-left: 20px;" for="check2">Disable Critiques</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="large-12 columns">
+                                <label>Tags: (separate with commas)
+                                    <input ng-model="VEC.editedProject.tags" type="text" placeholder="tag1, tag2, tag3">
+                                </label>
+                                <!--<p class="help-block">Separate Tags with a comma</p>-->
+                            </div>
+                            <div class="large-12 columns">
+                                <button class="button expanded" type="submit" name="submit">publish now</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End profile settings -->

@@ -20,19 +20,7 @@
                 </div>
             </div>
             <div class="medium-4 small-4 columns">
-                <ul class="tabs text-right pull-right" data-tabs id="newVideos">
-                    <!--<li class="tabs-title is-active"><a href="#new-all">all</a></li>-->
-                    <!--<li class="tabs-title"><a href="#new-hd">HD</a></li>-->
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="row secBg">
-        <div class="large-12 columns">
-            <div class="row column head-text clearfix">
-                <!--<p class="pull-left">Ranked according to number of Reactions received</p>-->
-
-                <div class="grid-system pull-right show-for-large" ng-init="typeA='grid-default'">
+                <div class="grid-system pull-right show-for-large" ng-init="typeA='grid-medium'">
                     <a class="secondary-button grid-default" ng-click="typeA='grid-default'"
                        ng-class="{'current':typeA == 'grid-default'}"><i class="fa fa-th"></i></a>
                     <a class="secondary-button grid-medium" ng-click="typeA='grid-medium'"
@@ -41,11 +29,15 @@
                             class="fa fa-th-list"></i></a>
                 </div>
             </div>
-            <div class="tabs-content" data-tabs-content="newVideos">
+        </div>
+    </div>
+    <div class="row secBg">
+        <div class="large-12 columns">
+            <div>
                 <div class="tabs-panel is-active" id="new-all">
                     <div class="row list-group">
                         <project-card ng-repeat="video in Home.trending.data" video="video" type="typeA"
-                                      related="Home.trending.relatedObjects"></project-card>
+                                      queried="'true'"></project-card>
                     </div>
                 </div>
             </div>
@@ -58,7 +50,9 @@
 
 <!-- ad Section -->
 <div class="googleAdv text-center">
-    <a href="#"><img src="./assets/images/goodleadv.png" alt="googel ads"></a>
+    <broadstreet-zone zone="51348" width="728" height="90"></broadstreet-zone>
+    <!--<script>window.broadstreet.zone(51348);</script>-->
+    <!--<a href="#"><img src="./assets/images/goodleadv.png" alt="googel ads"></a>-->
 </div><!-- End ad Section -->
 
 <!-- Highest Rated  video -->
@@ -75,18 +69,6 @@
                 </div>
             </div>
             <div class="medium-4 small-4 columns">
-                <ul class="tabs text-right pull-right" data-tabs id="popularVideos">
-                    <!--<li class="tabs-title is-active"><a href="#popular-all">all</a></li>-->
-                    <!--<li class="tabs-title"><a href="#popular-hd">HD</a></li>-->
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="row secBg">
-        <div class="large-12 columns">
-            <div class="row column head-text clearfix">
-                <!--<p class="pull-left">Ranked according to IndieWise Average</p>-->
-
                 <div class="grid-system pull-right show-for-large">
                     <a class="secondary-button grid-default" ng-click="typeA='grid-default'"
                        ng-class="{'current':typeA == 'grid-default'}"><i class="fa fa-th"></i></a>
@@ -96,11 +78,16 @@
                             class="fa fa-th-list"></i></a>
                 </div>
             </div>
-            <div class="tabs-content" data-tabs-content="popularVideos">
+        </div>
+        </div>
+    </div>
+    <div class="row secBg">
+        <div class="large-12 columns">
+            <div>
                 <div class="tabs-panel is-active" id="popular-all">
                     <div class="row list-group">
                         <project-card ng-repeat="video in Home.highestRated.data" video="video" type="typeA"
-                                      related="Home.highestRated.relatedObjects"></project-card>
+                                      queried="'true'"></project-card>
                     </div>
                 </div>
             </div>
@@ -130,18 +117,6 @@
                 </div>
             </div>
             <div class="medium-4 small-4 columns">
-                <ul class="tabs text-right pull-right" data-tabs id="highestAwardedVideos">
-                    <!--<li class="tabs-title is-active"><a href="#highestAwarded-all">all</a></li>-->
-                    <!--<li class="tabs-title"><a href="#highestAwarded-hd">HD</a></li>-->
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="row secBg">
-        <div class="large-12 columns">
-            <div class="row column head-text clearfix">
-                <!--<p class="pull-left">Ranked according to number of Awards Wins</p>-->
-
                 <div class="grid-system pull-right show-for-large">
                     <a class="secondary-button grid-default" ng-click="typeA='grid-default'"
                        ng-class="{'current':typeA == 'grid-default'}"><i class="fa fa-th"></i></a>
@@ -151,11 +126,15 @@
                             class="fa fa-th-list"></i></a>
                 </div>
             </div>
-            <div class="tabs-content" data-tabs-content="highestAwardedVideos">
+        </div>
+    </div>
+    <div class="row secBg">
+        <div class="large-12 columns">
+            <div>
                 <div class="tabs-panel is-active" id="highestAwarded-all">
                     <div class="row list-group">
                         <project-card ng-repeat="video in Home.highestAwarded.data" video="video" type="typeA"
-                                      related="Home.highestAwarded.relatedObjects"></project-card>
+                                      queried="'true'"></project-card>
                     </div>
                 </div>
             </div>
@@ -185,18 +164,6 @@
                 </div>
             </div>
             <div class="medium-4 small-4 columns">
-                <ul class="tabs text-right pull-right" data-tabs id="recentlyAddedVideos">
-                    <!--<li class="tabs-title is-active"><a href="#recentlyAdded-all">all</a></li>-->
-                    <!--<li class="tabs-title"><a href="#popular-hd">HD</a></li>-->
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="row secBg">
-        <div class="large-12 columns">
-            <div class="row column head-text clearfix">
-                <!--<p class="pull-left">All Videos : <span>1,862 Videos posted</span></p>-->
-
                 <div class="grid-system pull-right show-for-large">
                     <a class="secondary-button grid-default" ng-click="typeA='grid-default'"
                        ng-class="{'current':typeA == 'grid-default'}"><i class="fa fa-th"></i></a>
@@ -206,11 +173,15 @@
                             class="fa fa-th-list"></i></a>
                 </div>
             </div>
-            <div class="tabs-content" data-tabs-content="recentlyAddedVideos">
+        </div>
+    </div>
+    <div class="row secBg">
+        <div class="large-12 columns">
+            <div>
                 <div class="tabs-panel is-active" id="recentlyAdded-all">
                     <div class="row list-group">
                         <project-card ng-repeat="video in Home.recentFilms.data" video="video" type="typeA"
-                                      related="Home.recentFilms.relatedObjects"></project-card>
+                                      queried="'true'"></project-card>
                     </div>
                 </div>
             </div>
@@ -398,80 +369,80 @@
                 <div class="item-cat item thumb-border">
                     <figure class="premium-img">
                         <img src="http://placehold.it/185x130" alt="carousel">
-                        <a href="categories.html" class="hover-posts">
-                            <span><i class="fa fa-search"></i></span>
+                        <a ui-sref="home" class="hover-posts" style="visibility: visible;transform: scale(1);background: transparent;">
+                            <!--<span><i class="fa fa-search"></i></span>-->
                         </a>
                     </figure>
-                    <h6><a href="categories.html">Entertainment</a></h6>
+                    <h6><a ui-sref="home">Your Logo Here</a></h6>
                 </div>
                 <div class="item-cat item thumb-border">
                     <figure class="premium-img">
                         <img src="http://placehold.it/185x130" alt="carousel">
-                        <a href="categories.html" class="hover-posts">
-                            <span><i class="fa fa-search"></i></span>
+                        <a ui-sref="home" class="hover-posts" style="visibility: visible;transform: scale(1);background: transparent;">
+                            <!--<span><i class="fa fa-search"></i></span>-->
                         </a>
                     </figure>
-                    <h6><a href="categories.html">Technology</a></h6>
+                    <h6><a ui-sref="home">Your Logo Here</a></h6>
                 </div>
                 <div class="item-cat item thumb-border">
                     <figure class="premium-img">
                         <img src="http://placehold.it/185x130" alt="carousel">
-                        <a href="categories.html" class="hover-posts">
-                            <span><i class="fa fa-search"></i></span>
+                        <a ui-sref="home" class="hover-posts" style="visibility: visible;transform: scale(1);background: transparent;">
+                            <!--<span><i class="fa fa-search"></i></span>-->
                         </a>
                     </figure>
-                    <h6><a href="categories.html">Fashion &amp; Beauty</a></h6>
+                    <h6><a ui-sref="home">Your Logo Here</a></h6>
                 </div>
                 <div class="item-cat item thumb-border">
                     <figure class="premium-img">
                         <img src="http://placehold.it/185x130" alt="carousel">
-                        <a href="categories.html" class="hover-posts">
-                            <span><i class="fa fa-search"></i></span>
+                        <a ui-sref="home" class="hover-posts" style="visibility: visible;transform: scale(1);background: transparent;">
+                            <!--<span><i class="fa fa-search"></i></span>-->
                         </a>
                     </figure>
-                    <h6><a href="categories.html">Sports</a></h6>
+                    <h6><a ui-sref="home">Your Logo Here</a></h6>
                 </div>
                 <div class="item-cat item thumb-border">
                     <figure class="premium-img">
                         <img src="http://placehold.it/185x130" alt="carousel">
-                        <a href="categories.html" class="hover-posts">
-                            <span><i class="fa fa-search"></i></span>
+                        <a ui-sref="home" class="hover-posts" style="visibility: visible;transform: scale(1);background: transparent;">
+                            <!--<span><i class="fa fa-search"></i></span>-->
                         </a>
                     </figure>
-                    <h6><a href="categories.html">Foods &amp; Drinks</a></h6>
+                    <h6><a ui-sref="home">Your Logo Here</a></h6>
                 </div>
                 <div class="item-cat item thumb-border">
                     <figure class="premium-img">
                         <img src="http://placehold.it/185x130" alt="carousel">
-                        <a href="categories.html" class="hover-posts">
-                            <span><i class="fa fa-search"></i></span>
+                        <a ui-sref="home" class="hover-posts" style="visibility: visible;transform: scale(1);background: transparent;">
+                            <!--<span><i class="fa fa-search"></i></span>-->
                         </a>
                     </figure>
-                    <h6><a href="categories.html">Automotive</a></h6>
+                    <h6><a ui-sref="home">Your Logo Here</a></h6>
                 </div>
                 <div class="item-cat item thumb-border">
                     <figure class="premium-img">
                         <img src="http://placehold.it/185x130" alt="carousel">
-                        <a href="categories.html" class="hover-posts">
-                            <span><i class="fa fa-search"></i></span>
+                        <a ui-sref="home" class="hover-posts" style="visibility: visible;transform: scale(1);background: transparent;">
+                            <!--<span><i class="fa fa-search"></i></span>-->
                         </a>
                     </figure>
-                    <h6><a href="categories.html">Sports</a></h6>
+                    <h6><a ui-sref="home">Your Logo Here</a></h6>
                 </div>
                 <div class="item-cat item thumb-border">
                     <figure class="premium-img">
                         <img src="http://placehold.it/185x130" alt="carousel">
-                        <a href="categories.html" class="hover-posts">
-                            <span><i class="fa fa-search"></i></span>
+                        <a ui-sref="home" class="hover-posts" style="visibility: visible;transform: scale(1);background: transparent;">
+                            <!--<span><i class="fa fa-search"></i></span>-->
                         </a>
                     </figure>
-                    <h6><a href="categories.html">Foods &amp; Drinks</a></h6>
+                    <h6><a ui-sref="home">Your Logo Here</a></h6>
                 </div>
             </div>
             <!-- end carousel -->
             <div class="row collapse">
                 <div class="large-12 columns text-center row-btn">
-                    <a href="categories.html" class="button radius">View All Categories</a>
+                    <!--<a ui-sref="home" class="button radius">View All Categories</a>-->
                 </div>
             </div>
         </div>

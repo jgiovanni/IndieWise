@@ -1,201 +1,163 @@
-<!-- Comments -->
-<section class="content comments">
+<section class="profile-videos" id="randomMedia" style="padding: 0;">
     <div class="row secBg">
-        <div class="large-12 columns">
-            <div class="main-heading borderBottom">
-                <div class="row padding-14">
-                    <div class="medium-12 small-12 columns">
-                        <div class="head-title">
-                            <i class="fa fa-comments"></i>
-                            <h4>Comments <span>(4)</span></h4>
-                        </div>
-                    </div>
+        <div class="random-media-head text-center">
+            <div class="row">
+                <div class="large-12 columns">
+                    <ul class="tabs" data-tabs id="media">
+                        <li class="tabs-title is-active"><a href="#allNominations">{{::(ProfileAwardsCtrl.nominations.length + ProfileAwardsCtrl.nominated.length)}} Nominations</a></li>
+                        <li class="tabs-title"><a href="#awards">{{::ProfileAwardsCtrl.awards.length}} Wins</a></li>
+                    </ul>
                 </div>
             </div>
-
-            <div class="comment-box thumb-border">
-                <div class="media-object stack-for-small">
-                    <div class="media-object-section comment-img text-center">
-                        <div class="comment-box-img">
-                            <img src= "http://placehold.it/80x80" alt="comment">
-                        </div>
-                        <h6><a href="#">Joseph John</a></h6>
-                    </div>
-                    <div class="media-object-section comment-textarea">
-                        <form method="post">
-                            <textarea name="commentText" placeholder="Add a comment here.."></textarea>
-                            <input type="submit" name="submit" value="send">
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <div class="comment-sort text-right">
-                <span>Sort By : <a href="#">newest</a> | <a href="#">oldest</a></span>
-            </div>
-
-            <!-- main comment -->
-            <div class="main-comment showmore_one">
-                <div class="media-object stack-for-small">
-                    <div class="media-object-section comment-img text-center">
-                        <div class="comment-box-img">
-                            <img src= "http://placehold.it/80x80" alt="comment">
-                        </div>
-                    </div>
-                    <div class="media-object-section comment-desc">
-                        <div class="comment-title">
-                            <span class="name"><a href="#">Joseph John</a> Said:</span>
-                            <span class="time float-right"><i class="fa fa-clock-o"></i>1 minute ago</span>
-                        </div>
-                        <div class="comment-text">
-                            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventoresunt explicabo.</p>
-                        </div>
-                        <div class="comment-btns">
-                            <span><a href="#"><i class="fa fa-thumbs-o-up"></i></a> | <a href="#"><i class="fa fa-thumbs-o-down"></i></a></span>
-                            <span><a href="#"><i class="fa fa-share"></i>Reply</a></span>
-                            <span class='reply float-right hide-reply'></span>
-                        </div>
-
-                        <!--sub comment-->
-                        <div class="media-object stack-for-small reply-comment">
-                            <div class="media-object-section comment-img text-center">
-                                <div class="comment-box-img">
-                                    <img src= "http://placehold.it/80x80" alt="comment">
-                                </div>
-                            </div>
-                            <div class="media-object-section comment-desc">
-                                <div class="comment-title">
-                                    <span class="name"><a href="#">Nancy John</a> Said:</span>
-                                    <span class="time float-right"><i class="fa fa-clock-o"></i>1 minute ago</span>
-                                </div>
-                                <div class="comment-text">
-                                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventoresunt explicabo.</p>
-                                </div>
-                                <div class="comment-btns">
-                                    <span><a href="#"><i class="fa fa-thumbs-o-up"></i></a> | <a href="#"><i class="fa fa-thumbs-o-down"></i></a></span>
-                                    <span><a href="#"><i class="fa fa-share"></i>Reply</a></span>
-                                    <span class='reply float-right hide-reply'></span>
-                                </div>
-                            </div>
-                        </div><!-- end sub comment -->
-
-                        <!--sub comment-->
-                        <div class="media-object stack-for-small reply-comment">
-                            <div class="media-object-section comment-img text-center">
-                                <div class="comment-box-img">
-                                    <img src= "http://placehold.it/80x80" alt="comment">
-                                </div>
-                            </div>
-                            <div class="media-object-section comment-desc">
-                                <div class="comment-title">
-                                    <span class="name"><a href="#">frank</a> Said:</span>
-                                    <span class="time float-right"><i class="fa fa-clock-o"></i>1 minute ago</span>
-                                </div>
-                                <div class="comment-text">
-                                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventoresunt explicabo.</p>
-                                </div>
-                                <div class="comment-btns">
-                                    <span><a href="#"><i class="fa fa-thumbs-o-up"></i></a> | <a href="#"><i class="fa fa-thumbs-o-down"></i></a></span>
-                                    <span><a href="#"><i class="fa fa-share"></i>Reply</a></span>
-                                    <span class='reply float-right hide-reply'></span>
-                                </div>
-
-                            </div>
-                        </div><!-- end sub comment -->
-
-                    </div>
-                </div>
-
-                <div class="media-object stack-for-small">
-                    <div class="media-object-section comment-img text-center">
-                        <div class="comment-box-img">
-                            <img src= "http://placehold.it/80x80" alt="comment">
-                        </div>
-                    </div>
-                    <div class="media-object-section comment-desc">
-                        <div class="comment-title">
-                            <span class="name"><a href="#">Joseph John</a> Said:</span>
-                            <span class="time float-right"><i class="fa fa-clock-o"></i>1 minute ago</span>
-                        </div>
-                        <div class="comment-text">
-                            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventoresunt explicabo.</p>
-                        </div>
-                        <div class="comment-btns">
-                            <span><a href="#"><i class="fa fa-thumbs-o-up"></i></a> | <a href="#"><i class="fa fa-thumbs-o-down"></i></a></span>
-                            <span><a href="#"><i class="fa fa-share"></i>Reply</a></span>
-                            <span class='reply float-right hide-reply'></span>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="media-object stack-for-small">
-                    <div class="media-object-section comment-img text-center">
-                        <div class="comment-box-img">
-                            <img src= "http://placehold.it/80x80" alt="comment">
-                        </div>
-                    </div>
-                    <div class="media-object-section comment-desc">
-                        <div class="comment-title">
-                            <span class="name"><a href="#">Nancy John</a> Said:</span>
-                            <span class="time float-right"><i class="fa fa-clock-o"></i>1 minute ago</span>
-                        </div>
-                        <div class="comment-text">
-                            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventoresunt explicabo.</p>
-                        </div>
-                        <div class="comment-btns">
-                            <span><a href="#"><i class="fa fa-thumbs-o-up"></i></a> | <a href="#"><i class="fa fa-thumbs-o-down"></i></a></span>
-                            <span><a href="#"><i class="fa fa-share"></i>Reply</a></span>
-                            <span class='reply float-right hide-reply'></span>
-                        </div>
-                        <!--sub comment-->
-                        <div class="media-object stack-for-small reply-comment">
-                            <div class="media-object-section comment-img text-center">
-                                <div class="comment-box-img">
-                                    <img src= "http://placehold.it/80x80" alt="comment">
-                                </div>
-                            </div>
-                            <div class="media-object-section comment-desc">
-                                <div class="comment-title">
-                                    <span class="name"><a href="#">Joseph John</a> Said:</span>
-                                    <span class="time float-right"><i class="fa fa-clock-o"></i>1 minute ago</span>
-                                </div>
-                                <div class="comment-text">
-                                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventoresunt explicabo.</p>
-                                </div>
-                                <div class="comment-btns">
-                                    <span><a href="#"><i class="fa fa-thumbs-o-up"></i></a> | <a href="#"><i class="fa fa-thumbs-o-down"></i></a></span>
-                                    <span><a href="#"><i class="fa fa-share"></i>Reply</a></span>
-                                    <span class='reply float-right hide-reply'></span>
-                                </div>
-                                <!--sub comment-->
-                                <div class="media-object stack-for-small reply-comment">
-                                    <div class="media-object-section comment-img text-center">
-                                        <div class="comment-box-img">
-                                            <img src= "http://placehold.it/80x80" alt="comment">
-                                        </div>
-                                    </div>
-                                    <div class="media-object-section comment-desc">
-                                        <div class="comment-title">
-                                            <span class="name"><a href="#">Joseph John</a> Said:</span>
-                                            <span class="time float-right"><i class="fa fa-clock-o"></i>1 minute ago</span>
-                                        </div>
-                                        <div class="comment-text">
-                                            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventoresunt explicabo.</p>
-                                        </div>
-                                        <div class="comment-btns">
-                                            <span><a href="#"><i class="fa fa-thumbs-o-up"></i></a> | <a href="#"><i class="fa fa-thumbs-o-down"></i></a></span>
-                                            <span><a href="#"><i class="fa fa-share"></i>Reply</a></span>
-                                            <span class='reply float-right hide-reply'></span>
-                                        </div>
-                                    </div>
-                                </div><!-- end sub comment -->
-                            </div>
-                        </div><!-- end sub comment -->
-                    </div>
-                </div>
-            </div><!-- End main comment -->
-
         </div>
+        <section class="content" ng-init="sortOrder='-createdAt'">
+            <!-- newest video -->
+            <div class="row">
+                <div class="large-12 columns">
+                    <div class="tabs-content" data-tabs-content="media">
+                        <div class="tabs-panel is-active" id="allNominations">
+                            <div class="large-12 columns comments">
+                                <div class="row secBg">
+                                    <div class="random-media-head text-center">
+                                        <div class="row">
+                                            <div class="large-12 columns">
+                                                <ul class="tabs" data-tabs id="mediaSub">
+                                                    <li class="tabs-title is-active"><a href="#givenNoms">{{::ProfileAwardsCtrl.nominations.length}} Nominations Given</a></li>
+                                                    <li class="tabs-title"><a href="#recNoms">{{::ProfileAwardsCtrl.nominated.length}} Nominations Received</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <section class="content" ng-init="sortOrder='-createdAt'">
+                                        <!-- newest video -->
+                                        <div class="row">
+                                            <div class="large-12 columns">
+                                                <div class="tabs-content" data-tabs-content="mediaSub">
+                                                    <div class="tabs-panel is-active" id="givenNoms">
+                                                        <div class="large-12 columns comments">
+
+                                                            <div class="comment-sort text-right">
+                                                                <span>Sort By :
+                                                                    <a ng-class="{'active':sortOrder=='-createdAt'}" ng-click="sortOrder='-createdAt'">newest</a> |
+                                                                    <a ng-class="{'active':sortOrder=='createdAt'}" ng-click="sortOrder='createdAt'">oldest</a>
+                                                                </span>
+                                                            </div>
+
+                                                            <div class="main-comment">
+                                                                <div class="media-object stack-for-small" ng-repeat="nom in ProfileAwardsCtrl.nominations">
+                                                                    <div class="media-object-section comment-img text-center">
+                                                                        <div class="comment-box-img">
+                                                                            <img src="./assets/img/award_win_small.png"
+                                                                                 alt="award">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="media-object-section comment-desc">
+                                                                        <div class="comment-title">
+                                                                            <span class="name">
+                                                                                <a ui-sref="profile.about">You</a> nominated:
+                                                                            </span>
+
+                                                                            <span class="time float-right"><i class="fa fa-clock-o"></i>
+                                                                                <abbr title="{{::nom.createdAt|amUtc|amLocal|amDateFormat:'lll'}}"
+                                                                                      am-time-ago="::nom.createdAt"></abbr>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="comment-text">
+                                                                            <a ui-sref="video({url_id:nom.projectUrlId})">{{::nom.projectName}}</a> for:
+                                                                            <h3>{{::nom.awardName}}</h3>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="tabs-panel" id="recNoms">
+                                                        <div class="large-12 columns comments">
+
+                                                            <div class="comment-sort text-right">
+                                                                <span>Sort By :
+                                                                    <a ng-class="{'active':sortOrder=='-createdAt'}" ng-click="sortOrder='-createdAt'">newest</a> |
+                                                                    <a ng-class="{'active':sortOrder=='createdAt'}" ng-click="sortOrder='createdAt'">oldest</a></span>
+                                                            </div>
+
+                                                            <div class="main-comment">
+                                                                <div class="media-object stack-for-small" ng-repeat="nom in ProfileAwardsCtrl.nominated">
+                                                                    <div class="media-object-section comment-img text-center">
+                                                                        <div class="comment-box-img">
+                                                                            <img src="./assets/img/award_win_small.png"
+                                                                                 alt="award">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="media-object-section comment-desc">
+                                                                        <div class="comment-title">
+                                                                            <span class="name"><a ui-sref="user.about({url_id: nom.userUrlId})">
+                                                                                {{::nom.userFullName}}</a> nominated:
+                                                                            </span>
+
+                                                                            <span class="time float-right"><i class="fa fa-clock-o"></i>
+                                                                                <abbr title="{{::nom.createdAt|amUtc|amLocal|amDateFormat:'lll'}}"
+                                                                                      am-time-ago="::nom.createdAt"></abbr>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="comment-text">
+                                                                            <a ui-sref="video({url_id:nom.projectUrlId})">{{::nom.projectName}}</a> for:
+                                                                            <h3>{{::nom.awardName}}</h3>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tabs-panel" id="awards">
+                            <div class="large-12 columns comments">
+
+                                <div class="comment-sort text-right">
+                                    <span>Sort By :
+                                        <a ng-class="{'active':sortOrder=='-createdAt'}" ng-click="sortOrder='-createdAt'">newest</a> |
+                                        <a ng-class="{'active':sortOrder=='createdAt'}" ng-click="sortOrder='createdAt'">oldest</a></span>
+                                </div>
+
+                                <div class="main-comment showmore_one">
+                                    <div class="media-object stack-for-small" ng-repeat="win in ProfileAwardsCtrl.awards">
+                                        <div class="media-object-section comment-img text-center">
+                                            <div class="comment-box-img">
+                                                <img src="./assets/img/award_win_small.png"
+                                                     alt="award">
+                                            </div>
+                                        </div>
+                                        <div class="media-object-section comment-desc">
+                                            <div class="comment-title">
+                                            <span class="time float-right"><i class="fa fa-clock-o"></i>
+                                                <abbr title="{{::win.createdAt|amUtc|amLocal|amDateFormat:'lll'}}"
+                                                      am-time-ago="::win.createdAt"></abbr>
+                                            </span>
+                                            </div>
+                                            <div class="comment-text">
+                                                <a ui-sref="video({url_id:win.projectUrlId})">{{::win.projectName}}</a> won:
+                                                <h3>{{::win.awardName}}</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </div>
-</section><!-- End Comments -->
+</section>

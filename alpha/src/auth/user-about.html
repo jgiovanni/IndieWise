@@ -8,11 +8,6 @@
             </div>
             <div class="description">
                 <p ng-bind="::UserAboutCtrl.user.bio"></p>
-
-                <div class="site profile-margin" ng-if="::UserAboutCtrl.user.website">
-                    <button><i class="fa fa-globe"></i>Site</button>
-                    <a ng-href="::UserAboutCtrl.user.website" class="inner-btn" ng-bind="::UserAboutCtrl.user.website"></a>
-                </div>
                 <!--<div class="email profile-margin">
                     <button><i class="fa fa-envelope"></i>Email</button>
                     <span class="inner-btn">support@betube.com</span>
@@ -21,15 +16,13 @@
                     <button><i class="fa fa-phone"></i>Phone</button>
                     <span class="inner-btn">92-568-748</span>
                 </div>-->
-                <div class="socialLinks profile-margin">
-                    <button><i class="fa fa-share-alt"></i>get socialize</button>
-                    <a href="#" class="inner-btn"><i class="fa fa-facebook"></i></a>
-                    <a href="#" class="inner-btn"><i class="fa fa-twitter"></i></a>
-                    <a href="#" class="inner-btn"><i class="fa fa-google-plus"></i></a>
-                    <a href="#" class="inner-btn"><i class="fa fa-flickr"></i></a>
+                <div ng-if="::UserAboutCtrl.user.website||UserAboutCtrl.user.urlFacebook||UserAboutCtrl.user.urlTwitter||UserAboutCtrl.user.urlGoogle" class="socialLinks profile-margin">
+                    <button><i class="fa fa-share-alt"></i>Get Social</button>
+                    <a ng-if="::UserAboutCtrl.user.website" ng-href="{{::UserAboutCtrl.user.website}}" class="inner-btn"><i class="fa fa-globe"></i></a>
+                    <a ng-if="::UserAboutCtrl.user.urlFacebook" ng-href="{{::UserAboutCtrl.user.urlFacebook}}" class="inner-btn"><i class="fa fa-facebook"></i></a>
+                    <a ng-if="::UserAboutCtrl.user.urlTwitter" ng-href="{{::UserAboutCtrl.user.urlTwitter}}" class="inner-btn"><i class="fa fa-twitter"></i></a>
+                    <a ng-if="::UserAboutCtrl.user.urlGoogle" ng-href="{{::UserAboutCtrl.user.urlGoogle}}" class="inner-btn"><i class="fa fa-google-plus"></i></a>
                 </div>
-
-
             </div>
         </div>
     </div>

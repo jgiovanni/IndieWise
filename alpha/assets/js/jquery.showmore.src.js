@@ -32,7 +32,7 @@
 				$this.find('.showmore_content').css('height', options.height)
 											
 				// Append the showmore trigger within the showmore div			
-				$this.append('<div class="showmore_trigger"><span class="more">' + options.showText + '</span><span class="less" style="display:none;">' + options.hideText + '</span></div>')
+				$this.append('<div class="showmore_trigger"><span class="more button secondary tiny">' + options.showText + '</span><span class="less button secondary tiny" style="display:none;">' + options.hideText + '</span></div>')
 											
 				// Showmore going down
 				$this.find('.showmore_trigger').on('click', '.more', function (){

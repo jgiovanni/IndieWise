@@ -27,27 +27,26 @@
                                 <h5>Reactions</h5>
                             </div>
                             <div class="widgetContent">
-                                <div class="media-object stack-for-small" ng-repeat="r in LC.reactions.data">
+                                <div class="media-object stack-for-small" ng-repeat="r in LC.reactions">
                                     <div class="media-object-section">
                                         <div class="recent-img">
-                                            <img ng-src="{{::LC.reactions.relatedObjects.Film[r.parent].thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}"
+                                            <img ng-src="{{::r.projectThumbnail||'./assets/img/default_video_thumbnail.jpg'}}"
                                                  alt="recent">
-                                            <a ui-sref="video({id: r.parent})" class="hover-posts">
+                                            <a ui-sref="video({url_id: r.projectUrlId})" class="hover-posts">
                                                 <span><i class="fa fa-play"></i></span>
                                             </a>
                                         </div>
                                     </div>
                                     <div class="media-object-section">
                                         <div class="media-content">
-                                            <h6><a ui-sref="video({id: r.parent})">{{::LC.reactions.relatedObjects.Film[r.parent].name|truncate:50}}</a>
+                                            <h6><a ui-sref="video({url_id: r.projectUrlId})">{{::r.projectName|truncate:50}}</a>
                                             </h6>
 
                                             <p>
                                                 <!--<i class="fa fa-user"></i>-->
                                                 <span>
                                                     made
-                                                    <a ui-sref="user.about({id: r.user})">{{::LC.reactions.relatedObjects.users[r.user].firstName}}
-                                                        {{::LC.reactions.relatedObjects.users[r.user].lastName}}</a>
+                                                    <a ui-sref="user.about({url_id: r.userUrlId})">{{::r.userFullName}}</a>
                                                     feel {{::r.emotion}}</span>
                                             </p>
                                         </div>
@@ -73,25 +72,24 @@
                                 <h5>Nominations</h5>
                             </div>
                             <div class="widgetContent">
-                                <div class="media-object stack-for-small" ng-repeat="n in LC.nominations.data">
+                                <div class="media-object stack-for-small" ng-repeat="n in LC.nominations">
                                     <div class="media-object-section">
                                         <div class="recent-img">
-                                            <img ng-src="{{::LC.nominations.relatedObjects.Film[n.filmPntr].thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}"
+                                            <img ng-src="{{::n.projectThumbnail||'./assets/img/default_video_thumbnail.jpg'}}"
                                                  alt="recent">
-                                            <a ui-sref="video({id: n.filmPntr})" class="hover-posts">
+                                            <a ui-sref="video({url_id: n.projectUrlId})" class="hover-posts">
                                                 <span><i class="fa fa-play"></i></span>
                                             </a>
                                         </div>
                                     </div>
                                     <div class="media-object-section">
                                         <div class="media-content">
-                                            <h6><a ui-sref="video({id: n.nominator})">{{::LC.nominations.relatedObjects.Film[n.filmPntr].name|truncate:50}}</a>
+                                            <h6><a ui-sref="video({url_id: n.projectUrlId})">{{::n.projectName|truncate:50}}</a>
                                             </h6>
 
                                             <p>
                                                 <span>
-                                                    Nominated by <a ui-sref="user.about({id: a.nominator})">{{::LC.nominations.relatedObjects.users[n.nominator].firstName}}
-                                                    {{::LC.nominations.relatedObjects.users[n.nominator].lastName}}</a> for {{::LC.nominations.relatedObjects.Award[n.awardPntr].name}}
+                                                    Nominated by <a ui-sref="user.about({url_id: n.userUrlId})">{{::n.userFullName}}</a> for {{::n.awardName}}
                                                 </span>
                                             </p>
                                         </div>
@@ -117,27 +115,26 @@
                                 <h5>Critiques</h5>
                             </div>
                             <div class="widgetContent">
-                                <div class="media-object stack-for-small" ng-repeat="c in LC.critiques.data">
+                                <div class="media-object stack-for-small" ng-repeat="c in LC.critiques">
                                     <div class="media-object-section">
                                         <div class="recent-img">
-                                            <img ng-src="{{::LC.critiques.relatedObjects.Film[c.parent].thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}"
+                                            <img ng-src="{{::c.projectThumbnail||'./assets/img/default_video_thumbnail.jpg'}}"
                                                  alt="recent">
-                                            <a ui-sref="video({id: c.parent})" class="hover-posts">
-                                                <span><i class="fa fa-play"></i></span>
+                                            <a ui-sref="video_critique({video_url_id: c.projectUrlId, url_id:c.url_id})" class="hover-posts">
+                                                <span><i class="fa fa-star"></i></span>
                                             </a>
                                         </div>
                                     </div>
                                     <div class="media-object-section">
                                         <div class="media-content">
                                             <h6>
-                                                <a ui-sref="user.about({id: c.author})">{{::LC.critiques.relatedObjects.users[c.author].firstName}}
-                                                    {{::LC.critiques.relatedObjects.users[c.author].lastName}}</a>
+                                                <a ui-sref="user.about({url_id: c.userUrlId})">{{::c.userFullName}}</a>
                                             </h6>
 
                                             <p>
                                                 <span>
                                                     gave
-                                                    <a ui-sref="video({id: c.parent})">{{::LC.critiques.relatedObjects.Film[c.parent].name|truncate:50}}</a>
+                                                    <a ui-sref="video({url_id: c.projectUrlId})">{{::c.projectName|truncate:50}}</a>
                                                      a {{::c.overall}}
                                                 </span>
                                             </p>

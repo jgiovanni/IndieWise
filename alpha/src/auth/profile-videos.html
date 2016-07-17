@@ -10,25 +10,28 @@
                 <div class="media-object stack-for-small">
                     <div class="media-object-section media-img-content">
                         <div class="video-img">
-                            <img ng-src="{{::video.thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}" alt="video thumbnail">
+                            <a ui-sref="video({id: video.id, url_id: video.url_id})">
+                                <img ng-src="{{::video.thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}" alt="video thumbnail">
+                            </a>
                         </div>
                     </div>
                     <div class="media-object-section media-video-content">
                         <div class="video-content">
-                            <h5><a ui-sref="video({id: video.id})">{{::video.name}}</a></h5>
+                            <h5><a ui-sref="video({id: video.id, url_id: video.url_id})">{{::video.name}}</a></h5>
                             <p>{{::video.description}}</p>
                         </div>
                         <div class="video-detail clearfix">
                             <div class="video-stats">
-                                <span><i class="fa fa-check-square-o"></i>published</span>
-                                <span><i class="fa fa-clock-o"></i>{{::video.createdAt|date:'fullDate'}}</span>
+                                <span ng-if="::!video.unlist"><i class="fa fa-check-square-o"></i>published</span>
+                                <span ng-if="::video.unlist"><i class="fa fa-square-o" style="color: #000;"></i>un-listed</span>
+                                <span><i class="fa fa-clock-o"></i>{{::video.createdAt|amUtc|amLocal|amDateFormat:'lll'}}</span>
                                 <!--<span><i class="fa fa-eye"></i>1,862K</span>-->
                             </div>
                             <div class="video-btns">
-                                <a class="video-btn" ng-if="$state.is('profile.videos') && isLoggedIn.userId === video.owner"
-                                   ui-sref="video-edit({id: video.id})"><i class="fa fa-pencil-square-o"></i>edit</a>
-                                <a class="video-btn" ng-if="$state.is('profile.videos') && isLoggedIn.userId === video.owner"
-                                   ng-click="deleteProject(video.id)"><i class="fa fa-trash"></i>delete</a>
+                                <a class="video-btn" ng-if="::$state.is('profile.videos') && ProfileVideosCtrl.user.data.id === video.owner"
+                                   ui-sref="profile.videos-edit({url_id: video.url_id})"><i class="fa fa-pencil-square-o"></i>Edit</a>
+                                <a class="video-btn" ng-if="::$state.is('profile.videos') && ProfileVideosCtrl.user.data.id === video.owner"
+                                   ng-click="ProfileVideosCtrl.deleteProject(video.id)"><i class="fa fa-trash"></i>Delete</a>
                             </div>
                         </div>
                     </div>

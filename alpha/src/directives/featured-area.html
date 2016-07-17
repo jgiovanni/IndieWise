@@ -23,7 +23,7 @@
                     <p>{{::featuredFilms.relatedObjects.users[f.owner].firstName+' '+featuredFilms.relatedObjects.users[f.owner].lastName}}</p>
                 </figcaption>
             </figure>
-            <a ui-sref="video({id: f.id})" class="hover-posts">
+            <a ui-sref="video({id: f.id, url_id:f.url_id})" class="hover-posts">
                 <span><i class="fa fa-play"></i>Watch Video</span>
             </a>
         </div>

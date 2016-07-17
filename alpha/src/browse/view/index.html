@@ -50,15 +50,16 @@
                         </div>
                         <div class="tabs-content" data-tabs-content="newVideos">
                             <div class="tabs-panel is-active" id="new-all">
-                                <div class="row list-group">
-                                    <project-card ng-repeat="video in Browse.films.data" video="video" type="typeA"
-                                                  related="Browse.films.relatedObjects"></project-card>
+                                <div class="row list-group" ng-show="Browse.films.length">
+                                    <project-card ng-repeat="video in Browse.films" video="video" type="typeA"
+                                                  queried="'true'"></project-card>
                                 </div>
+                                <h3 ng-if="!Browse.films.length"></h3>
                             </div>
                         </div>
-                        <div class="text-center loadMore">
+                        <!--<div class="text-center loadMore">
                             <button class="button" type="button">load more</button>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
             </section>
@@ -86,9 +87,26 @@
                                         <option value="awards">Award Winning</option>
                                     </select>
                                 </label>
+                                <!--<hr class="">-->
+                                <form id="searchform" ng-submit="Browse.search()" role="search">
+                                    <div class="input-group">
+                                        <input class="input-group-field" type="text" ng-model="Browse.filters.search" my-enter="Browse.search()" placeholder="Enter your keyword">
+                                        <div class="input-group-button">
+                                            <input type="submit" class="button" value="Search">
+                                        </div>
+                                    </div>
+                                </form>
+                                <!--<hr class="">-->
+                                <!--{{typesList}}-->
+                                <h6>Types</h6>
+                                <div class="checkbox" ng-repeat="g in typesList|orderBy:'name'">
+                                    <input id="typeCheck{{$index}}" type="checkbox" ng-model="selected" ng-change="Browse.selectTypes(g)" ng-init="">
+                                    <label class="customLabel" for="typeCheck{{$index}}">{{::g.name}}</label>
+                                </div>
 
-                                <div class="checkbox" ng-repeat="g in genresList.data|orderBy:'name'">
-                                    <input id="genreCheck{{$index}}" type="checkbox" ng-model="selected" ng-change="Browse.selectGenres(g)">
+                                <h6>Genres</h6>
+                                <div class="checkbox" ng-repeat="g in genresList|orderBy:'name'">
+                                    <input id="genreCheck{{$index}}" type="checkbox" ng-model="selected" ng-change="Browse.selectGenres(g)" ng-init="isPreselected">
                                     <label class="customLabel" for="genreCheck{{$index}}">{{::g.name}}</label>
                                 </div>
                             </div>

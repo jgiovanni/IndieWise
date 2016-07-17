@@ -11,7 +11,7 @@
             </div>
             <div class="columns row">
                 <div class="columns small-4 text-right">
-                    <span class="">Cinematography</span>
+                    <span class="hyphenate">Cinematography</span>
                 </div>
                 <div class="columns small-8">
                     <rating value="critique.cinematography" max="ratingMax" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating>
@@ -83,7 +83,7 @@
             </div>
             <hr class="thin">
             <div class="columns row">
-                <div class="columns small-4 text-right">
+                <div class="columns small-8 text-right">
                     <span class="">Overall Rating</span>
                 </div>
                 <div class="columns small-4">
@@ -98,9 +98,9 @@
                         <textarea id="desc" ng-model="critique.body" columns="1" ng-maxlength="5000"></textarea>
                 </div>
                 <div class="checkbox">
-                    <input id="check1" type="checkbox" ng-model="critique.private">
+                    <input id="checkbox" type="checkbox" ng-model="critique.private">
 
-                    <label class="customLabel" for="check1" style="margin-left: 0;margin-RIGHT: 0;font-size: 0.875rem;">Make Private?</label>
+                    <label class="customLabel" for="checkbox" style="margin-left: 0;margin-right: 0;font-size: 0.875rem;">Make Private?</label>
                     <span class="warning badge" ng-init="helpToggle=false" ng-click="helpToggle=!helpToggle"><i class="fa fa-question"></i></span>
                 </div>
                 <p ng-show="helpToggle" class="help-text">By choosing this "Make private" Option, individual rating categories, such as "Production Value", "Originality", etc. will not be publicly visible to users other than you and the project author. However, the overall rating generated from these individual results will always be publicly visible.</p>

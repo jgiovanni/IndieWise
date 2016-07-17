@@ -1,10 +1,111 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+<section class="profile-videos" id="randomMedia" style="padding: 0;">
+    <div class="row secBg">
+        <div class="random-media-head text-center">
+            <div class="row">
+                <div class="large-12 columns">
+                    <ul class="tabs" data-tabs id="media">
+                        <li class="tabs-title is-active"><a href="#critiques">{{::UserReactionsCtrl.reactions.length}} Reactions Given</a></li>
+                        <li class="tabs-title"><a href="#critiqued">{{::UserReactionsCtrl.reacted.length}} Reactions Received</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <section class="content" ng-init="sortOrder='-createdAt'">
+            <!-- newest video -->
+            <div class="row">
+                <div class="large-12 columns">
+                    <div class="tabs-content" data-tabs-content="media">
+                        <div class="tabs-panel is-active" id="critiques">
+                            <div class="large-12 columns comments">
 
-</body>
-</html>
+                                <div class="comment-sort text-right">
+                                    <span>Sort By :
+                                        <a ng-class="{'active':sortOrder=='-createdAt'}" ng-click="sortOrder='-createdAt'">newest</a> |
+                                        <a ng-class="{'active':sortOrder=='createdAt'}" ng-click="sortOrder='createdAt'">oldest</a>
+                                    </span>
+                                </div>
+
+                                <!-- main comment -->
+                                <div class="main-comment">
+                                    <div class="media-object stack-for-small"
+                                         ng-repeat="reaction in UserReactionsCtrl.reactions|orderBy:sortOrder">
+                                        <div class="media-object-section comment-img text-center">
+                                            <div class="comment-box-img">
+                                                <img ng-src="{{::reaction.projectThumbnailUrl||'./assets/img/avatar-1.png'}}"
+                                                     alt="comment">
+                                            </div>
+                                        </div>
+                                        <div class="media-object-section comment-desc">
+                                            <div class="comment-title">
+                                                <span class="time float-right"><i class="fa fa-clock-o"></i>
+                                                    <abbr title="{{::reaction.createdAt|amUtc|amLocal|amDateFormat:'lll'}}"
+                                                          am-time-ago="::reaction.createdAt"></abbr>
+
+                                                    <!--<span ng-if="reaction.editedAt && !Body.isSame(reaction.createdAt, reaction.editedAt)">
+                                                        |Edited: <abbr title="{{::reaction.editedAt|amUtc|amLocal|amDateFormat:'lll'}}"
+                                                                       am-time-ago="::reaction.editedAt"></abbr>
+                                                    </span>-->
+                                                </span>
+                                            </div>
+                                            <div class="comment-text">
+                                                <a ui-sref="video({url_id:reaction.projectUrlId})">{{::reaction.projectName}}</a> made {{::UserReactionsCtrl.user.firstName}} {{::UserReactionsCtrl.user.lastName}} feel <b>{{::reaction.emotion}}</b>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End main comment -->
+                            </div>
+
+                        </div>
+                        <div class="tabs-panel" id="critiqued">
+                            <div class="large-12 columns comments">
+
+                                <div class="comment-sort text-right">
+                                    <span>Sort By :
+                                        <a ng-class="{'active':sortOrder=='-createdAt'}" ng-click="sortOrder='-createdAt'">newest</a> |
+                                        <a ng-class="{'active':sortOrder=='createdAt'}" ng-click="sortOrder='createdAt'">oldest</a></span>
+                                </div>
+
+                                <!-- main comment -->
+                                <div class="main-comment">
+                                    <div class="media-object stack-for-small"
+                                         ng-repeat="reaction in UserReactionsCtrl.reacted|orderBy:sortOrder">
+                                        <div class="media-object-section comment-img text-center">
+                                            <div class="comment-box-img">
+                                                <img ng-src="{{::reaction.userAvatar||'./assets/img/avatar-1.png'}}"
+                                                     alt="comment">
+                                            </div>
+                                        </div>
+                                        <div class="media-object-section comment-desc">
+                                            <div class="comment-title">
+                                                <span class="name"><a ui-sref="user.about({url_id: reaction.userUrlId})">
+                                                    {{::reaction.userFullName}}</a> Said:
+                                                </span>
+                                                <span class="time float-right"><i class="fa fa-clock-o"></i>
+                                                    <abbr title="{{::reaction.createdAt|amUtc|amLocal|amDateFormat:'lll'}}"
+                                                          am-time-ago="::reaction.createdAt"></abbr>
+
+                                                    <!--<span ng-if="reaction.editedAt && !Body.isSame(reaction.createdAt, reaction.editedAt)">
+                                                        |Edited: <abbr title="{{::reaction.editedAt|amUtc|amLocal|amDateFormat:'lll'}}"
+                                                                       am-time-ago="::reaction.editedAt"></abbr>
+                                                    </span>-->
+                                                </span>
+                                            </div>
+                                            <div class="comment-text">
+                                                <a ui-sref="video({url_id:reaction.projectUrlId})">{{::reaction.projectName}}</a> made them feel <b>{{::reaction.emotion}}</b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End main comment -->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</section>

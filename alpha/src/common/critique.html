@@ -1,148 +1,3 @@
-<!--<div class="grey lighten-3">
-    <section class="container" layout="row" layout-align="center center">
-        <md-content flex id="content" class="grey lighten-3">
-            <md-card>
-                <md-card-header>
-                    &lt;!&ndash;<md-card-avatar>
-                        <img class="md-user-avatar" src="img/100-2.jpeg"/>
-                    </md-card-avatar>&ndash;&gt;
-                    <md-card-header-text>
-                    <span class="md-title">
-                        <a ui-sref="video({id:VCC.film.id})" class="md-primary">{{::VCC.film.name}}</a>
-                        by
-                        <a ui-sref="user({id:VCC.film.owner.id})">
-                            {{::VCC.film.owner.first_name}} {{::VCC.film.owner.last_name}}
-                        </a>
-                    </span>
-                    <span class="md-subhead">
-                        VCC.critique by
-                        <a ui-sref="user({id:VCC.critique.author.id})">
-                            {{::VCC.critique.author.first_name}} {{::VCC.critique.author.last_name}}
-                        </a>
-                        on
-                        <abbr title="{{::VCC.critique.createdAt|date:'medium'}}" class="md-caption"
-                              ng-bind="::VCC.critique.createdAt|date:'short'"></abbr> <span class="grey-text" ng-if="VCC.critique.editedAt && !Body.isSame(VCC.critique.createdAt, VCC.critique.editedAt)">Edited:
-                        <abbr title="{{::VCC.critique.editedAt|date:'medium'}}" class="md-caption"
-                              ng-bind="::VCC.critique.editedAt|date:'short'"></abbr></span>
-
-                    </span>
-                    </md-card-header-text>
-                    <md-button ng-if="AppData.User.id === VCC.critique.author.id" class="md-icon-button" ui-sref="video_critique-edit({video_id:VCC.film.id, id:VCC.critique.id})">
-                        <md-icon class="md-secondary" md-svg-icon="mode_edit"></md-icon>
-                    </md-button>
-                </md-card-header>
-                <md-card-content>
-                    <section layout="row" class="md-padding">
-                        <div flex="60">
-                            <p ng-bind="::VCC.critique.body"></p>
-                        </div>
-                        <div flex="40" ng-if="VCC.critique">
-                            <div flex ng-if="::VCC.critique.private&&AppData.User.id != VCC.critique.author.id">
-                                <h3 class="text-center">Private</h3>
-
-                                <div layout class="md-accent md-hue-2">
-                                    <div flex layout layout-align="center center">
-                                        <span class="md-body-1">IndieWise Rating</span>
-                                    </div>
-                                    <div flex layout layout-align="center center">
-                                        <span class="md-body-2">{{::VCC.critique.overall|number:1}}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div flex ng-if="::!VCC.critique.private||AppData.User.id == VCC.critique.author.id">
-                                <div layout>
-                                    <div flex layout layout-align="center center">
-                                        <span class="md-body-1">Originality</span>
-                                    </div>
-                                <span flex
-                                      class="md-body-1 text-center">{{::VCC.critique.originality}}</span>
-                                </div>
-                                <div layout>
-                                    <div flex layout layout-align="center center">
-                                        <span class="md-body-1">Direction</span>
-                                    </div>
-                                                    <span flex
-                                                          class="md-body-1 text-center">{{::VCC.critique.direction}}</span>
-                                </div>
-                                <div layout>
-                                    <div flex layout layout-align="center center">
-                                        <span class="md-body-1">Writing</span>
-                                    </div>
-                                                    <span flex
-                                                          class="md-body-1 text-center">{{::VCC.critique.writing}}</span>
-                                </div>
-                                <div layout>
-                                    <div flex layout layout-align="center center">
-                                        <span class="md-body-1">Cinematography</span>
-                                    </div>
-                                <span flex
-                                      class="md-body-1 text-center">{{::VCC.critique.cinematography}}</span>
-                                </div>
-                                <div layout>
-                                    <div flex layout layout-align="center center">
-                                        <span class="md-body-1">Acting</span>
-                                    </div>
-                                <span flex
-                                      class="md-body-1 text-center">{{::VCC.critique.performances}}</span>
-                                </div>
-                                <div layout>
-                                    <div flex layout layout-align="center center">
-                                        <span class="md-body-1">Production Value</span>
-                                    </div>
-                                    <span flex class="md-body-1 text-center">{{::VCC.critique.production}}</span>
-                                </div>
-                                <div layout>
-                                    <div flex layout layout-align="center center">
-                                        <span class="md-body-1">Pacing</span>
-                                    </div>
-                                                    <span flex
-                                                          class="md-body-1 text-center">{{::VCC.critique.pacing}}</span>
-                                </div>
-                                <div layout>
-                                    <div flex layout layout-align="center center">
-                                        <span class="md-body-1">Editing</span>
-                                    </div>
-                                                    <span flex
-                                                          class="md-body-1 text-center">{{::VCC.critique.structure}}</span>
-                                </div>
-                                <div layout>
-                                    <div flex layout layout-align="center center">
-                                        <span class="md-body-1">Sound Quality</span>
-                                    </div>
-                                                    <span flex
-                                                          class="md-body-1 text-center">{{::VCC.critique.audio}}</span>
-                                </div>
-                                <div layout>
-                                    <div flex layout layout-align="center center">
-                                        <span class="md-body-1">Music</span>
-                                    </div>
-                                                    <span flex
-                                                          class="md-body-1 text-center">{{::VCC.critique.music}}</span>
-                                </div>
-                                <md-divider></md-divider>
-                                <div layout class="md-accent md-hue-2">
-                                    <div flex layout layout-align="center center">
-                                        <span class="md-body-1">IndieWise Rating</span>
-                                    </div>
-                                    <div flex layout layout-align="center center">
-                                        <span class="md-body-2 indigo-text">{{::VCC.critique.overall|number:1}}</span>
-                                    </div>
-                                </div>
-                                <md-divider></md-divider>
-
-                            </div>
-
-                        </div>
-                    </section>
-                </md-card-content>
-            </md-card>
-            <md-card>
-                <comments-block comments="VCC.comments" disable="false" parent="commentsParent"></comments-block>
-            </md-card>
-        </md-content>
-    </section>
-</div>-->
-
 <!--breadcrumbs-->
 <section id="breadcrumb">
     <div class="row">
@@ -150,10 +5,14 @@
             <nav aria-label="You are here:" role="navigation">
                 <ul class="breadcrumbs">
                     <li><i class="fa fa-home"></i><a ui-sref="home">Home</a></li>
-                    <li ui-sref="user.about({id: VCC.film.owner.id})">{{::VCC.film.owner.firstName+' '+VCC.film.owner.lastName}}</li>
-                    <li ui-sref="video({id: VCC.film.id})">{{::VCC.film.name}}</li>
                     <li>
-                        <span class="show-for-sr">Current: </span> Critique by {{::VCC.critique.author.firstName}} {{::VCC.critique.author.lastName}}
+                        <a ui-sref="user.about({url_id: VCC.project.ownerUrlId})">{{::VCC.project.ownerFullName}}</a>
+                    </li>
+                    <li>
+                        <a ui-sref="video({url_id: VCC.project.url_id})">{{::VCC.project.name}}</a>
+                    </li>
+                    <li>
+                        <span class="show-for-sr">Current: </span> Critique by {{::VCC.critique.ownerFullName}}
                     </li>
                 </ul>
             </nav>
@@ -172,14 +31,17 @@
                     <div class="heading">
                         <h5>
                             Critique by
-                            <a ui-sref="user.about({id:VCC.critique.author.id})">
-                                {{::VCC.critique.author.firstName}} {{::VCC.critique.author.lastName}}
+                            <a ui-sref="user.about({url_id:VCC.critique.ownerUrlId})">
+                                {{::VCC.critique.ownerFullName}}
                             </a>
                             on
-                            <abbr title="{{::VCC.critique.createdAt|date:'medium'}}" class="md-caption"
-                                  ng-bind="::VCC.critique.createdAt|date:'short'"></abbr> <span class="grey-text" ng-if="VCC.critique.editedAt && !Body.isSame(VCC.critique.createdAt, VCC.critique.editedAt)">Edited:
-                        <abbr title="{{::VCC.critique.editedAt|date:'medium'}}" class="md-caption"
-                              ng-bind="::VCC.critique.editedAt|date:'short'"></abbr></span>
+                            <abbr title="{{::VCC.critique.createdAt|amUtc|amLocal|amDateFormat:'lll'}}" class="md-caption"
+                                  ng-bind="::VCC.critique.createdAt|amUtc|amLocal|amDateFormat:'lll'"></abbr> <span class="grey-text" ng-if="VCC.critique.editedAt && !Body.isSame(VCC.critique.createdAt, VCC.critique.editedAt)">Edited:
+                            <abbr title="{{::VCC.critique.editedAt|amUtc|amLocal|amDateFormat:'lll'}}" class="md-caption"
+                                  ng-bind="::VCC.critique.editedAt|amUtc|amLocal|amDateFormat:'lll'"></abbr></span>
+
+                            <a ui-sref="video_critique-edit({video_url_id:VCC.project.url_id, url_id:VCC.critique.url_id})"
+                               ng-if="AppData.User.userId == VCC.critique.author" class="fa fa-edit pull-right"></a>
                         </h5>
                     </div>
                     <div class="description">
@@ -188,7 +50,7 @@
                                 <p ng-bind="::VCC.critique.body"></p>
                             </div>
                             <div class="columns medium-5">
-                                <div class="row" ng-if="::VCC.critique.private && AppData.User.id != VCC.critique.author.id">
+                                <div class="row" ng-if="::VCC.critique.private && AppData.User.userId != VCC.critique.author">
                                     <h3 class="text-center">Private</h3>
 
                                     <div class="row columns">
@@ -200,7 +62,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row columns" ng-if="::!VCC.critique.private||AppData.User.id == VCC.critique.author.id">
+                                <div class="row columns" ng-if="::!VCC.critique.private||AppData.User.userId == VCC.critique.author">
                                     <div class="row columns">
                                         <div class="columns medium-8 small-6 text-right">
                                             <span class="md-body-1">Acting</span>
@@ -298,18 +160,17 @@
                         </div>
                         <div class="widgetContent">
                             <div class="video-box thumb-border">
-                                <a class="video-img-thumb" ui-sref="video({id: VCC.film.id})">
-                                    <img ng-src="{{::VCC.film.thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}" alt="Watch The Video">
+                                <a class="video-img-thumb" ui-sref="video({url_id:VCC.critique.projectUrlId})">
+                                    <img ng-src="{{::VCC.critique.projectThumbnail||'./assets/img/default_video_thumbnail.jpg'}}" alt="Watch The Video">
                                     <!--<a href="#" class="hover-posts">
                                         <span><i class="fa fa-play"></i>Watch Video</span>
                                     </a>-->
                                 </a>
                                 <div class="video-box-content">
-                                    <h6><a ui-sref="video({id: VCC.film.id})">{{::VCC.film.name}}</a></h6>
+                                    <h6><a ui-sref="video({url_id:VCC.critique.projectUrlId})">{{::VCC.critique.projectName}}</a></h6>
 
                                     <p>
-                                        <span><i class="fa fa-user"></i><a ui-sref="user.about({id: VCC.film.owner.id})">{{::VCC.film.owner.firstName}} {{::VCC.film.owner.lastName}}</a></span>
-                                        <span><i class="fa fa-eye"></i>1,862K</span>
+                                        <span><i class="fa fa-user"></i><a ui-sref="user.about({url_id: VCC.project.ownerUrlId})">{{::VCC.project.ownerFullName}}</a></span>
                                     </p>
                                 </div>
                             </div>
@@ -317,35 +178,6 @@
                     </div>
                 </div>
                 <!-- end most view Widget -->
-
-                <!-- categories -->
-                <div class="large-12 medium-7 medium-centered columns">
-                    <div class="widgetBox clearfix">
-                        <div class="widgetTitle">
-                            <h5>Categories</h5>
-                        </div>
-                        <div class="widgetContent clearfix">
-                            <ul>
-                                <li class="cat-item"><a href="#">Entertainment &nbsp; (6)</a></li>
-                                <li class="cat-item"><a href="#">Historical &amp; Archival &nbsp;(8)</a></li>
-                                <li class="cat-item"><a href="#">Technology&nbsp;(4)</a></li>
-                                <li class="cat-item"><a href="#">People&nbsp;(3)</a></li>
-                                <li class="cat-item"><a href="#">Fashion &amp; Beauty&nbsp;(2)</a></li>
-                                <li class="cat-item"><a href="#">Nature&nbsp;(1)</a></li>
-                                <li class="cat-item"><a href="#">Automotive&nbsp;(5)</a></li>
-                                <li class="cat-item"><a href="">Foods &amp; Drinks&nbsp;(5)</a></li>
-                                <li class="cat-item"><a href="#">Foods &amp; Drinks&nbsp;(10)</a></li>
-                                <li class="cat-item"><a href="#">Animals&nbsp;(12)</a></li>
-                                <li class="cat-item"><a href="#">Sports &amp; Recreation&nbsp;(14)</a></li>
-                                <li class="cat-item"><a href="">Places &amp; Landmarks&nbsp;(16)</a></li>
-                                <li class="cat-item"><a href="">Places &amp; Landmarks&nbsp;(1)</a></li>
-                                <li class="cat-item"><a href="#">Travel&nbsp;(2)</a></li>
-                                <li class="cat-item"><a href="#">Transportation&nbsp;(3)</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
 
                 <!-- ad banner widget -->
                 <div class="large-12 medium-7 medium-centered columns">
@@ -355,7 +187,8 @@
                         </div>
                         <div class="widgetContent">
                             <div class="advBanner text-center">
-                                <a href="#"><img src="./assets/images/sideradv.png" alt="sidebar adv"></a>
+                                <broadstreet-zone zone="51349" width="300" height="250"></broadstreet-zone>
+                                <!--<a href="#"><img src="./assets/images/sideradv.png" alt="sidebar adv"></a>-->
                             </div>
                         </div>
                     </div>

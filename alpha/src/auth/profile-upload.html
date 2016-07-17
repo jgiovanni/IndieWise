@@ -1,106 +1,9 @@
-<!--<section layout="column" layout-align="center center">
-    <md-content layout-padding>
-        <form ng-submit="UC.submitNewVideo()" name="NewVideoForm">
-            <fieldset>
-                <legend>Video Upload/URL</legend>
-                <div layout layout-lt-md="column">
-                    <md-radio-group ng-model="UC.uploadType">
-                        <md-radio-button value="1" disabled>Upload Video (coming soon)</md-radio-button>
-                        <md-radio-button value="2">Video Link (YouTube, Vimeo, DailyMotion, Youku, Vine)
-                        </md-radio-button>
-                    </md-radio-group>
-                </div>
-                <div layout="column" ng-if="UC.uploadType == 2">
-                    <div class="large-12 columns">
-                        <md-input-container flex>
-                            <label>Video URL</label>
-                            <input type="url" ng-model="UC.newVideo.video_url" ng-required="UC.uploadType == 2"
-                                   ng-change="UC.getThumbnailUrl(UC.newVideo.video_url)">
-                        </md-input-container>
-                        <div flex>
-                            <hr>
-                            <embed-video ng-if="UC.newVideo.video_url != ''" ng-href="{{UC.newVideo.video_url}}"
-                                         width="100%" height="200"></embed-video>
-                        </div>
-                    </div>
-                    <div class="large-12 columns">
-                        <md-switch ng-model="uploadOwnArt" aria-label="Private" style="margin: 0;">
-                            Upload your own video thumbnail/artwork ?
-                        </md-switch>
-                    </div>
-                    <div class="large-12 columns" layout-align="center top" ng-if="!uploadOwnArt">
-                        <md-input-container flex>
-                            <label>Poster Artwork/Video Thumbnail URL</label>
-                            <input type="url" ng-model="UC.newVideo.thumbnailUrl">
-                        </md-input-container>
-                        <div flex>
-                            <hr>
-                            <img ng-if="UC.newVideo.thumbnailUrl != ''" ng-src="{{UC.newVideo.thumbnailUrl}}"
-                                 alt="Video Thumbnail URL">
-                        </div>
-                    </div>
-                    <div class="large-12 columns" layout-align="center top" ng-if="!!uploadOwnArt">
-                        <md-card flow-init="{target: 'utils/upload_artwork.php',}" flow
-                                 flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
-                                 flow-files-submitted="$flow.upload()" flow-complete="UC.uploadArtwork($flow)">
-                            <img ng-hide="$flow.files.length"
-                                 ng-src="{{UC.newVideo.thumbnailUrl||'./assets/img/default_video_thumbnail.jpg'}}"
-                                 class="md-card-image" alt="Avatar" style="max-width: 560px"/>
-                            <img ng-show="$flow.files.length" flow-img="$flow.files[0]" class="md-card-image"
-                                 style="max-width: 560px"/>
-                            <md-card-actions layout="row" layout-align="end center">
-                                <button class="" ng-hide="$flow.files.length" flow-btn
-                                           flow-attrs="{accept:'image/*'}">Select image
-                                </button>
-                                <button class="" ng-show="$flow.files.length" flow-btn
-                                           flow-attrs="{accept:'image/*'}">Change
-                                </button>
-                                <button class="" ng-show="$flow.files.length" ng-click="$flow.cancel()">
-                            </md-card-actions>
-                        </md-card>
-                    </div>
-                </div>
-            </fieldset>
-            <br>
-            <fieldset>
-                <legend>Optional Details</legend>
-                <div layout layout-lt-md="column">
-                    <md-chips flex
-                              ng-model="UC.newVideo.tags"
-                              placeholder="Enter a tag"
-                              delete-button-label="Remove Tag"
-                              delete-hint="Press delete to remove tag"
-                              secondary-placeholder="Tags"></md-chips>
-                    <br/>
-                    &lt;!&ndash;<md-select flex placeholder="Country of Origin" ng-model="UC.newVideo.originCountry"
-                               md-on-open="UC.getCountries()" style="min-width: 200px;">
-                        <md-option ng-value="c.id" ng-repeat="c in countryList|orderBy:'attributes.name.common'"
-                                   class="md-accent">
-                            {{c.attributes.name.common}}
-                        </md-option>
-                    </md-select>&ndash;&gt;
-                </div>
-            </fieldset>
-
-            <div class="md-actions" layout="row" layout-align="right center">
-                <button class="md-warn" ui-sref="home">Cancel</button>
-                <span flex></span>
-                <button type="submit" class="md-raised md-accent md-hue-2" ng-disabled="">
-                    Submit
-                </button>
-            </div>
-
-        </form>
-
-    </md-content>
-</section>-->
-
 <!-- profile settings -->
 <section class="submit-post">
     <div class="row secBg">
         <div class="large-12 columns">
             <div class="heading">
-                <i class="fa fa-pencil-square-o"></i>
+                <i class="fa fa-upload"></i>
                 <h4>Add a New Video</h4>
             </div>
             <div class="row">
@@ -130,9 +33,23 @@
                             </div>
                             <div class="large-12 columns">
                                 <div class="radio" style="margin-bottom: 20px;">
-                                    <input type="radio" ng-model="UC.uploadType" value="2" name="videolink" id="videolink1" checked>
-                                    <label class="customLabel" for="videolink1">Video Link From YouTube/Vimeo/DailyMotion/Youku/Vine</label>
+                                    <input type="radio" ng-model="UC.uploadType" value="1" name="videolink1" id="videolink1">
+                                    <label class="customLabel" for="videolink1">Upload .MP4 Video File</label>
+                                    <br class="hide-for-medium">
+                                    <br class="hide-for-medium">
+                                    <input type="radio" ng-model="UC.uploadType" value="2" name="videolink2" id="videolink2" checked>
+                                    <label class="customLabel" for="videolink2">Video URL From YouTube / Vimeo / DailyMotion / Youku / Vine</label>
                                 </div>
+                            </div>
+                            <div layout="large-12 columns row" ng-if="UC.uploadType == 1">
+                                <div class="large-12 columns">
+                                    <label>
+                                        <input filepicker type="filepicker-dragdrop" on-success="UC.onSuccess(event.fpfile)"
+                                               data-fp-services="computer,dropbox,video,url,googledrive,skydrive,clouddrive"
+                                                data-fp-mimetype="video/mp4"/>
+                                    </label>
+                                </div>
+                                <hr>
                             </div>
                             <div layout="large-12 columns row" ng-if="UC.uploadType == 2">
                                 <div class="large-12 columns">
@@ -144,6 +61,8 @@
                                     <embed-video ng-if="UC.newVideo.video_url != ''" ng-href="{{UC.newVideo.video_url}}"
                                                  width="100%" height="200"></embed-video>
                                 </div>
+                            </div>
+                            <div class="large-12 columns row">
                                 <div class="large-12 columns">
                                     <div class="checkbox">
                                         <input id="uploadOwnArt" type="checkbox" ng-model="uploadOwnArt">
@@ -155,28 +74,28 @@
                                         <input type="url" ng-model="UC.newVideo.thumbnailUrl">
                                     </label>
                                     <hr>
-                                    <img ng-if="UC.newVideo.thumbnailUrl != ''" ng-src="{{UC.newVideo.thumbnailUrl}}"
+                                    <img ng-if="UC.newVideo.thumbnail_url != ''" ng-src="{{UC.newVideo.thumbnail_url}}"
                                          alt="Video Thumbnail URL">
                                 </div>
                                 <div class="large-12 columns" ng-if="!!uploadOwnArt">
-                                    <div flow-init="{target: 'utils/upload_artwork.php'}" flow
+                                    <div flow-init="{upload_preset:'dzachn6p'}" flow
                                          flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
-                                         flow-files-submitted="$flow.upload()" flow-complete="UC.uploadArtwork($flow)">
+                                         flow-files-submitted="$flow.upload()" flow-file-success="UC.uploadArtwork($message)">
                                         <img ng-hide="$flow.files.length"
-                                             ng-src="{{UC.newVideo.thumbnailUrl||'./assets/img/default_video_thumbnail.jpg'}}"
+                                             ng-src="{{UC.newVideo.thumbnail_url||'./assets/img/default_video_thumbnail.jpg'}}"
                                              class="md-card-image" alt="Avatar" style="max-width: 560px"/>
                                         <img ng-show="$flow.files.length" flow-img="$flow.files[0]" class="md-card-image"
                                              style="max-width: 560px"/>
                                         <br>
                                         <div class="row">
                                             <div class="large-12 columns">
-                                                <button class="tiny button" ng-hide="$flow.files.length" flow-btn
+                                                <button type="button" class="tiny button" ng-hide="$flow.files.length" flow-btn
                                                         flow-attrs="{accept:'image/*'}">Select image
                                                 </button>
-                                                <button class="tiny button" ng-show="$flow.files.length" flow-btn
+                                                <button type="button" class="tiny button" ng-show="$flow.files.length" flow-btn
                                                         flow-attrs="{accept:'image/*'}">Change
                                                 </button>
-                                                <button class="tiny button" ng-show="$flow.files.length" ng-click="$flow.cancel()">Cancel</button>
+                                                <button type="button" class="tiny button" ng-show="$flow.files.length" ng-click="$flow.cancel()">Cancel</button>
                                             </div>
                                         </div>
                                     </div>
@@ -186,9 +105,9 @@
 
                             <div class="large-12 columns">
                                 <label>Year of Completion <sup class="fa fa-asterisk req" aria-hidden="true"></sup>
-                                    <input type="text" placeholder="----" ng-model="UC.dateOfCompl" ng-maxlength="4" required/>
-                                    <span class="form-error">
-                                        Yo, you had better fill this out, it's required.
+                                    <input type="text" placeholder="----" ng-model="UC.newVideo.completionDate" ng-maxlength="4" required/>
+                                    <span ng-messages="" class="form-error">
+                                        <span ng-message="">Yo, you had better fill this out, it's required.</span>
                                     </span>
                                 </label>
                             </div>
@@ -256,6 +175,15 @@
                                         <select multiple ng-model="UC.newVideo.genres"
                                                 ng-options="g.id as g.name for g in UC.genresList|orderBy:'name'"></select>
                                 </div>-->
+                                <h6 class="borderBottom" style="margin-bottom: 10px;">Genres:</h6>
+                                <div class="radio" style="margin-bottom: 20px;">
+                                    <input type="checkbox" ng-repeat-start="g in UC.genresList|orderBy:'name'"
+                                           ng-model="bool" name="genre{{$index}}" id="genre{{$index}}"
+                                           ng-change="UC.syncGenres(bool, g)" ng-checked="UC.isCheckedGenre(g.id)">
+                                    <label ng-repeat-end class="customLabel" for="genre{{$index}}">{{::g.name}}</label>
+                                </div>
+                                <!--<pre>{{UC.genresArr}}</pre>-->
+
                                 <div class="post-category">
                                     <label>Type: <sup class="fa fa-asterisk req" aria-hidden="true"></sup>
                                         <select ng-model="UC.newVideo.type"
@@ -276,19 +204,40 @@
                                         </select>
                                     </label>
                                 </div>
-                                <!--<div class="post-category">
+                                <div class="post-category">
                                     <label>Country of Filming: <sup class="fa fa-asterisk req" aria-hidden="true"></sup>
-                                        <select ng-model="UC.newVideo.filmingCountry" ng-options="c.id as c.name for c in UC.countryList" required>
+                                        <select ng-model="UC.newVideo.filmingCountry" ng-options="c.id as c.name for c in UC.countryList|orderBy:'name'" required>
                                             <option value="">Select Country</option>
                                         </select>
                                     </label>
-                                </div>-->
+                                </div>
                             </div>
                             <div class="large-12 columns">
+                                <div class="medium-12 columns">
+                                    <div class="checkbox">
+                                        <input id="check3" type="checkbox" ng-model="UC.newVideo.nsfw" aria-describedby="nsfwHelpText">
+                                        <label class="customLabel" style="padding-left: 20px;" for="check3">Contains mature content?</label>
+                                        <p class="help-text" id="nsfwHelpText">Mature content = Violence, Drug Use, Sexual Content, Nudity, Strong Language
+                                            <br>
+                                            <b>NOTE: We reserve the right to Remove content that is Excessively Violent, Pornographic, Racially Offensive, etc.</b>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="medium-12 columns">
+                                    <div class="checkbox">
+                                        <input id="check4" type="checkbox" ng-model="UC.newVideo.copyrightOwner">
+                                        <label for="check4" style="">Do you own the rights to this content?</label>
+                                        <input id="copyrightOwnYes" type="checkbox" ng-model="UC.newVideo.copyrightOwner" ng-click="UC.newVideo.copyrightOwner=true">
+                                        <label class="customLabel" style="padding-left: 20px;display: inline-block;" for="copyrightOwnYes">Yes</label>
+                                        <input id="copyrightOwnNo" type="checkbox" ng-model="UC.newVideo.copyrightOwner" ng-click="UC.newVideo.copyrightOwner=false" ng-true-value="false" ng-false-value="true">
+                                        <label class="customLabel" style="padding-left: 20px;display: inline-block;" for="copyrightOwnNo">No</label>
+                                        <br>
+                                    </div>
+                                </div>
                                 <div class="medium-6 columns">
                                     <div class="checkbox">
-                                        <input id="check1" type="checkbox" ng-model="UC.newVideo.disableComments">
-                                        <label class="customLabel" style="padding-left: 20px;" for="check1">Disable Comments</label>
+                                        <input id="checkboxUnlist" type="checkbox" ng-model="UC.newVideo.unlist">
+                                        <label class="customLabel" style="padding-left: 20px;" for="checkboxUnlist">Unlist Video</label>
                                     </div>
                                 </div>
                                 <div class="medium-6 columns">
@@ -299,9 +248,10 @@
                                 </div>
                             </div>
                             <div class="large-12 columns">
-                                <label>Tags:
-                                    <input ng-model="UC.newVideo.tags" type="text" placeholder="Enter video tags..">
+                                <label>Tags: (separate with commas)
+                                    <input ng-model="UC.newVideo.tags" type="text" placeholder="tag1, tag2, tag3">
                                 </label>
+                                <!--<p class="help-block">Separate Tags with a comma</p>-->
                             </div>
                             <div class="large-12 columns">
                                 <button class="button expanded" type="submit" name="submit">publish now</button>

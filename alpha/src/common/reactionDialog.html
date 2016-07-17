@@ -1,5 +1,23 @@
 <div aria-label="Reaction">
     <h3>How'd this make you feel?</h3>
+    <input type="text" ng-model="selected" placeholder="Search a feeling">
+    <ul style="height: 300px;overflow-y: scroll;">
+        <li class="angucomplete-row" ng-repeat="reaction in emotions|filter:selected|orderBy:'name'" ng-click="selectedEmotion(reaction)">
+            <a href="#">
+                <md-icon class="emoticon" md-svg-icon="{{::reaction.icon}}"></md-icon>&nbsp;{{::reaction.name}}
+            </a>
+        </li>
+    </ul>
+    <br>
+    <button class="button tiny" ng-click="cancel()">Cancel</button>
+    <!--<button class="button tiny primary pull-right" ng-click="closeDialog()">Submit</button>-->
+    <button ng-click="cancel()" class="close-button" aria-label="Close reveal" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<!--<div aria-label="Reaction">
+    <h3>How'd this make you feel?</h3>
     <angucomplete-alt id="em1"
                       autofocus
                       placeholder="Search a feeling"
@@ -13,7 +31,7 @@
                       input-class="form-control form-control-small"/>
     <br>
     <button class="button tiny" ng-click="cancel()">Cancel</button>
-    <!--<button class="button tiny primary pull-right" ng-click="closeDialog()">Submit</button>-->
+    &lt;!&ndash;<button class="button tiny primary pull-right" ng-click="closeDialog()">Submit</button>&ndash;&gt;
     <button ng-click="cancel()" class="close-button" aria-label="Close reveal" type="button">
         <span aria-hidden="true">&times;</span>
     </button>
@@ -45,12 +63,12 @@
                 <div class="angucomplete-title" ng-if="!matchClass">
                     <md-icon class="emoticon" md-svg-icon="{{result.description}}"></md-icon> {{ result.title }}
                 </div>
-                <!--<div ng-if="matchClass && result.description && result.description != ''" class="angucomplete-description" ng-bind-html="result.description"></div>-->
-                <!--<div ng-if="!matchClass && result.description && result.description != ''" class="angucomplete-description">{{result.description}}</div>-->
+                &lt;!&ndash;<div ng-if="matchClass && result.description && result.description != ''" class="angucomplete-description" ng-bind-html="result.description"></div>&ndash;&gt;
+                &lt;!&ndash;<div ng-if="!matchClass && result.description && result.description != ''" class="angucomplete-description">{{result.description}}</div>&ndash;&gt;
             </div>
-            <!--<div class="angucomplete-row" ng-click="selectResult({title: searchStr, originalObject: { name: searchStr, custom: true }})" ng-mouseenter="hoverRow(results.length)" ng-class="{'angucomplete-selected-row': results.length == currentIndex}">
+            &lt;!&ndash;<div class="angucomplete-row" ng-click="selectResult({title: searchStr, originalObject: { name: searchStr, custom: true }})" ng-mouseenter="hoverRow(results.length)" ng-class="{'angucomplete-selected-row': results.length == currentIndex}">
                 <div class="angucomplete-title">Select custom country '{{ searchStr }}'</div>
-            </div>-->
+            </div>&ndash;&gt;
         </div>
     </div>
-</script>
+</script>-->

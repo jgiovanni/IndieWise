@@ -1,0 +1,40 @@
+<dropdown-toggle close-on-click="true">
+    <toggle>
+        <a class="button tiny"><i class="fa fa-heart"></i>Add to</a>
+    </toggle>
+    <pane>
+        <ul class="menu vertical">
+            <!--<li class="checkbox">
+                <input type="checkbox" id="isFaved" ng-model="VC.isFaved"
+                       ng-false-value="false||'login'"
+                       ng-change="VC.toFavorites()">
+                <label class="customLabel" for="isFaved">Favorites</label>
+            </li>-->
+            <li class="checkbox" ng-repeat="pl in playlists.data|orderBy:'name'">
+                <input type="checkbox" id="pl{{$index}}" ng-model="bool"
+                       ng-click="syncPlaylists(bool, pl)" ng-checked="isCheckedPlaylist(pl.id)">
+                <label class="customLabel" for="pl{{$index}}">{{pl.name}}</label>
+            </li>
+            <hr class="thin">
+            <li ng-if="!newPlInput">
+                <a ng-click="toggleNewPlInput()" class="button tiny">
+                    <i class="fa fa-plus"></i> Create new playlist
+                </a>
+            </li>
+            <li ng-if="newPlInput">
+                <form>
+                    <input type="text" ng-model="model.newName" ng-maxlength="75" placeholder="Playlist Name">
+
+                    <div class="row" style="margin-top: 5px">
+                        <div class="columns medium-6">
+                            <button class="button tiny hollow" type="button" ng-click="toggleNewPlInput(true)">Cancel</button>
+                        </div>
+                        <div class="columns medium-6 text-right">
+                            <button class="button tiny hollow" ng-disabled="!model.newName" ng-click="newPlaylist()">Create</button>
+                        </div>
+                    </div>
+                </form>
+            </li>
+        </ul>
+    </pane>
+</dropdown-toggle>
