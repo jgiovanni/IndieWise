@@ -2,6 +2,19 @@
     display: none !important;
 }
 
+#loading-bar .bar {
+    background: #2C43A4;
+}
+
+/* Fancy blur effect */
+#loading-bar .peg {
+    -moz-box-shadow: #2C43A4 1px 0 6px 1px;
+    -ms-box-shadow: #2C43A4 1px 0 6px 1px;
+    -webkit-box-shadow: #2C43A4 1px 0 6px 1px;
+    box-shadow: #2C43A4 1px 0 6px 1px;
+}
+
+
 /*.off-canvas-wrap,
 .off-canvas-wrap .inner-wrap {
     height: 100%;

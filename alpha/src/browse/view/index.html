@@ -100,14 +100,14 @@
                                 <!--{{typesList}}-->
                                 <h6>Types</h6>
                                 <div class="checkbox" ng-repeat="g in typesList|orderBy:'name'">
-                                    <input id="typeCheck{{$index}}" type="checkbox" ng-model="selected" ng-change="Browse.selectTypes(g)" ng-init="">
-                                    <label class="customLabel" for="typeCheck{{$index}}">{{::g.name}}</label>
+                                    <input id="typeCheck_{{::g.name}}" type="checkbox" ng-model="selected" ng-change="Browse.selectTypes(g)">
+                                    <label class="customLabel" for="typeCheck_{{::g.name}}">{{::g.name}}</label>
                                 </div>
 
                                 <h6>Genres</h6>
                                 <div class="checkbox" ng-repeat="g in genresList|orderBy:'name'">
-                                    <input id="genreCheck{{$index}}" type="checkbox" ng-model="selected" ng-change="Browse.selectGenres(g)" ng-init="isPreselected">
-                                    <label class="customLabel" for="genreCheck{{$index}}">{{::g.name}}</label>
+                                    <input id="genreCheck_{{::g.name}}" type="checkbox" ng-model="selected" ng-change="Browse.selectGenres(g)">
+                                    <label class="customLabel" for="genreCheck_{{::g.name}}">{{::g.name}}</label>
                                 </div>
                             </div>
                         </div>
@@ -119,101 +119,3 @@
     </div>
 </section>
 <!-- End Category Content-->
-
-<!--<md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="filterNav">
-    <md-toolbar class="md-theme-light">
-        <div class="md-toolbar-tools">
-            <h3>Filters</h3>
-            <span flex></span>
-        </div>
-    </md-toolbar>
-    <md-content layout="column" class="md-padding">
-        <md-list>
-            <md-subheader class="md-no-sticky">Sort By</md-subheader>
-            <md-list-item ng-class="{'blue': Browse.filters.sort==='recent'}" ng-click="Browse.filterBy('recent')">
-                Recently Added
-            </md-list-item>
-            <md-list-item ng-class="{'blue': Browse.filters.sort==='trending'}" ng-click="Browse.filterBy('trending')">
-                Trending
-            </md-list-item>
-            <md-list-item ng-class="{'blue': Browse.filters.sort==='rating'}" ng-click="Browse.filterBy('rating')">
-                Highest Rated
-            </md-list-item>
-            <md-list-item ng-class="{'blue': Browse.filters.sort==='awards'}" ng-click="Browse.filterBy('awards')">
-                Award Winning
-            </md-list-item>
-        </md-list>
-        <md-divider></md-divider>
-        <md-list>
-            <md-subheader class="md-no-sticky">Genres</md-subheader>
-            <md-list-item class="short" ng-repeat="g in genresList|orderBy:'attributes.name'">
-                <span>{{::g.attributes.name}}</span>
-                <md-checkbox class="md-secondary" ng-model="selected" ng-change="Browse.selectGenres(g)"
-                             aria-label="{{::g.attributes.name}}"></md-checkbox>
-            </md-list-item>
-        </md-list>
-        <md-divider></md-divider>
-        <md-list>
-            <md-subheader class="md-no-sticky">Types</md-subheader>
-            <md-list-item class="short" ng-repeat="t in typesList|orderBy:'attributes.name'">
-                <span>{{::t.attributes.name}}</span>
-                <md-checkbox class="md-secondary" ng-model="selected" ng-change="Browse.selectTypes(t)"
-                             aria-label="{{::t.attributes.name}}"></md-checkbox>
-            </md-list-item>
-        </md-list>
-    </md-content>
-</md-sidenav>
-<md-content layout="row" layout-padding id="content" layout-align="center flex-start" class="white">
-    <div flex flex-lg="20" flex-gt-lg="20" hide-xs hide-sm hide-md layout="column" layout-align="start top" style="border-right: 1px solid #eeeeee">
-        <h1 class="md-headline">Filter</h1>
-        <md-list>
-            <md-subheader class="md-no-sticky">Sort By</md-subheader>
-            <md-list-item ng-class="{'blue': Browse.filters.sort==='recent'}" ng-click="Browse.filterBy('recent')">
-                Newest
-            </md-list-item>
-            <md-list-item ng-class="{'blue': Browse.filters.sort==='trending'}" ng-click="Browse.filterBy('trending')">
-                Trending
-            </md-list-item>
-            <md-list-item ng-class="{'blue': Browse.filters.sort==='rating'}" ng-click="Browse.filterBy('rating')">
-                Rating
-            </md-list-item>
-            <md-list-item ng-class="{'blue': Browse.filters.sort==='awards'}" ng-click="Browse.filterBy('awards')">
-                Award Winning
-            </md-list-item>
-        </md-list>
-        <md-divider></md-divider>
-        <md-list>
-            <md-subheader class="md-no-sticky">Genres</md-subheader>
-            <md-list-item class="short" ng-repeat="g in genresList|orderBy:'attributes.name'">
-                <span>{{::g.attributes.name}}</span>
-                <md-checkbox class="md-secondary" ng-model="selected" ng-change="Browse.selectGenres(g)"
-                             aria-label="{{::g.attributes.name}}"></md-checkbox>
-            </md-list-item>
-        </md-list>
-        <md-divider></md-divider>
-        <md-list>
-            <md-subheader class="md-no-sticky">Types</md-subheader>
-            <md-list-item class="short" ng-repeat="t in typesList|orderBy:'attributes.name'">
-                <span>{{::t.attributes.name}}</span>
-                <md-checkbox class="md-secondary" ng-model="selected" ng-change="Browse.selectTypes(t)"
-                             aria-label="{{::t.attributes.name}}"></md-checkbox>
-            </md-list-item>
-        </md-list>
-    </div>
-    <div flex flex-lg="80" flex-gt-lg="80">
-        <div layout="column" layout-align="top center">
-            <h1 class="md-headline">
-                <md-button ng-click="Browse.toggleFilterNav()" class="md-accent" hide-gt-md>
-                    <md-icon md-svg-icon="filter"></md-icon>
-                    Filters
-                </md-button>
-                <span ng-show="Browse.films">{{Browse.films.length}} projects</span>
-            </h1>
-            <section layout="row"layout-align-xs="center center" layout-xs="column" layout-wrap layout-align="center start" style="width:100%;">
-                <project-card class="no-shadow animated" flex flex-sm="50" flex-md="33" flex-lg="30" flex-gt-lg="20"
-                              ng-repeat="video in Browse.films" video="video"></project-card>
-            </section>
-        </div>
-    </div>
-
-</md-content>-->

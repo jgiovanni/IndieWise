@@ -68,10 +68,13 @@ FileETag None
 Options +FollowSymLinks
 RewriteEngine On
 
+RewriteCond %{SERVER_PORT} 80
+RewriteRule ^(.*)$ https://getindiewise.com/$1 [R=301,L]
+
 # www to non-www
 RewriteCond %{HTTPS} off
 RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
-RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
+RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
 
 RewriteCond %{HTTPS} on
 RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]

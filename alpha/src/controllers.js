@@ -65,12 +65,14 @@
         .controller('VideoCtrl', VideoCtrl)
         .controller('VideoCritiqueCtrl', VideoCritiqueCtrl)
         .controller('VideoCritiqueEditCtrl', VideoCritiqueEditCtrl)
+        .controller('ContactPageCtrl', ContactPageCtrl)
     ;
 
     RegisterCtrl.$inject = ['$rootScope', '$timeout', '$q', '$state', 'AuthService', 'DataService', 'anchorSmoothScroll', '_'];
     function RegisterCtrl($rootScope, $timeout, $q, $state, AuthService, DataService, anchorSmoothScroll, _) {
         $rootScope.metadata.title = 'Register';
         var self = this;
+        self.creating = false;
         self.accountCreated = false;
         self.genresArr = [];
         self.typesArr = [];
@@ -122,35 +124,36 @@
         };
 
         self.doRegister = function () {
-            self.errors.gender = !self.user.gender;
+            if(!self.creating){
+                self.creating = true;
+                self.errors.gender = !self.user.gender;
 
-            /*if (angular.isArray(self.genresArr) && self.genresArr.length) {
-                _.each(self.genresArr, function (a) {
-                    self.user.genres.push(a);
-                });
-                self.user.genres = _.uniq(self.user.genres);
-                self.errors.genres = false;
-            } else {
-                self.errors.genres = true;
-            }
+                /*if (angular.isArray(self.genresArr) && self.genresArr.length) {
+                    _.each(self.genresArr, function (a) {
+                        self.user.genres.push(a);
+                    });
+                    self.user.genres = _.uniq(self.user.genres);
+                    self.errors.genres = false;
+                } else {
+                    self.errors.genres = true;
+                }
 
-            if (angular.isArray(self.typesArr) && self.typesArr.length) {
-                _.each(self.typesArr, function (a) {
-                    self.user.types.push(a);
-                });
-                self.user.types = _.uniq(self.user.types);
-                self.errors.types = false;
-            } else {
-                self.errors.types = true;
-            }*/
-            if (self.errors.gender) {
-                anchorSmoothScroll.scrollTo('errors');
-                return false;
-            }
+                if (angular.isArray(self.typesArr) && self.typesArr.length) {
+                    _.each(self.typesArr, function (a) {
+                        self.user.types.push(a);
+                    });
+                    self.user.types = _.uniq(self.user.types);
+                    self.errors.types = false;
+                } else {
+                    self.errors.types = true;
+                }*/
+                if (self.errors.gender) {
+                    anchorSmoothScroll.scrollTo('errors');
+                    return false;
+                }
 
-            self.user.dob = moment().set({'year': self.dobYear, 'month': self.dobMonth, 'day': self.dobDay }).format('YYYY-MM-DD');
-            AuthService.createUser(self.user)
-                .then(function (res) {
+                self.user.dob = moment().set({'year': self.dobYear, 'month': self.dobMonth, 'day': self.dobDay }).startOf('day').toDate();
+                AuthService.createUser(self.user).then(function (res) {
                     // console.log('Success', res);
                     //window.location.reload();
                     // self.accountCreated = true;
@@ -159,7 +162,13 @@
                     // console.log('Failed', res);
                 }).then(function () {
                     // window.location.reload();
-                })
+                    $rootScope.toastMessage('Account created!');
+                    self.creating = false;
+                });
+            } else {
+                $rootScope.toastMessage('Please wait...');
+            }
+
         };
 
         self.authenticate = function (provider) {
@@ -335,6 +344,7 @@
             // $localForage.removeItem('genres');
             $localForage.getItem('genres', true).then(function (data) {
                 if( !_.isNull(data) ) {
+                    $rootScope.genresList = data;
                     deferred.resolve(data);
                 } else {
                     DataService.collection('genres').then(function (result) {
@@ -360,6 +370,7 @@
             // $localForage.removeItem('types');
             $localForage.getItem('types', true).then(function (data) {
                 if( !_.isNull(data) ) {
+                    $rootScope.typesList = data;
                     deferred.resolve(data);
                 } else {
                     DataService.collection('types').then(function (result) {
@@ -386,6 +397,7 @@
             // $localForage.removeItem('countries');
             $localForage.getItem('countries', true).then(function (data) {
                 if( !_.isNull(data) ) {
+                    $rootScope.countryList = data;
                     deferred.resolve(data);
                 } else {
                     DataService.collection('countries').then(function (result) {
@@ -411,6 +423,7 @@
             // $localForage.removeItem('languages');
             $localForage.getItem('languages', true).then(function (data) {
                 if( !_.isNull(data) ) {
+                    $rootScope.languageList = data;
                     deferred.resolve(data);
                 } else {
                     DataService.collection('languages').then(function (result) {
@@ -2251,7 +2264,10 @@
                 DataService.save('Project', filmParams, true, true)
                     .then(function (film) {
                         // add genres after create
-                        DataService.update('Project', film.data.id, {genres: self.newVideo.genres}, true);
+                        _.each(self.newVideo.genres, function (genre) {
+                            DataService.save('Genres', {genre: genre.genre, project: film.data.id});
+                        });
+                        // DataService.update('Project', film.data.id, {genres: self.newVideo.genres}, true);
                         $rootScope.toastMessage('Video Uploaded Successfully');
                         // register Action
                         UtilsService.recordActivity(film, 'upload');
@@ -3034,6 +3050,49 @@
         };
 
         self.refresh();
+    }
+
+    ContactPageCtrl.$inject = ['$rootScope', 'DataService', '$sce'];
+    function ContactPageCtrl($rootScope, DataService, $sce) {
+        var self = this;
+        self.selectedEmail = null;
+        self.description = '';
+        self.getDescription = function () {
+            self.description = angular.isObject(self.selectedEmail) ? $sce.trustAsHtml(self.selectedEmail.description) : $sce.trustAsHtml('');
+        };
+        self.form = {
+            to: '',
+            name: '',
+            email: '',
+            subject: '',
+            message: ''
+        };
+        self.emails = [
+            { title: 'Technical Support', address: 'support@getindiewise.com', description: 'For all your Tech Support Needs and Issues.'},
+            { title: 'SafeGuard', address: 'safeguard@getindiewise.com', description: 'IndieWise cares about the safety and well-being of its users. Contact us immediately, if you come across any inappropriate content on the site. This includes, but is not limited to: content that is Excessively Violent, Pornographic, Racially Offensive, Unlawful, of a Bullying Nature, Directly Harmful to any Individual, Copyright Infringement, Spam, etc.'},
+            { title: 'Marketing', address: 'marketing@getindiewise.com', description: 'Would you like to advertise your company to our vast and diverse audience? Would you like a featured listing of your film at the top of our Homepage for all to see? Reach out today!'},
+            { title: 'Awards', address: 'awards@getindiewise.com', description: 'So you have such an amazing project, that 5 or more Users felt like you deserve an Award for it! Congrats! We can help!'},
+            { title: 'Public Relations', address: 'pr@getindiewise.com', description: 'Reach out for any press and/or media inquiries. Also let us know if you’d like to be featured in our bi-weekly newsletter. Also stay tuned for important announcements and updates!'},
+            { title: 'Career Center', address: 'careers@getindiewise.com', description: 'Interested in joining Team IndieWise? Let us know! There are several internship opportunities available.'},
+            { title: 'Become a Sponsor', address: 'sponsor@getindiewise.com', description: 'We’ve reserved a unique spot on our homepage to showcase our amazing sponsors. If you’re interested in becoming a sponsor of IndieWise, let us know!'},
+            { title: 'Invest in IndieWise', address: 'investors@getindiewise.com', description: 'So you’d like to take the bold step of investing in IndieWise! Great choice. Let’s talk!'},
+            { title: 'Register for IndieWise Convention (JULY 28-30, 2017)', address: 'convention@getindiewise.com', description: 'Register for our Annual Convention, in Miami, FL! Registration opens on JAN 2, 2017. Over 5,000 Filmmakers from 140+ Countries will be in attendance, as we provide you with 3 days of interactive workshops, educational seminars, film screenings, VIP Receptions, a Yacht Party, and a Closing Gala.<br>Regular 3- Day Package: $150  |  VIP 3-Day Package (Including Yacht Party): $250 (400 Tickets max. To Be Sold)<br>Ultimate Boss Package: $950 (Includes 2 Night Hotel Stay and Personal Luxury Transportation to and from Airport and to and from All Convention Events, Reserved Seating at all Events, Unlimited Hard Copy Prints of Your Red Carpet Photos, FREE Limited Edition IndieWise T-Shirt (20 Tickets Max. to be Sold)<br>Ask us about:<ul><li>Lyft Transporation Discount</li><li>Hotel Discount</li><li>Becoming a Sponsor and Advertising Your Company/Brand </li><li>Becoming a Vendor </li><li>Donations to Support the Arts</li></ul>'},
+            { title: 'Feedback Center', address: 'feedback@getindiewise.com', description: 'We welcome any feedback you have, to help us to provide you with the very best experience! Tell us!'},
+        ];
+
+        self.submitForm = function () {
+            self.form.to = self.selectedEmail.address;
+            DataService.action('users', 'Contact Us', self.form).then(function (res) {
+                $rootScope.toastMessage('Message Sent, Thank you!');
+                self.form = {
+                    to: '',
+                    name: '',
+                    email: '',
+                    subject: '',
+                    message: ''
+                };
+            });
+        }
     }
 
 })

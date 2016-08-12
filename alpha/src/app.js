@@ -15,6 +15,7 @@
             'underscore',
             'angularMoment',
             'videosharing-embed',
+            'angular-loading-bar',
             'LocalForageModule',
             'ui.router',
             'angular-google-analytics',
@@ -47,6 +48,9 @@
             /*flowFactoryProvider.on('catchAll', function (event) {
              console.log('catchAll', arguments);
              })*/
+        }])
+        .config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
+            cfpLoadingBarProvider.latencyThreshold = 300;
         }])
         .config(function (filepickerProvider) {
             filepickerProvider.setKey('APbjTx44SlSuCI6P58jwvz');
@@ -572,7 +576,8 @@
                 .state('contact', {
                     url: '/contact',
                     authenticate: false,
-                    templateUrl: './src/static/contact.html'
+                    templateUrl: './src/static/contact.html',
+                    controller: 'ContactPageCtrl as CC'
                 })
                 .state('tos', {
                     url: '/terms-of-service',

@@ -1327,6 +1327,14 @@
                     scope.link = $sce.trustAsResourceUrl('http://ad.broadstreetads.com/zdisplay/' + scope.zone + '.html');
                 }
             }
+        }])
+        .directive('staticSideBar', ['$window', '$sce', function ($window, $sce) {
+            return {
+                restrict: 'E',
+                templateUrl: './src/directives/static-sidebar.html',
+                transclude: true,
+                replace: true
+            }
         }]);
     angular.module('IndieWise.filters', [])
         .filter('truncate', function () {

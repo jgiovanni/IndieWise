@@ -257,7 +257,10 @@
 
 
                                 <span class="form-error">your email is invalid</span>
-                                <button class="button expanded iw-button" type="submit" name="submit">register Now</button>
+                                <button class="button expanded iw-button" type="submit" name="submit">
+                                    <span ng-if="!RC.creating">Register Now</span>
+                                    <span ng-if="!!RC.creating"><i class="fa fa-spinner fa-spin"></i>&nbsp;Registering</span>
+                                </button>
                                 <p class="loginclick white">
                                     <a class="button tiny hollow white" ui-sref="sign_in">Login here</a>
                                     <a class="button tiny hollow white" ui-sref="sign_in">Forgot password?</a></p>

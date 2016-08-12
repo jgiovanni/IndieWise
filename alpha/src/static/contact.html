@@ -73,23 +73,30 @@
                     <div class="large-6 columns">
                         <h4>We'd Love to hear from you!</h4>
                         <div class="register-form">
-                            <form method="post" data-abide novalidate>
+                            <form ng-submit="CC.submitForm()" data-abide>
                                 <div data-abide-error class="alert callout" style="display: none;">
                                     <p><i class="fa fa-exclamation-triangle"></i> There are some errors in your form.</p>
                                 </div>
+                                <p class="help-text" ng-bind-html="CC.description"></p>
+                                <div class="input-group">
+                                    <!--<span class="input-group-label"><i class="fa fa-user"></i></span>-->
+                                    <select class="input-group-field" ng-model="CC.selectedEmail" ng-options="email as email.title for email in CC.emails" ng-change="CC.getDescription();" required>
+                                        <option value="" selected>Select a Department</option>
+                                    </select>
+                                </div>
                                 <div class="input-group">
                                     <span class="input-group-label"><i class="fa fa-user"></i></span>
-                                    <input class="input-group-field" type="text" placeholder="Enter your name" required>
+                                    <input class="input-group-field" type="text" ng-model="CC.form.name" placeholder="Enter your name" required>
                                 </div>
                                 <div class="input-group">
                                     <span class="input-group-label"><i class="fa fa-envelope"></i></span>
-                                    <input class="input-group-field" type="email" placeholder="Enter your email" required>
+                                    <input class="input-group-field" type="email" ng-model="CC.form.email" placeholder="Enter your email" required>
                                 </div>
                                 <div class="input-group">
                                     <span class="input-group-label"><i class="fa fa-book"></i></span>
-                                    <input class="input-group-field" type="text" placeholder="Enter your subject" required>
+                                    <input class="input-group-field" type="text" ng-model="CC.form.subject" placeholder="Enter your subject" required>
                                 </div>
-                                <textarea required placeholder="Your message"></textarea>
+                                <textarea required placeholder="Your message" ng-model="CC.form.message"></textarea>
                                 <button class="button expanded" type="submit" name="submit">Send</button>
                             </form>
                         </div>

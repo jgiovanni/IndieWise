@@ -36,10 +36,10 @@
                         <a ui-sref="user.about({id: video.owner})">{{::related.users[video.owner].firstName+' '+related.users[video.owner].lastName}}</a>
                     </span>
                 </p>
-                <p class="pull-left" ng-if="::!$state.is('profile')">
+                <!--<p class="pull-left" ng-if="::!$state.is('profile')">
                     <i class="fa fa-share"></i>
                     <span><a ng-click="openShareDialog(video)">Share</a></span>
-                </p>
+                </p>-->
                 <!--<dropdown-toggle close-on-click="true" class="pull-left" ng-if="::!$state.is('profile')" ng-click="check(video)">
                     <toggle>
                         <i class="fa fa-heart"></i>
